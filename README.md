@@ -1,6 +1,5 @@
-<div align="center">
+
   ![Logo.](assets/logo/ECORUSH_LOGO.png "Logo")
-</div>
 
 <h1 align="center">ECORUSH!</h1>
 
