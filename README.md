@@ -1,3 +1,4 @@
+(/assets/logo/ECORUSH_LOGO.png "This is a sample image.")
 # ECORUSH!
 ECORUSH! Videojuego educativo sobre la ODS 13: Acción por el clima.
 ## Objetivos generales
