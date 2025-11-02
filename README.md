@@ -1,8 +1,8 @@
 <div align="center">
-  ![Logo.](assets/img/ECORUSH_LOGO.png "Logo")
+  ![Logo.](assets/logo/ECORUSH_LOGO.png "Logo")
 </div>
 
-<h1 align="center">ECORUSH</h1>
+<h1 align="center">ECORUSH!</h1>
 
 <p align="center">
   ECORUSH! Videojuego educativo sobre la ODS 13: Acción por el clima.
