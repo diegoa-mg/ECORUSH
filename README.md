@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="assets/logo/ECORUSH_LOGO.png" alt="Logo" title="Logo" width="150">
+  <img src="assets/logo/ECORUSH_LOGO.png" alt="Logo" title="Logo" width="200">
 </div>
 
 <h1 align="center">ECORUSH!</h1>
