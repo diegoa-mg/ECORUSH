@@ -1,5 +1,7 @@
-<p align="center">![Logo.](/assets/logo/ECORUSH_LOGO.png "Logo.")</p>
-# ECORUSH!
+<div align="center">
+  ![Logo.](assets/img/ECORUSHI_LOGO.png "Logo")
+</div>
+<p align="center"># ECORUSH!</p>
 ECORUSH! Videojuego educativo sobre la ODS 13: Acción por el clima.
 ## Objetivos generales
 Diseñar y aplicar un videojuego educativo enfocado en la ODS 13 (Acción por el clima), el videojuego no solo busca entretener, sino también concientizar, informar y despertar un compromiso real con la acción por el clima, contribuyendo a formar ciudadanos responsables con el planeta.
