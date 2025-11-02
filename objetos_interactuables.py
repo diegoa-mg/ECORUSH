@@ -209,15 +209,17 @@ class GestorObjetosInteractuables:
         self.config_posiciones = posiciones
     
     def _cargar_objetos_interactuables(self):
-        """Carga todas las imágenes de la carpeta objetos_interactuables"""
+        """Carga todas las imágenes .png dentro de 'objetos_interactuables' (incluye subcarpetas)."""
         objetos_path = self.assets_path / "objetos_interactuables"
-        
-        if objetos_path.exists():
-            # Obtener todos los archivos .png de la carpeta
-            for archivo in objetos_path.glob("*.png"):
-                # Crear nombre sin extensión
-                nombre = archivo.stem
-                self.objetos_disponibles[nombre] = str(archivo)
+        if not objetos_path.exists():
+            print("Error: Carpeta 'objetos_interactuables' no encontrada")
+            return
+        for archivo in objetos_path.rglob("*.png"):
+            nombre = archivo.stem
+            self.objetos_disponibles[nombre] = str(archivo)
+            try:
+                print(f"Objeto cargado: {nombre} ({archivo.parent.name})")
+            except Exception:
                 print(f"Objeto cargado: {nombre}")
         else:
             print("Error: Carpeta 'objetos_interactuables' no encontrada")
@@ -260,9 +262,9 @@ class GestorObjetosInteractuables:
                 objetos_path = self.assets_path / "objetos_interactuables"
                 frames = []
                 for i in range(1, cantidad + 1):
-                    ruta = objetos_path / f"{prefix}{i}.png"
-                    if ruta.exists():
-                        frames.append(ruta)
+                    coincidencias = list(objetos_path.rglob(f"{prefix}{i}.png"))
+                    if coincidencias:
+                        frames.append(coincidencias[0])
                 if frames:
                     frames_anim = frames
 
