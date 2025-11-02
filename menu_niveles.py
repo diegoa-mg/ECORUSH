@@ -1,7 +1,15 @@
 import pygame, os, math, sys
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, WHITE, BLACK
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, WHITE, BLACK, play_music, pause_music, resume_music
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+    # === Música de menú niveles ===
+    # Reanuda si estaba pausada; si no hay música, la inicia.
+    try:
+        resume_music()
+    except Exception:
+        pass
+    if not pygame.mixer.music.get_busy():
+        play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
     # === Cargar imágenes ===
     bg_niv       = load_img("fondoniv.png", alpha=False)
     titulo_niveles = load_img("tituloniveles.png")
@@ -80,9 +88,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         return "sel_nivel1"
                     elif rect_nivel2.collidepoint(event.pos):
                         print("Ir Selector Nivel 2")
+                        pause_music()
                         return "sel_nivel2"
                     elif rect_nivel3.collidepoint(event.pos):
                         print("Ir Selector Nivel 3")
+                        pause_music()
                         return "sel_nivel3"
                     elif rect_volver.collidepoint(event.pos):
                         print("Regresando al menú principal")

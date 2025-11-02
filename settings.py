@@ -21,6 +21,8 @@ WIDTH, HEIGHT = 1920, 1080
 BASE_DIR = Path(__file__).resolve().parent
 # IMG_DIR: carpeta donde se guardan las imagenes del proyecto
 IMG_DIR = BASE_DIR / "assets" / "img"
+# MUSIC_DIR: carpeta donde se guardan las músicas del proyecto
+MUSIC_DIR = BASE_DIR / "assets" / "musica"
 
 # === Helper para cargar imagen ===
 """
@@ -32,6 +34,58 @@ def load_img(name, alpha=True):
     path = IMG_DIR / name # une la carpeta con el nombre del archivo
     surf = pygame.image.load(str(path)) # pygame necesita string, por eso se usa el str
     return surf.convert_alpha() if alpha else surf.convert()
+
+# === Música ===
+def play_music(name: str, volume: float = 0.6, loops: int = -1):
+    """Carga y reproduce música desde assets/musica.
+    - name: nombre del archivo (ej. "musica_menu_niveles.mp3")
+    - volume: 0.0 a 1.0
+    - loops: -1 para loop infinito
+    """
+    try:
+        if not pygame.mixer.get_init():
+            pygame.mixer.init()
+        ruta = MUSIC_DIR / name
+        pygame.mixer.music.load(str(ruta))
+        pygame.mixer.music.set_volume(max(0.0, min(1.0, float(volume))))
+        pygame.mixer.music.play(loops)
+    except Exception as e:
+        print(f"[Audio] No se pudo reproducir '{name}': {e}")
+
+def stop_music():
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.stop()
+    except Exception:
+        pass
+
+# === Paso de pista entre escenas ===
+# Variable global simple para solicitar la siguiente pista al entrar a una escena.
+_AUDIO_NEXT_TRACK = None
+
+def set_next_music(name: str | None):
+    global _AUDIO_NEXT_TRACK
+    _AUDIO_NEXT_TRACK = name
+
+def consume_next_music() -> str | None:
+    global _AUDIO_NEXT_TRACK
+    name = _AUDIO_NEXT_TRACK
+    _AUDIO_NEXT_TRACK = None
+    return name
+
+def pause_music():
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.pause()
+    except Exception:
+        pass
+
+def resume_music():
+    try:
+        if pygame.mixer.get_init():
+            pygame.mixer.music.unpause()
+    except Exception:
+        pass
 
 # === ANIMACION AL TITULO ===
 def draw_title_animated(screen, base_surf, center_pos, mode="bob", t_ms=0, amp=1.5,): # amp = amplitud px

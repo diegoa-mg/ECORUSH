@@ -1,7 +1,14 @@
 import pygame, os, math, sys
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, resume_music, play_music, pause_music, set_next_music
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+    # === Música en selector de nivel 1: reanuda o inicia si no está activa ===
+    try:
+        resume_music()
+    except Exception:
+        pass
+    if not pygame.mixer.get_init() or not pygame.mixer.music.get_busy():
+        play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
     # === Cargar imagenes ===
     bg_niv       = load_img("fondoniv.png", alpha=False)
     nivel_selector = load_img("selector_nivel.png")  # Ventana azul selector
@@ -104,6 +111,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         print("Personaje 2 seleccionado")
                     elif rect_jugar.collidepoint(event.pos):
                         print(f"Iniciando Nivel {nivel_seleccionado} - Dificultad: {dificultad_seleccionada} - Personaje: {personaje_seleccionado}")
+                        # Solicita música del nivel según dificultad
+                        if dificultad_seleccionada == "sencillo" and nivel_seleccionado == 1:
+                            set_next_music("musica_nivel_facil.mp3")
+                        # Pausar música de menú antes de entrar al nivel
+                        pause_music()
                         return "nivel1"
                     
                     # Regresar a niveles

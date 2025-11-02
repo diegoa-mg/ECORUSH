@@ -14,6 +14,11 @@ import nivel1
 
 def main():
     pygame.init()
+    # Inicializar mixer para audio
+    try:
+        pygame.mixer.init()
+    except Exception as e:
+        print(f"[Audio] No se pudo inicializar el mixer: {e}")
     # screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
     pygame.display.set_caption("EcoRush!")

@@ -1,11 +1,18 @@
 import pygame
 from pathlib import Path
-from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur
+from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, play_music, consume_next_music
 from movimiento_de_personaje import AnimacionPersonaje
 from objetos_interactuables import GestorObjetosInteractuables
 from objetos_decorativos import GestorObjetosDecorativos
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+    # === Música del nivel (si fue solicitada por el selector) ===
+    try:
+        next_track = consume_next_music()
+        if next_track:
+            play_music(next_track, volume=0.6, loops=-1)
+    except Exception as e:
+        print(f"[Audio] No se pudo configurar música del nivel: {e}")
     # === Importar teclas ===
     from pygame.locals import (
         K_UP, K_DOWN, K_LEFT, K_RIGHT,
