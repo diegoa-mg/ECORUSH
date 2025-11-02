@@ -1,5 +1,5 @@
 import pygame, os, math, sys
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, draw_title_animated
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, draw_title_animated, make_hover_pair, blit_hoverable
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Cargar imágenes ===
@@ -14,6 +14,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     tuto         = load_img("tuto.png")
     botones_tuto = load_img("botones_tutorial.png")
     botones_config = load_img("botonesconfig.png")
+    esp_on       = load_img("esp_on.png")
+    esp_off      = load_img("esp_off.png")
+    eng_on       = load_img("eng_on.png")
+    eng_off      = load_img("eng_off.png")
 
     # === Escalar las imagenes ===
     bg_prin    = pygame.transform.scale(bg_prin, (3840, 1080))
@@ -27,6 +31,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     tuto         = pygame.transform.scale(tuto, (1290, 733.5))
     botones_tuto = pygame.transform.scale(botones_tuto, (924, 482.5))
     botones_config = pygame.transform.scale(botones_config, (768, 259.5))
+    esp_on       = pygame.transform.scale(esp_on, (364, 131.5))
+    esp_off      = pygame.transform.scale(esp_off, (364, 131.5))
+    eng_on       = pygame.transform.scale(eng_on, (364, 131.5))
+    eng_off      = pygame.transform.scale(eng_off, (364, 131.5))
 
     # === Animacion de botones ===
     botoninicio_orig, botoninicio_hover = make_hover_pair(botoninicio, 1.05)
@@ -34,6 +42,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     botontuto_orig,  botontuto_hover  = make_hover_pair(botontuto,  1.05)
     botonsalir_orig, botonsalir_hover = make_hover_pair(botonsalir, 1.05)
     config_x_orig, config_x_hover = make_hover_pair(config_x, 1.05)
+    esp_off_orig, esp_off_hover = make_hover_pair(esp_off, 1.05)
+    eng_off_orig, eng_off_hover = make_hover_pair(eng_off, 1.05) 
 
     # === Definir rects de botones (hitboxes) ===
     rect_inicio   = botoninicio.get_rect(topleft=(792.5, 455))
@@ -43,6 +53,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     config_rect   = config.get_rect(center=(WIDTH//2, HEIGHT//2))
     config_x_rect = config_x.get_rect(topright=(config_rect.right-20, config_rect.top+20))
     tuto_rect     = tuto.get_rect(center=(WIDTH//2, HEIGHT//2))
+    rect_esp   = esp_on.get_rect(topleft=(576, 680))
+    rect_eng   = eng_on.get_rect(topleft=(980, 680))
 
     # === Offset Menu Principal (movimiento del fondo menu principal) ===
     bg_width = bg_prin.get_width()
@@ -55,6 +67,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # === Estado del juego ===
     game_state = "menu"
+    lenguage = "esp" # esp/eng
 
     # === Bucle principal ===
     running = True
@@ -87,6 +100,13 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     if config_x_rect.collidepoint(event.pos):
                         game_state = "menu"
                         print("Cerrando configuración.")
+                    
+                    elif rect_esp.collidepoint(event.pos):
+                        lenguage = "esp"
+                        print("Idioma: Español")
+                    elif rect_eng.collidepoint(event.pos):
+                        lenguage = "eng"
+                        print("Idioma: Inglés")
 
                 elif game_state == "tutorial":
                     if config_x_rect.collidepoint(event.pos):
@@ -183,9 +203,17 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
             # Dibujar el panel
             screen.blit(config, config_rect.topleft)
+            screen.blit(botones_config, (576, 410.25))
 
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
+
+            # Dificultad: elige la imagen en base al estado
+            esp = esp_on if lenguage == "esp" else esp_off
+            eng = eng_on if lenguage == "eng" else eng_off
+
+            blit_hoverable(screen, esp, rect_esp, mouse_pos)
+            blit_hoverable(screen, eng, rect_eng, mouse_pos)
 
             # X
             if config_x_rect.collidepoint(mouse_pos):
