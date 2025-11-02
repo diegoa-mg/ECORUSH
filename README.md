@@ -1,8 +1,7 @@
 <div align="center">
-  ![Logo.](assets/img/ECORUSHI_LOGO.png "Logo")
+  ![Logo.](assets/img/ECORUSH_LOGO.png "Logo")
+  # ECORUSHI
 </div>
-
-# ECORUSHI
 
 ECORUSHI! Videojuego educativo sobre la ODS 13: Acción por el clima.
 
