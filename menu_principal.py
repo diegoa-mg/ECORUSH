@@ -1,5 +1,6 @@
 import pygame, os, math, sys
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, draw_title_animated, make_hover_pair, blit_hoverable, resume_music, play_music
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, draw_title_animated, make_hover_pair, blit_hoverable, resume_music, play_music, lenguage
+
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Música en menú principal: reanuda o inicia si no está activa ===
@@ -9,22 +10,30 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         pass
     if not pygame.mixer.get_init() or not pygame.mixer.music.get_busy():
         play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
+
     # === Cargar imágenes ===
     bg_prin      = load_img("fondoprinci.png", alpha=False) # Se pone ya que no necesita transparencia
     titulo       = load_img("titulo.png")
-    botoninicio  = load_img("botoninicio.png")
-    botonconfig  = load_img("botonconfig.png")
-    botontuto    = load_img("botontuto.png")
-    botonsalir   = load_img("botonsalir.png")
-    config       = load_img("config.png")
     config_x     = load_img("config_x.png")
-    tuto         = load_img("tuto.png")
-    botones_tuto = load_img("botones_tutorial.png")
-    botones_config = load_img("botonesconfig.png")
     esp_on       = load_img("esp_on.png")
     esp_off      = load_img("esp_off.png")
     eng_on       = load_img("eng_on.png")
     eng_off      = load_img("eng_off.png")
+
+    # --- Diccionario para imágenes de idioma ---
+    btn_images = { "esp": {}, "eng": {} }
+
+    # Carga imágenes en Español
+    btn_images["esp"]["config"] = load_img("botonconfig.png")
+    btn_images["esp"]["tuto"]   = load_img("botontuto.png")
+    config       = load_img("config.png")
+    tuto         = load_img("tuto.png")
+    botones_tuto = load_img("botones_tutorial.png")
+    botones_config = load_img("botonesconfig.png")
+
+    # Carga tus nuevas imágenes en Inglés   
+    btn_images["eng"]["config"] = load_img("botonconfig_eng.png")
+    btn_images["eng"]["tuto"]   = load_img("botontuto_eng.png")
 
     # === Escalar las imagenes ===
     bg_prin    = pygame.transform.scale(bg_prin, (3840, 1080))
@@ -74,7 +83,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # === Estado del juego ===
     game_state = "menu"
-    lenguage = "esp" # esp/eng
 
     # === Bucle principal ===
     running = True
