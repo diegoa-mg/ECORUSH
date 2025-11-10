@@ -1,6 +1,7 @@
 import pygame
+import settings
 from pathlib import Path
-from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, play_music, consume_next_music
+from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music
 from movimiento_de_personaje import AnimacionPersonaje
 from objetos_interactuables import GestorObjetosInteractuables
 from objetos_decorativos import GestorObjetosDecorativos
@@ -13,6 +14,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             play_music(next_track, volume=0.6, loops=-1)
     except Exception as e:
         print(f"[Audio] No se pudo configurar música del nivel: {e}")
+
     # === Importar teclas ===
     from pygame.locals import (
         K_UP, K_DOWN, K_LEFT, K_RIGHT,
@@ -21,7 +23,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     )
 
     # === Cargar imagenes ===
-    # Juego (nivel 1)
+    # Juego
     img_boton_E         = load_img("E_personaje.png")
     MAPA                = load_img("mapafinal.png")
     img_temporizador    = load_img("temporizador.png")
@@ -30,18 +32,35 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     barra_energia_atras = load_img("barra_energia_detras.png")
     btn_pausa           = load_img("boton_pausa_juego.png")
 
+    # Imagenes PAUSA
+    config_x     = load_img("config_x.png")
+    esp_on       = load_img("esp_on.png")
+    esp_off      = load_img("esp_off.png")
+    eng_on       = load_img("eng_on.png")
+    eng_off      = load_img("eng_off.png")
+
+    #  --- Pendiente de cambiar el idioma
     pantalla_ganador    = load_img("ganador.png")
     pantalla_perdedor   = load_img("perdedor.png")
 
-    # Pausa
-    titulo_pausa    = load_img("titulo_pausa.png")
-    btn_continuar   = load_img("btn_continuar.png")
-    btn_config      = load_img("btn_config.png")
-    btn_salir       = load_img("btn_salir.png")
-    
-    # Config
-    config       = load_img("config.png")
-    config_x     = load_img("config_x.png")
+    # --- Diccionario para imágenes de idioma ---
+    btn_images = { "esp": {}, "eng": {} }
+
+    # Carga imágenes en Español
+    btn_images["esp"]["titulo_pausa"] = load_img("titulo_pausa.png")
+    btn_images["esp"]["btn_continuar"] = load_img("btn_continuar.png")
+    btn_images["esp"]["btn_config"] = load_img("btn_config.png")
+    btn_images["esp"]["btn_salir"] = load_img("btn_salir.png")
+    btn_images["esp"]["config"] = load_img("config.png")
+    btn_images["esp"]["botones_config"] = load_img("botonesconfig.png")
+
+    # Carga tus nuevas imágenes en Inglés
+    btn_images["eng"]["titulo_pausa"] = load_img("titulo_pausa_eng.png")
+    btn_images["eng"]["btn_continuar"] = load_img("btn_continuar_eng.png")
+    btn_images["eng"]["btn_config"] = load_img("btn_config_eng.png")
+    btn_images["eng"]["btn_salir"] = load_img("btn_salir_eng.png")
+    btn_images["eng"]["config"] = load_img("config_eng.png")
+    btn_images["eng"]["botones_config"] = load_img("botonesconfig_eng.png")
 
     # === Escalar imagenes ===
     # Juego
@@ -56,38 +75,54 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     pantalla_ganador    = pygame.transform.scale(pantalla_ganador, (WIDTH, HEIGHT))
     pantalla_perdedor   = pygame.transform.scale(pantalla_perdedor, (WIDTH, HEIGHT))
 
-    # Pausa
-    titulo_pausa    = pygame.transform.scale(titulo_pausa, (969, 146.5))
-    btn_continuar   = pygame.transform.scale(btn_continuar, (454, 113.5))
-    btn_config      = pygame.transform.scale(btn_config, (454, 113.5))
-    btn_salir       = pygame.transform.scale(btn_salir, (454, 113.5))
+    for lang in ["esp", "eng"]:
+        btn_images[lang]["titulo_pausa"] = pygame.transform.scale(btn_images[lang]["titulo_pausa"], (969, 146.5))
+        btn_images[lang]["btn_continuar"] = pygame.transform.scale(btn_images[lang]["btn_continuar"], (454, 113.5))
+        btn_images[lang]["btn_config"] = pygame.transform.scale(btn_images[lang]["btn_config"], (454, 113.5))
+        btn_images[lang]["btn_salir"] = pygame.transform.scale(btn_images[lang]["btn_salir"], (454, 113.5))
+        btn_images[lang]["config"] = pygame.transform.scale(btn_images[lang]["config"], (1290, 733.5))
+        btn_images[lang]["botones_config"] = pygame.transform.scale(btn_images[lang]["botones_config"], (768, 259.5))
 
-    # Config
-    config       = pygame.transform.scale(config, (1290, 733.5))
+    esp_on       = pygame.transform.scale(esp_on, (364, 131.5))
+    esp_off      = pygame.transform.scale(esp_off, (364, 131.5))
+    eng_on       = pygame.transform.scale(eng_on, (364, 131.5))
+    eng_off      = pygame.transform.scale(eng_off, (364, 131.5))
     config_x     = pygame.transform.scale(config_x, (48, 48.5))
 
     # === Animacion de botones en pausa ===
-    btn_pausa_orig, btn_pausa_hover         = make_hover_pair(btn_pausa, 1.05)
+    btn_pausa_orig, btn_pausa_hover = make_hover_pair(btn_pausa, 1.05)
 
-    btn_continuar_orig, btn_continuar_hover = make_hover_pair(btn_continuar, 1.05)
-    btn_config_orig, btn_config_hover       = make_hover_pair(btn_config, 1.05)
-    btn_salir_orig, btn_salir_hover         = make_hover_pair(btn_salir, 1.05)
+    # Diccionario para guardar las animaciones (orig, hover)
+    btn_anim = { "esp": {}, "eng": {} } 
+
+    # Anima las imágenes que cambian de idioma
+    for lang in ["esp", "eng"]:
+        btn_anim[lang]["btn_continuar_orig"], btn_anim[lang]["btn_continuar_hover"] = make_hover_pair(btn_images[lang]["btn_continuar"], 1.05)
+        btn_anim[lang]["btn_config_orig"], btn_anim[lang]["btn_config_hover"] = make_hover_pair(btn_images[lang]["btn_config"], 1.05)
+        btn_anim[lang]["btn_salir_orig"], btn_anim[lang]["btn_salir_hover"] = make_hover_pair(btn_images[lang]["btn_salir"], 1.05)
+        
     config_x_orig, config_x_hover           = make_hover_pair(config_x, 1.05)
 
     # === Hitbox de botones ===
-    rect_pausa      = btn_pausa.get_rect(topleft=(1788, 50))
-    rect_conti      = btn_continuar.get_rect(topleft=(733, 450))
-    rect_config     = btn_config.get_rect(topleft=(733, 600))
-    rect_salir      = btn_salir.get_rect(topleft=(733, 750))
-    config_rect     = config.get_rect(center=(WIDTH//2, HEIGHT//2))
+    # Rects de botones que cambian de idioma (usamos "esp" como referencia)
+    rect_pausa = btn_pausa.get_rect(topleft=(1788, 50))
+    rect_conti = btn_images["esp"]["btn_continuar"].get_rect(topleft=(733, 450))
+    rect_config = btn_images["esp"]["btn_config"].get_rect(topleft=(733, 600))
+    rect_salir = btn_images["esp"]["btn_salir"].get_rect(topleft=(733, 750))
+    config_rect = btn_images["esp"]["config"].get_rect(center=(WIDTH//2, HEIGHT//2))
+
     config_x_rect   = config_x.get_rect(topright=(config_rect.right-20, config_rect.top+20))
-    
+    rect_esp   = esp_on.get_rect(topleft=(576, 680))
+    rect_eng   = eng_on.get_rect(topleft=(980, 680))
+
     # Inicializar gestor de objetos interactuables
     assets_path = Path(__file__).parent / "assets"
     gestor_objetos = GestorObjetosInteractuables(assets_path)
+    
     # Configurar modo de colocación de hitbox y offsets por objeto
     gestor_objetos.configurar_modo_hitbox("centro")
     gestor_objetos.configurar_offset_hitbox_por_objeto({"pcencendida": (2, -1)})
+
     # Inicializar decorativos y crearlos según posiciones configuradas
     gestor_decorativos = GestorObjetosDecorativos(assets_path)
     decorativos = gestor_decorativos.crear_decorativos_por_defecto()
@@ -357,6 +392,13 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         print("Cerrando configuración.")
                         game_state = "pausa"
 
+                    elif rect_esp.collidepoint(event.pos):
+                            settings.language = "esp"
+                            print("Idioma: Español")
+                    elif rect_eng.collidepoint(event.pos):
+                        settings.language = "eng"
+                        print("Idioma: Inglés")
+
             # === ESC ===
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 if game_state == "juego":
@@ -410,6 +452,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             # === No hay campo de visión limitada ===
         
         # === DIBUJAR ===
+        current_lang = settings.language
+        current_anim = btn_anim[current_lang]
+        current_img = btn_images[current_lang]
+
         if game_state == "juego":
             screen.blit(MAPA, (0, 0))  # dibuja el mapa de fondo
 
@@ -479,38 +525,48 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             screen.blit(overlay, (0, 0))
 
             # Titulo 
-            screen.blit(titulo_pausa, (475.5, 250))
+            screen.blit(current_img["titulo_pausa"], (475.5, 250))
 
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
 
             # BOTON CONTINUAR
             if rect_conti.collidepoint(mouse_pos):
-                r = btn_continuar_hover.get_rect(center=rect_conti.center)
-                screen.blit(btn_continuar_hover, r.topleft)
+                r = current_anim["btn_continuar_hover"].get_rect(center=rect_conti.center)
+                screen.blit(current_anim["btn_continuar_hover"], r.topleft)
             else:
-                screen.blit(btn_continuar_orig, rect_conti.topleft)
+                screen.blit(current_anim["btn_continuar_orig"], rect_conti.topleft)
 
             # BOTON CONFIGURACION
             if rect_config.collidepoint(mouse_pos):
-                    r = btn_config_hover.get_rect(center=rect_config.center)
-                    screen.blit(btn_config_hover, r.topleft)
+                    r = current_anim["btn_config_hover"].get_rect(center=rect_config.center)
+                    screen.blit(current_anim["btn_config_hover"], r.topleft)
             else:
-                screen.blit(btn_config_orig, rect_config.topleft)
+                screen.blit(current_anim["btn_config_orig"], rect_config.topleft)
 
             # BOTON SALIR
             if rect_salir.collidepoint(mouse_pos):
-                r = btn_salir_hover.get_rect(center=rect_salir.center)
-                screen.blit(btn_salir_hover, r.topleft)
+                r = current_anim["btn_salir_hover"].get_rect(center=rect_salir.center)
+                screen.blit(current_anim["btn_salir_hover"], r.topleft)
             else:
-                screen.blit(btn_salir_orig, rect_salir.topleft)
+                screen.blit(current_anim["btn_salir_orig"], rect_salir.topleft)
             
         elif game_state == "config":
-            # Dibujar el panel
-            screen.blit(config, config_rect.topleft)
+            # Dibujar el panel (depende del idioma)
+            screen.blit(current_img["config"], config_rect.topleft)
+            
+            # Dibujar el contenido del panel (depende del idioma)
+            screen.blit(current_img["botones_config"], (576, 410.25))
 
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
+
+            # Dificultad: elige la imagen en base al estado
+            esp = esp_on if settings.language == "esp" else esp_off
+            eng = eng_on if settings.language == "eng" else eng_off
+
+            blit_hoverable(screen, esp, rect_esp, mouse_pos)
+            blit_hoverable(screen, eng, rect_eng, mouse_pos)
 
             # X
             if config_x_rect.collidepoint(mouse_pos):
