@@ -1,60 +1,65 @@
 import pygame, os, math, sys
+import settings
 from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Cargar imagenes ===
     bg_niv       = load_img("fondoniv.png", alpha=False)
-    nivel_selector = load_img("selector_nivel.png")  # Ventana azul selector
-    titulo_niv3 = load_img("tituloniv3.png")
-    btn_sencillo   = load_img("dificultad_sencillo.png")         # Botón fácil
-    btn_extremo    = load_img("dificultad_extremo.png")       # Botón difícil  
-    personaje1     = load_img("selec_pjizq.png")   # Personaje 1
-    personaje2     = load_img("selec_pjder.png")    # Personaje 2
-    btn_jugar      = load_img("play_jugar_N.png")                 # Botón play
+    btn_jugar      = load_img("play_jugar_N.png")
     nivel_x        = load_img("niv_x.png")
+    personaje1     = load_img("selec_pjizq.png")
+    personaje2     = load_img("selec_pjder.png")
+    personaje1_2   = load_img("selec_pjizq2.png")
+    personaje2_2   = load_img("selec_pjder2.png")
 
-    btn_sencillo2 = load_img("btn_sencillo2.png")
-    btn_extremo2  = load_img("btn_extremo2.png")
-    personaje1_2 = load_img("selec_pjizq2.png")
-    personaje2_2 = load_img("selec_pjder2.png")
+    # --- Diccionario para imágenes de idioma ---
+    btn_images = { "esp": {}, "eng": {} }
+
+    # Carga imágenes en Español
+    btn_images["esp"]["titulo_niv3"] = load_img("tituloniv3.png")
+    btn_images["esp"]["selector_nivel"] = load_img("selector_nivel.png")
+    btn_images["esp"]["btn_sencillo"] = load_img("dificultad_sencillo.png")
+    btn_images["esp"]["btn_extremo"] = load_img("dificultad_extremo.png")
+    btn_images["esp"]["btn_sencillo2"] = load_img("btn_sencillo2.png")
+    btn_images["esp"]["btn_extremo2"] = load_img("btn_extremo2.png")
+
+    # Carga tus nuevas imágenes en Inglés (Asumiendo nombres)
+    btn_images["eng"]["titulo_niv3"] = load_img("tituloniv3_eng.png")
+    btn_images["eng"]["selector_nivel"] = load_img("selector_nivel_eng.png")
+    btn_images["eng"]["btn_sencillo"] = load_img("dificultad_sencillo_eng.png")
+    btn_images["eng"]["btn_extremo"] = load_img("dificultad_extremo_eng.png")
+    btn_images["eng"]["btn_sencillo2"] = load_img("btn_sencillo2_eng.png")
+    btn_images["eng"]["btn_extremo2"] = load_img("btn_extremo2_eng.png")
 
     # === Escalar las imagenes ===
     bg_niv         = pygame.transform.scale(bg_niv, (3840, 1080))
-    titulo_niv3     = pygame.transform.scale(titulo_niv3, (1669.5, 250))
-
-    nivel_selector  = pygame.transform.scale(nivel_selector, (1061, 437))
-    btn_sencillo     = pygame.transform.scale(btn_sencillo, (276, 105.5))
-    btn_extremo     = pygame.transform.scale(btn_extremo, (276, 105.5))
-    personaje1      = pygame.transform.scale(personaje1, (276, 174.5))
-    personaje2      = pygame.transform.scale(personaje2, (276, 174.5))
     btn_jugar       = pygame.transform.scale(btn_jugar, (146.5, 146.5))
     nivel_x         = pygame.transform.scale(nivel_x, (48, 48))
-
-    btn_sencillo2 = pygame.transform.scale(btn_sencillo2, (276, 105.5))
-    btn_extremo2  = pygame.transform.scale(btn_extremo2, (276, 105.5))
+    personaje1      = pygame.transform.scale(personaje1, (276, 174.5))
+    personaje2      = pygame.transform.scale(personaje2, (276, 174.5))
     personaje1_2      = pygame.transform.scale(personaje1_2, (276, 174.5))
     personaje2_2      = pygame.transform.scale(personaje2_2, (276, 174.5))
 
+    for lang in ["esp", "eng"]:
+        btn_images[lang]["titulo_niv3"] = pygame.transform.scale(btn_images[lang]["titulo_niv3"], (1669.5, 250))
+        btn_images[lang]["selector_nivel"] = pygame.transform.scale(btn_images[lang]["selector_nivel"], (1061, 437))
+        btn_images[lang]["btn_sencillo"] = pygame.transform.scale(btn_images[lang]["btn_sencillo"], (276, 105.5))
+        btn_images[lang]["btn_extremo"] = pygame.transform.scale(btn_images[lang]["btn_extremo"], (276, 105.5))
+        btn_images[lang]["btn_sencillo2"] = pygame.transform.scale(btn_images[lang]["btn_sencillo2"], (276, 105.5))
+        btn_images[lang]["btn_extremo2"] = pygame.transform.scale(btn_images[lang]["btn_extremo2"], (276, 105.5))
+
     # === BOTONES ANIMADOS ===
-    btn_sencillo_orig, btn_sencillo_hover = make_hover_pair(btn_sencillo, 1.05)
-    btn_extremo_orig, btn_extremo_hover = make_hover_pair(btn_extremo, 1.05)
     btn_jugar_orig, btn_jugar_hover = make_hover_pair(btn_jugar, 1.05)
-    personaje1_orig, personaje1_hover = make_hover_pair(personaje1, 1.05)
-    personaje2_orig, personaje2_hover = make_hover_pair(personaje2, 1.05)
     nivel_x_orig, nivel_x_hover = make_hover_pair(nivel_x, 1.05)
 
     # === Definir rects de botones (hitboxes) ===
-    nivel_selector_rect = nivel_selector.get_rect(topleft=(429.5, 455))
-    rect_sencillo = btn_sencillo.get_rect(topleft=(710, 500))
-    rect_extremo = btn_extremo.get_rect(topleft=(1010, 500))
+    nivel_selector_rect = btn_images["esp"]["selector_nivel"].get_rect(topleft=(429.5, 455))
+    rect_sencillo = btn_images["esp"]["btn_sencillo"].get_rect(topleft=(710, 500))
+    rect_extremo = btn_images["esp"]["btn_extremo"].get_rect(topleft=(1010, 500))
     rect_personaje1 = personaje1.get_rect(topleft=(710, 650))
     rect_personaje2 = personaje2.get_rect(topleft=(1010, 650))
     rect_jugar = btn_jugar.get_rect(topleft=(1320, 590))
     nivel_x_rect = nivel_x.get_rect(topleft=(1412.5, 485))
-    rect_sencillo2 = btn_sencillo2.get_rect(topleft=(480, 330))
-    rect_extremo2 = btn_extremo2.get_rect(topleft=(680, 330))
-    rect_personaje1_2 = personaje1_2.get_rect(topleft=(480, 430))
-    rect_personaje2_2 = personaje2_2.get_rect(topleft=(680, 430))
 
     # === Offset Menu Niveles (movimiento del fondo menu niveles) ===
     bg_niv_width = bg_niv.get_width()
@@ -116,6 +121,9 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         return "niveles"
                         
         # === ZONA DE DIBUJO ===
+        current_lang = settings.language
+        current_img = btn_images[current_lang]
+
         if game_state == "selector":
             
             # Actualizar posicion del fondo
@@ -131,18 +139,18 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             menu_surface.fill((0, 0, 0))
 
             # Titulo
-            screen.blit(titulo_niv3, (125.25, 100))
+            screen.blit(current_img["titulo_niv3"], (125.25, 100))
 
             # Ventana azul del selector
-            screen.blit(nivel_selector, nivel_selector_rect.topleft)
+            screen.blit(current_img["selector_nivel"], nivel_selector_rect.topleft)
             screen.blit(nivel_x, nivel_x_rect.topleft)
 
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
 
             # Dificultad: elige la imagen en base al estado
-            sencillo_img = btn_sencillo2 if dificultad_seleccionada == "sencillo" else btn_sencillo
-            extremo_img  = btn_extremo2  if dificultad_seleccionada == "extremo" else btn_extremo
+            sencillo_img = current_img["btn_sencillo2"] if dificultad_seleccionada == "sencillo" else current_img["btn_sencillo"]
+            extremo_img  = current_img["btn_extremo2"]  if dificultad_seleccionada == "extremo" else current_img["btn_extremo"]
 
             blit_hoverable(screen, sencillo_img, rect_sencillo, mouse_pos)
             blit_hoverable(screen, extremo_img,  rect_extremo,  mouse_pos)
