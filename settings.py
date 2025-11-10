@@ -3,7 +3,7 @@ import pygame, math
 from pathlib import Path
 
 # === Variable Idioma ===
-lenguage = "esp" # esp/eng
+language = "esp" # esp/eng
 
 # === Colores ===
 BLACK = (0, 0, 0)

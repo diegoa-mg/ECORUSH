@@ -1,5 +1,6 @@
 import pygame, os, math, sys
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, draw_title_animated, make_hover_pair, blit_hoverable, resume_music, play_music, lenguage
+import settings
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, draw_title_animated, make_hover_pair, blit_hoverable, resume_music, play_music
 
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
@@ -14,6 +15,9 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Cargar imágenes ===
     bg_prin      = load_img("fondoprinci.png", alpha=False) # Se pone ya que no necesita transparencia
     titulo       = load_img("titulo.png")
+    botoninicio  = load_img("botoninicio.png")
+    botonsalir   = load_img("botonsalir.png")
+    tuto         = load_img("tuto.png")
     config_x     = load_img("config_x.png")
     esp_on       = load_img("esp_on.png")
     esp_off      = load_img("esp_off.png")
@@ -24,51 +28,63 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     btn_images = { "esp": {}, "eng": {} }
 
     # Carga imágenes en Español
-    btn_images["esp"]["config"] = load_img("botonconfig.png")
-    btn_images["esp"]["tuto"]   = load_img("botontuto.png")
-    config       = load_img("config.png")
-    tuto         = load_img("tuto.png")
-    botones_tuto = load_img("botones_tutorial.png")
-    botones_config = load_img("botonesconfig.png")
+    btn_images["esp"]["botonconfig"] = load_img("botonconfig.png")
+    btn_images["esp"]["botontuto"]   = load_img("botontuto.png")
+    btn_images["esp"]["config"]     = load_img("config.png")
+    btn_images["esp"]["botones_tuto"]   = load_img("botones_tutorial.png")
+    btn_images["esp"]["botones_config"] = load_img("botonesconfig.png")
 
     # Carga tus nuevas imágenes en Inglés   
-    btn_images["eng"]["config"] = load_img("botonconfig_eng.png")
-    btn_images["eng"]["tuto"]   = load_img("botontuto_eng.png")
+    btn_images["eng"]["botonconfig"] = load_img("botonconfig_eng.png")
+    btn_images["eng"]["botontuto"]   = load_img("botontuto_eng.png")
+    btn_images["eng"]["config"]   = load_img("config_eng.png")
+    btn_images["eng"]["botones_tuto"]   = load_img("botones_tutorial_eng.png")
+    btn_images["eng"]["botones_config"] = load_img("botonesconfig_eng.png")
 
     # === Escalar las imagenes ===
     bg_prin    = pygame.transform.scale(bg_prin, (3840, 1080))
     titulo       = pygame.transform.scale(titulo, (1669.5, 250))
     botoninicio  = pygame.transform.scale(botoninicio, (335, 333))
-    botonconfig  = pygame.transform.scale(botonconfig, (500, 123.5))
-    botontuto    = pygame.transform.scale(botontuto, (500, 123.5))
     botonsalir   = pygame.transform.scale(botonsalir, (175.5, 174))
-    config       = pygame.transform.scale(config, (1290, 733.5))
     config_x     = pygame.transform.scale(config_x, (48, 48.5))
     tuto         = pygame.transform.scale(tuto, (1290, 733.5))
-    botones_tuto = pygame.transform.scale(botones_tuto, (924, 482.5))
-    botones_config = pygame.transform.scale(botones_config, (768, 259.5))
     esp_on       = pygame.transform.scale(esp_on, (364, 131.5))
     esp_off      = pygame.transform.scale(esp_off, (364, 131.5))
     eng_on       = pygame.transform.scale(eng_on, (364, 131.5))
     eng_off      = pygame.transform.scale(eng_off, (364, 131.5))
 
+    for lang in ["esp", "eng"]:
+        btn_images[lang]["botonconfig"] = pygame.transform.scale(btn_images[lang]["botonconfig"], (500, 123.5))
+        btn_images[lang]["botontuto"]   = pygame.transform.scale(btn_images[lang]["botontuto"], (500, 123.5))
+        btn_images[lang]["config"] = pygame.transform.scale(btn_images[lang]["config"], (1290, 733.5))
+        btn_images[lang]["botones_tuto"] = pygame.transform.scale(btn_images[lang]["botones_tuto"], (924, 482.5))
+        btn_images[lang]["botones_config"] = pygame.transform.scale(btn_images[lang]["botones_config"], (768, 259.5))
+
     # === Animacion de botones ===
     botoninicio_orig, botoninicio_hover = make_hover_pair(botoninicio, 1.05)
-    botonconfig_orig, botonconfig_hover = make_hover_pair(botonconfig, 1.05)
-    botontuto_orig,  botontuto_hover  = make_hover_pair(botontuto,  1.05)
     botonsalir_orig, botonsalir_hover = make_hover_pair(botonsalir, 1.05)
     config_x_orig, config_x_hover = make_hover_pair(config_x, 1.05)
-    esp_off_orig, esp_off_hover = make_hover_pair(esp_off, 1.05)
-    eng_off_orig, eng_off_hover = make_hover_pair(eng_off, 1.05) 
+
+    # Diccionario para guardar las animaciones (orig, hover)
+    btn_anim = { "esp": {}, "eng": {} } 
+
+    # Anima las imágenes que SÍ cambian de idioma
+    for lang in ["esp", "eng"]:
+        btn_anim[lang]["botonconfig_orig"], btn_anim[lang]["botonconfig_hover"] = make_hover_pair(btn_images[lang]["botonconfig"], 1.05)
+        btn_anim[lang]["botontuto_orig"],   btn_anim[lang]["botontuto_hover"]   = make_hover_pair(btn_images[lang]["botontuto"], 1.05) 
 
     # === Definir rects de botones (hitboxes) ===
     rect_inicio   = botoninicio.get_rect(topleft=(792.5, 455))
-    rect_config   = botonconfig.get_rect(topleft=(242.5, 555))
-    rect_tuto     = botontuto.get_rect(topleft=(1177.5, 555))
     rect_salir    = botonsalir.get_rect(topleft=(30, 876))
-    config_rect   = config.get_rect(center=(WIDTH//2, HEIGHT//2))
-    config_x_rect = config_x.get_rect(topright=(config_rect.right-20, config_rect.top+20))
     tuto_rect     = tuto.get_rect(center=(WIDTH//2, HEIGHT//2))
+
+    # Rects de botones que SÍ cambian (usamos "esp" como referencia)
+    rect_config   = btn_images["esp"]["botonconfig"].get_rect(topleft=(242.5, 555))
+    rect_tuto     = btn_images["esp"]["botontuto"].get_rect(topleft=(1177.5, 555))
+    config_rect   = btn_images["esp"]["config"].get_rect(center=(WIDTH//2, HEIGHT//2))
+
+    # Rects
+    config_x_rect = config_x.get_rect(topright=(config_rect.right-20, config_rect.top+20))
     rect_esp   = esp_on.get_rect(topleft=(576, 680))
     rect_eng   = eng_on.get_rect(topleft=(980, 680))
 
@@ -117,10 +133,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         print("Cerrando configuración.")
                     
                     elif rect_esp.collidepoint(event.pos):
-                        lenguage = "esp"
+                        settings.language = "esp"
                         print("Idioma: Español")
                     elif rect_eng.collidepoint(event.pos):
-                        lenguage = "eng"
+                        settings.language = "eng"
                         print("Idioma: Inglés")
 
                 elif game_state == "tutorial":
@@ -141,6 +157,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     print("Cerrando tutorial.") 
                         
         # === ZONA DE DIBUJO ===
+        current_lang = settings.language
+        current_anim = btn_anim[current_lang]
+        current_img = btn_images[current_lang]
+
         if game_state == "menu":
 
             # Actualizar posicion del fondo
@@ -172,19 +192,19 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             else:
                 screen.blit(botoninicio_orig, rect_inicio.topleft)
 
-            # BOTON CONFIGURACIÓN
+            # BOTON CONFIGURACION
             if rect_config.collidepoint(mouse_pos):
-                r = botonconfig_hover.get_rect(center=rect_config.center)
-                screen.blit(botonconfig_hover, r.topleft)
+                r = current_anim["botonconfig_hover"].get_rect(center=rect_config.center)
+                screen.blit(current_anim["botonconfig_hover"], r.topleft)
             else:
-                screen.blit(botonconfig_orig, rect_config.topleft)
+                screen.blit(current_anim["botonconfig_orig"], rect_config.topleft)
 
             # BOTON TUTORIAL
             if rect_tuto.collidepoint(mouse_pos):
-                r = botontuto_hover.get_rect(center=rect_tuto.center)
-                screen.blit(botontuto_hover, r.topleft)
+                r = current_anim["botontuto_hover"].get_rect(center=rect_tuto.center)
+                screen.blit(current_anim["botontuto_hover"], r.topleft)
             else:
-                screen.blit(botontuto_orig, rect_tuto.topleft)
+                screen.blit(current_anim["botontuto_orig"], rect_tuto.topleft)
 
             # BOTON SALIR
             if rect_salir.collidepoint(mouse_pos):
@@ -208,24 +228,26 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             draw_title_animated(menu_surface, titulo, title_center, mode="bob", t_ms=t_ms, amp=6)
 
             menu_surface.blit(botoninicio, rect_inicio.topleft)
-            menu_surface.blit(botonconfig, rect_config.topleft)
-            menu_surface.blit(botontuto,   rect_tuto.topleft)
+            menu_surface.blit(current_img["botonconfig"], rect_config.topleft)
+            menu_surface.blit(current_img["botontuto"],   rect_tuto.topleft)
             menu_surface.blit(botonsalir,  rect_salir.topleft)
 
             blurred = make_blur(menu_surface, factor=0.40, passes=2)
             screen.blit(blurred, (0, 0))
             menu_surface.fill((0, 0, 0))  # limpiar para el próximo frame
 
-            # Dibujar el panel
-            screen.blit(config, config_rect.topleft)
-            screen.blit(botones_config, (576, 410.25))
+            # Dibujar el panel (depende del idioma)
+            screen.blit(current_img["config"], config_rect.topleft)
+            
+            # Dibujar el contenido del panel (depende del idioma)
+            screen.blit(current_img["botones_config"], (576, 410.25))
 
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
 
             # Dificultad: elige la imagen en base al estado
-            esp = esp_on if lenguage == "esp" else esp_off
-            eng = eng_on if lenguage == "eng" else eng_off
+            esp = esp_on if settings.language == "esp" else esp_off
+            eng = eng_on if settings.language == "eng" else eng_off
 
             blit_hoverable(screen, esp, rect_esp, mouse_pos)
             blit_hoverable(screen, eng, rect_eng, mouse_pos)
@@ -253,8 +275,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             draw_title_animated(menu_surface, titulo, title_center, mode="bob", t_ms=t_ms, amp=6)
             
             menu_surface.blit(botoninicio, rect_inicio.topleft)
-            menu_surface.blit(botonconfig, rect_config.topleft)
-            menu_surface.blit(botontuto,   rect_tuto.topleft)
+            menu_surface.blit(current_img["botonconfig"], rect_config.topleft)
+            menu_surface.blit(current_img["botontuto"],   rect_tuto.topleft)
             menu_surface.blit(botonsalir,  rect_salir.topleft)
 
             blurred = make_blur(menu_surface, factor=0.40, passes=2)
@@ -263,6 +285,9 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
             # Dibujar el panel
             screen.blit(tuto, tuto_rect.topleft)
+
+            # Dibujar el contenido del panel (depende del idioma)
+            screen.blit(current_img["botones_tuto"], (485, 350))
             
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
@@ -273,8 +298,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 screen.blit(config_x_hover, r.topleft)
             else:
                 screen.blit(config_x_orig, config_x_rect.topleft)
-            
-            screen.blit(botones_tuto, (485, 350))
 
         pygame.display.flip()
     

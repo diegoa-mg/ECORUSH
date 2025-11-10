@@ -1,5 +1,6 @@
 import pygame, os, math, sys
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, WHITE, BLACK, play_music, pause_music, resume_music
+import settings
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, play_music, pause_music, resume_music
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Música de menú niveles ===
@@ -10,16 +11,29 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         pass
     if not pygame.mixer.music.get_busy():
         play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
+
     # === Cargar imágenes ===
     bg_niv       = load_img("fondoniv.png", alpha=False)
-    titulo_niveles = load_img("tituloniveles.png")
-    boton_nivel1   = load_img("nivel_uno_menu.png")    
-    boton_nivel2   = load_img("nivel_dos_menu.png")    
-    boton_nivel3   = load_img("nivel_tres_menu.png")   
     boton_volver   = load_img("flecha_para_regresar.png")    
     boton_config_niv = load_img("configuracion_niveles.png")
-    config       = load_img("config.png")
     config_x     = load_img("config_x.png")
+
+    # --- Diccionario para imágenes de idioma ---
+    btn_images = { "esp": {}, "eng": {} }
+
+    # Carga imágenes en Español
+    btn_images["esp"]["titulo_niveles"] = load_img("tituloniveles.png")
+    btn_images["esp"]["boton_nivel1"] = load_img("nivel_uno_menu.png")
+    btn_images["esp"]["boton_nivel2"] = load_img("nivel_dos_menu.png")
+    btn_images["esp"]["boton_nivel3"] = load_img("nivel_tres_menu.png")
+    btn_images["eng"]["config"] = load_img("config.png")
+
+    # Carga tus nuevas imágenes en Inglés
+    btn_images["eng"]["titulo_niveles"] = load_img("tituloniveles_eng.png")
+    btn_images["eng"]["boton_nivel1"] = load_img("nivel_uno_menu_eng.png")
+    btn_images["eng"]["boton_nivel2"] = load_img("nivel_dos_menu_eng.png")
+    btn_images["eng"]["boton_nivel3"] = load_img("nivel_tres_menu_eng.png")
+    btn_images["eng"]["config"] = load_img("config_eng.png")
 
     # === Escalar las imagenes ===
     bg_niv         = pygame.transform.scale(bg_niv, (3840, 1080))
