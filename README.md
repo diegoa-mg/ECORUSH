@@ -6,7 +6,8 @@
 
 <p align="center">
   ECORUSH! es un videojuego educativo en 2D con estética pixel art, desarrollado en Python y Pygame. Este proyecto nace como una iniciativa académica para la Facultad de Ingeniería Electromecánica de la Universidad de Colima, con el fin de abordar de manera interactiva el Objetivo de Desarrollo Sostenible 13 (ODS 13): Acción por el Clima.
-
+</p>
+<p align="center">
   El juego está diseñado para concientizar a jugadores jóvenes (6-12 años) sobre la crisis climática, demostrando cómo las acciones diarias de consumo de energía impactan directamente en el medio ambiente.
 </p>
 
