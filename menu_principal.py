@@ -68,7 +68,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Diccionario para guardar las animaciones (orig, hover)
     btn_anim = { "esp": {}, "eng": {} } 
 
-    # Anima las imágenes que SÍ cambian de idioma
+    # Anima las imágenes que cambian de idioma
     for lang in ["esp", "eng"]:
         btn_anim[lang]["botonconfig_orig"], btn_anim[lang]["botonconfig_hover"] = make_hover_pair(btn_images[lang]["botonconfig"], 1.05)
         btn_anim[lang]["botontuto_orig"],   btn_anim[lang]["botontuto_hover"]   = make_hover_pair(btn_images[lang]["botontuto"], 1.05) 
@@ -78,7 +78,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     rect_salir    = botonsalir.get_rect(topleft=(30, 876))
     tuto_rect     = tuto.get_rect(center=(WIDTH//2, HEIGHT//2))
 
-    # Rects de botones que SÍ cambian (usamos "esp" como referencia)
+    # Rects de botones que cambian de idioma (usamos "esp" como referencia)
     rect_config   = btn_images["esp"]["botonconfig"].get_rect(topleft=(242.5, 555))
     rect_tuto     = btn_images["esp"]["botontuto"].get_rect(topleft=(1177.5, 555))
     config_rect   = btn_images["esp"]["config"].get_rect(center=(WIDTH//2, HEIGHT//2))
@@ -161,6 +161,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         current_anim = btn_anim[current_lang]
         current_img = btn_images[current_lang]
 
+        # MENU
         if game_state == "menu":
 
             # Actualizar posicion del fondo
@@ -213,6 +214,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             else:
                 screen.blit(botonsalir_orig, rect_salir.topleft)
 
+        # CONFIGURACION
         elif game_state == "config":
             bg_x -= scroll_speed
             if bg_x <= -bg_width:
@@ -259,6 +261,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             else:
                 screen.blit(config_x_orig, config_x_rect.topleft)
 
+        # TUTORIAL
         elif game_state == "tutorial":
             bg_x -= scroll_speed
             if bg_x <= -bg_width:
