@@ -128,7 +128,7 @@ class AnimacionPersonaje:
         # Redimensionar todas las imágenes a un tamaño consistente
         for direccion, frames in self.animaciones.items():
             for i, frame in enumerate(frames):
-                self.animaciones[direccion][i] = pygame.transform.scale(frame, (40,40))
+                self.animaciones[direccion][i] = pygame.transform.scale(frame, (120,120))
     
     def actualizar(self, direccion, esta_moviendose, corriendo=False):
         """

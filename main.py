@@ -11,7 +11,6 @@ import nivel1
 # import nivel2_extremo
 # import nivel3_sencillo
 # import nivel3_extremo
-# prueba
 
 def main():
     pygame.init()
