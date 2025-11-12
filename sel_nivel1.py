@@ -1,6 +1,6 @@
 import pygame, os, math, sys
 import settings
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, resume_music, play_music, pause_music, set_next_music
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, resume_music, play_music, pause_music, set_next_music, set_selected_character
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Música en selector de nivel 1: reanuda o inicia si no está activa ===
@@ -111,12 +111,27 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         print("Dificultad: Extremo")
                     elif rect_personaje1.collidepoint(event.pos):
                         personaje_seleccionado = 1
+                        # Establece personaje global para uso en nivel1
+                        try:
+                            set_selected_character("niño")
+                        except Exception:
+                            pass
                         print("Personaje 1 seleccionado")
                     elif rect_personaje2.collidepoint(event.pos):
                         personaje_seleccionado = 2
+                        # Establece personaje global para uso en nivel1
+                        try:
+                            set_selected_character("niña")
+                        except Exception:
+                            pass
                         print("Personaje 2 seleccionado")
                     elif rect_jugar.collidepoint(event.pos):
                         print(f"Iniciando Nivel {nivel_seleccionado} - Dificultad: {dificultad_seleccionada} - Personaje: {personaje_seleccionado}")
+                        # Asegura que el personaje seleccionado se aplique antes de entrar al nivel
+                        try:
+                            set_selected_character("niña" if personaje_seleccionado == 2 else "niño")
+                        except Exception:
+                            pass
                         # Solicita música del nivel según dificultad
                         if dificultad_seleccionada == "sencillo" and nivel_seleccionado == 1:
                             set_next_music("musica_nivel_facil.mp3")

@@ -8,10 +8,7 @@ POSICIONES_OBJETOS = {
     "airedeventanaencendido": (1200, 475),
     "lamparaencendida": (1200, 614),
     "refrigerador encendido": (865, 25),
-    "tarjallenadeagua": (400, 30),
-    "pcencendida": (925, 225),
-    "ventiladorencendido": (280, 240),
-    "grifoprendido":(943, 20)
+
     # Agrega más si lo deseas:
     # "ventilador encendido": (600, 360),
 }

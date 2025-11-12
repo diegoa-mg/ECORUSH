@@ -5,6 +5,22 @@ from pathlib import Path
 # === Variable Idioma ===
 language = "esp" # esp/eng
 
+# === Personaje seleccionado ===
+# Valores posibles: "niño" | "niña"
+selected_character = "niño"
+
+def set_selected_character(name: str):
+    global selected_character
+    name = (name or "").strip().lower()
+    if name in ("niño", "nino", "niña", "nina"):
+        # normalizar a formas con tilde
+        selected_character = "niña" if name in ("niña", "nina") else "niño"
+    else:
+        selected_character = "niño"
+
+def get_selected_character() -> str:
+    return selected_character
+
 # === Colores ===
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

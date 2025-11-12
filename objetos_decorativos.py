@@ -19,19 +19,7 @@ TAMANOS_HITBOX_DECORATIVOS = {
 
 POSICIONES_DECORATIVOS = {
     # Coordenadas por defecto (modifícalas a tu gusto)
-    "alfombra1": (580, 300),
-    "cajonera1": (7, 235),
-    "espejo": (920, 475),
-    "baño": (100,10),
-    # Añadidos uno por uno desde assets/objetos_decorativos
-    "baño": (40, 20),  # nombre con tilde combinada en el archivo
-    "baño2": (1130, 20),
-    "buro": (1200, 235),
-    "carro": (125, 560),  # incluye espacio al final en el archivo
-    "mesadefin":(1200, 640),
-    "mesadefin":(925, 258),
-    "mesadefin2":(1200, 650),
-    "cama":(10,355)
+
 }
 
 

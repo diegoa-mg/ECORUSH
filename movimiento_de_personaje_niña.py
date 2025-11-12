@@ -2,10 +2,10 @@ import pygame
 from pathlib import Path
 import re
 
-class AnimacionPersonaje:
+class AnimacionPersonajeNina:
     def __init__(self, assets_path):
         """
-        Clase para manejar las animaciones del personaje
+        Clase para manejar las animaciones de la niña
         assets_path: ruta a la carpeta de assets
         """
         self.assets_path = Path(assets_path)
@@ -13,21 +13,19 @@ class AnimacionPersonaje:
         self.direccion_actual = "idle"
         self.frame_actual = 0
         self.tiempo_ultimo_frame = 0
-        self.velocidad_animacion = 200  # milisegundos entre frames (más lento para mejor fluidez)
-        
+        self.velocidad_animacion = 200  # milisegundos entre frames
+
         # Cargar todas las animaciones
         self._cargar_animaciones()
-        
+
     def _cargar_animaciones(self):
-        """Carga todas las imágenes de animación de forma tolerante a cambios de nombre"""
-        # Preferir exclusivamente los frames del niño si existen
-        movimiento_nino = self.assets_path / "movimiento_niño"
+        """Carga todas las imágenes de animación de la niña, tolerante a nombres y subcarpetas"""
+        movimiento_nina = self.assets_path / "movimiento_niña"
         movimiento_legacy = self.assets_path / "movimiento de personaje"
 
-        if movimiento_nino.exists():
-            movimiento_path = movimiento_nino
+        if movimiento_nina.exists():
+            movimiento_path = movimiento_nina
         else:
-            # Fallback a carpeta legacy
             movimiento_path = movimiento_legacy
 
         def natural_key(s: str):
@@ -42,7 +40,7 @@ class AnimacionPersonaje:
             "otros": [],
         }
 
-        # Palabras clave ampliadas (incluye nombres exactos que indicas)
+        # Palabras clave ampliadas (incluye nombres exactos solicitados)
         claves = {
             "arriba": {"arriba", "up", "atras", "espalda", "frames_atras"},
             "derecha": {"derecha", "derecho", "right", "frame_lado_derecho"},
@@ -71,8 +69,17 @@ class AnimacionPersonaje:
             if not asignado:
                 grupos["otros"].append(archivo)
 
-        # Orden natural por número si existe
+        def dedupe(paths):
+            vistos = set()
+            res = []
+            for p in paths:
+                if p not in vistos:
+                    res.append(p)
+                    vistos.add(p)
+            return res
+
         for dir_key in grupos:
+            grupos[dir_key] = dedupe(grupos[dir_key])
             grupos[dir_key].sort(key=lambda p: natural_key(p.stem))
 
         def cargar_lista(rutas):
@@ -84,7 +91,8 @@ class AnimacionPersonaje:
                     print(f"[Animación] No se encontró: {ruta}")
             return frames
 
-        # Cargar usando agrupación; si algún grupo vacío, intentar con nombres antiguos
+        # Cargar usando agrupación; si algún grupo vacío, intentar con nombres antiguos.
+        # 'otros' solo se usa como fallback para 'abajo' para evitar duplicados.
         self.animaciones["arriba"] = cargar_lista(grupos["arriba"]) or cargar_lista([
             movimiento_path / "frame1.png",
             movimiento_path / "frame2.png",
@@ -102,7 +110,6 @@ class AnimacionPersonaje:
             movimiento_path / "frimelizquierdo3.png",
             movimiento_path / "frimelizquierdo4.png",
         ])
-        # Para 'abajo', usar 'otros' como fallback adicional por si los nombres no traen keywords
         self.animaciones["abajo"] = cargar_lista(grupos["abajo"]) or cargar_lista(grupos["otros"]) or cargar_lista([
             movimiento_path / "frameadelante1.png",
             movimiento_path / "frameadelante2.png",
@@ -124,12 +131,12 @@ class AnimacionPersonaje:
         else:
             idle_frame = self.animaciones["abajo"][0] if self.animaciones["abajo"] else self.animaciones["arriba"][0]
             self.animaciones["idle"] = [idle_frame]
-        
+
         # Redimensionar todas las imágenes a un tamaño consistente
         for direccion, frames in self.animaciones.items():
             for i, frame in enumerate(frames):
                 self.animaciones[direccion][i] = pygame.transform.scale(frame, (40,40))
-    
+
     def actualizar(self, direccion, esta_moviendose, corriendo=False):
         """
         Actualiza la animación basada en la dirección y si se está moviendo
@@ -138,38 +145,38 @@ class AnimacionPersonaje:
         corriendo: True si el personaje está corriendo (Shift presionado)
         """
         tiempo_actual = pygame.time.get_ticks()
-        
+
         # Ajustar velocidad de animación según si está corriendo
         velocidad_actual = self.velocidad_animacion // 2 if corriendo else self.velocidad_animacion
-        
+
         # Determinar la dirección de animación
         if esta_moviendose and direccion in self.animaciones:
             nueva_direccion = direccion
         else:
             nueva_direccion = "idle"
-        
+
         # Si cambió la dirección, reiniciar la animación
         if nueva_direccion != self.direccion_actual:
             self.direccion_actual = nueva_direccion
             self.frame_actual = 0
             self.tiempo_ultimo_frame = tiempo_actual
-        
+
         # Avanzar al siguiente frame si ha pasado suficiente tiempo
         if tiempo_actual - self.tiempo_ultimo_frame >= velocidad_actual:
             self.frame_actual = (self.frame_actual + 1) % len(self.animaciones[self.direccion_actual])
             self.tiempo_ultimo_frame = tiempo_actual
-    
+
     def obtener_frame_actual(self):
         """Retorna la imagen del frame actual"""
         return self.animaciones[self.direccion_actual][self.frame_actual]
-    
+
     def obtener_direccion_movimiento(self, teclas_presionadas):
         """
         Determina la dirección del movimiento basada en las teclas presionadas
         Retorna: (direccion, esta_moviendose)
         """
         from pygame.locals import K_UP, K_DOWN, K_LEFT, K_RIGHT, K_w, K_a, K_s, K_d
-        
+
         # Verificar si se está moviendo
         esta_moviendose = any([
             teclas_presionadas[K_UP] or teclas_presionadas[K_w],
@@ -177,7 +184,7 @@ class AnimacionPersonaje:
             teclas_presionadas[K_LEFT] or teclas_presionadas[K_a],
             teclas_presionadas[K_RIGHT] or teclas_presionadas[K_d]
         ])
-        
+
         # Determinar dirección prioritaria (si se presionan múltiples teclas)
         if teclas_presionadas[K_UP] or teclas_presionadas[K_w]:
             direccion = "arriba"
@@ -189,5 +196,5 @@ class AnimacionPersonaje:
             direccion = "derecha"
         else:
             direccion = "idle"
-        
+
         return direccion, esta_moviendose

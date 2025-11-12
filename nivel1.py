@@ -3,6 +3,7 @@ import settings
 from pathlib import Path
 from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music
 from movimiento_de_personaje import AnimacionPersonaje
+from movimiento_de_personaje_niña import AnimacionPersonajeNina
 from objetos_interactuables import GestorObjetosInteractuables
 from objetos_decorativos import GestorObjetosDecorativos
 
@@ -25,7 +26,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Cargar imagenes ===
     # Juego
     img_boton_E         = load_img("E_personaje.png")
-    MAPA                = load_img("mapafinal.png")
+    # MAPA dinámico: usaremos habitaciones desde assets/plano_mapa1
     img_temporizador    = load_img("temporizador.png")
     img_advertencia     = load_img("advertencia_objetos.png")
     barra_energia       = load_img("barra_energia.png")
@@ -64,7 +65,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # === Escalar imagenes ===
     # Juego
-    MAPA                = pygame.transform.scale(MAPA, (WIDTH, HEIGHT))
+    # MAPA se gestiona dinámicamente más abajo (MAPA_SURF)
     img_boton_E         = pygame.transform.scale(img_boton_E, (100, 100))
     img_temporizador    = pygame.transform.scale(img_temporizador, (288, 108))
     img_advertencia     = pygame.transform.scale(img_advertencia, (150, 150))
@@ -131,23 +132,105 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     FONT_PATH = Path(__file__).parent / "assets" / "fonts" / "horizon.otf"
     font = pygame.font.Font(str(FONT_PATH), 40)  # tamaño 
 
-    # Crear una máscara de colisión desde el mapa original
-    # Crear superficie base sin transparencia
-    mapa_colision = MAPA.convert()
+    # === Gestor de habitaciones con portales (plano_mapa1) ===
+    plano_dir = Path(__file__).parent / "assets" / "plano_mapa1"
 
-    MASK_COLOR = (0, 0, 0)
-    THRESHOLD = 40  # tolerancia
+    # Habitaciones disponibles (coinciden con archivos de la carpeta)
+    ROOM_ENTRADA = "entrada_nivel1.png"
+    ROOM_SALA    = "sala_nivel1.png"
+    ROOM_COCINA  = "cocina_nivel1.png"
+    ROOM_GARAJE  = "garaje_nivel1.png"
+    ROOM_CUARTO1 = "cuarto1_nivel1.png"
+    ROOM_CUARTO2 = "cuarto2_nivel1.png"
 
-    # Crear una máscara vacía
-    MAPA_MASK = pygame.Mask((WIDTH, HEIGHT))
+    def cargar_habitacion(nombre_archivo: str) -> pygame.Surface:
+        ruta = plano_dir / nombre_archivo
+        try:
+            surf = pygame.image.load(str(ruta)).convert()  # fondos sin alpha
+        except Exception as e:
+            print(f"[Mapa] No se pudo cargar '{nombre_archivo}': {e}. Usando fondo negro.")
+            surf = pygame.Surface((WIDTH, HEIGHT)).convert()
+            surf.fill((0, 0, 0))
+        return pygame.transform.scale(surf, (WIDTH, HEIGHT))
 
-    # Rellenar la máscara donde hay negro (o casi negro)
-    for y in range(HEIGHT):
-        for x in range(WIDTH):
-            color = mapa_colision.get_at((x, y))
-            # Si los tres canales son menores que el umbral => negro
-            if color[0] < THRESHOLD and color[1] < THRESHOLD and color[2] < THRESHOLD:
-                MAPA_MASK.set_at((x, y), 1)
+    def construir_mask(surf: pygame.Surface) -> pygame.Mask:
+        THRESHOLD = 40  # tolerancia a casi negro
+        mask = pygame.Mask((WIDTH, HEIGHT))
+        # Recorremos con paso para mejorar rendimiento en mapas grandes
+        for y in range(0, HEIGHT):
+            for x in range(0, WIDTH):
+                color = surf.get_at((x, y))
+                if color[0] < THRESHOLD and color[1] < THRESHOLD and color[2] < THRESHOLD:
+                    mask.set_at((x, y), 1)
+        return mask
+
+    # Estado actual de habitación
+    current_room = ROOM_ENTRADA  # inicia en entrada para seguir el plano
+    MAPA_SURF = cargar_habitacion(current_room)
+    MAPA_MASK = construir_mask(MAPA_SURF)
+
+    # Definición de portales por habitación con rectángulos aproximados
+    # Los rects están pensados para 1920x1080 y pueden ajustarse luego.
+    room_portals: dict[str, list[dict]] = {
+        ROOM_ENTRADA: [
+            {"rect": pygame.Rect(550, 3, 800, 60), "to": ROOM_SALA,    "spawn": (960, 900)},  # arriba → sala
+            {"rect": pygame.Rect(60, 540, 80, 200),   "to": ROOM_GARAJE,  "spawn": (1700, 540)}, # izquierda → garaje
+            {"rect": pygame.Rect(1780, 540, 80, 200), "to": ROOM_COCINA,  "spawn": (120, 540)},  # derecha → cocina
+        ],
+        ROOM_SALA: [
+            {"rect": pygame.Rect(860, 980, 200, 80),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
+            {"rect": pygame.Rect(40, 540, 80, 200),   "to": ROOM_CUARTO1, "spawn": (1700, 540)}, # izquierda → cuarto1
+            {"rect": pygame.Rect(1800, 540, 80, 200), "to": ROOM_CUARTO2, "spawn": (120, 540)},  # derecha → cuarto2
+        ],
+        ROOM_GARAJE: [
+            {"rect": pygame.Rect(1800, 540, 80, 200), "to": ROOM_ENTRADA, "spawn": (160, 540)},  # derecha → entrada
+        ],
+        ROOM_COCINA: [
+            {"rect": pygame.Rect(40, 540, 80, 200),   "to": ROOM_ENTRADA, "spawn": (1760, 540)}, # izquierda → entrada
+        ],
+        ROOM_CUARTO1: [
+            {"rect": pygame.Rect(1800, 540, 80, 200), "to": ROOM_SALA,    "spawn": (160, 540)},  # derecha → sala
+        ],
+        ROOM_CUARTO2: [
+            {"rect": pygame.Rect(40, 540, 80, 200),   "to": ROOM_SALA,    "spawn": (1760, 540)}, # izquierda → sala
+        ],
+    }
+
+    # Mostrar visualmente los portales en rojo (debug).
+    SHOW_PORTALS = True
+
+    def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
+        if not portals:
+            return
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        for p in portals:
+            r = p["rect"]
+            # Relleno rojo semitransparente + borde rojo más intenso
+            pygame.draw.rect(overlay, (255, 0, 0, 90), r)
+            pygame.draw.rect(overlay, (255, 0, 0, 180), r, 3)
+        screen.blit(overlay, (0, 0))
+
+    def transition_to(room_name: str, spawn_pos: tuple[int, int], player_obj: pygame.sprite.Sprite):
+        nonlocal current_room, MAPA_SURF, MAPA_MASK
+        try:
+            settings.fade_to_black(screen, duration_ms=120)
+        except Exception:
+            pass
+        current_room = room_name
+        MAPA_SURF = cargar_habitacion(current_room)
+        MAPA_MASK = construir_mask(MAPA_SURF)
+        player_obj.rect.center = spawn_pos
+        try:
+            settings.fade_from_black(screen, duration_ms=120)
+        except Exception:
+            pass
+
+    def check_portals_and_transition(player_obj: pygame.sprite.Sprite):
+        portals = room_portals.get(current_room, [])
+        for p in portals:
+            if player_obj.rect.colliderect(p["rect"]):
+                transition_to(p["to"], p["spawn"], player_obj)
+                break
         
     # Función para verificar si una posición colisiona con áreas negras o el estante
     def colisiona_con_negro(rect):
@@ -216,7 +299,16 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             super().__init__()
             # Inicializar animaciones
             assets_path = Path(__file__).parent / "assets"
-            self.animacion = AnimacionPersonaje(assets_path)
+            # Elegir animación según personaje seleccionado
+            try:
+                personaje = getattr(settings, "selected_character", "niño")
+            except Exception:
+                personaje = "niño"
+
+            if personaje == "niña":
+                self.animacion = AnimacionPersonajeNina(assets_path)
+            else:
+                self.animacion = AnimacionPersonaje(assets_path)
             
             # Usar el primer frame como superficie inicial
             self.surf = self.animacion.obtener_frame_actual()
@@ -303,6 +395,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             self.surf = self.animacion.obtener_frame_actual()
 
             self.rect.clamp_ip(screen.get_rect())  # no salir de pantalla
+            # Verificar transición de mapa por portales
+            check_portals_and_transition(self)
 
             # Drenaje de energía según movimiento
             is_moving = any(pressed_keys[k] for k in (K_UP, K_DOWN, K_LEFT, K_RIGHT, K_w, K_s, K_a, K_d))
@@ -461,7 +555,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         current_img = btn_images[current_lang]
 
         if game_state == "juego":
-            screen.blit(MAPA, (0, 0))  # dibuja el mapa de fondo
+            screen.blit(MAPA_SURF, (0, 0))  # dibuja el mapa dinámico de fondo
+
+            # Dibuja overlay de portales (en rojo) si está habilitado
+            if SHOW_PORTALS:
+                draw_portals_overlay(screen, room_portals.get(current_room, []))
 
             # Dibujar decorativos (muebles, alfombras, etc.)
             gestor_decorativos.dibujar_todos(screen)
