@@ -231,47 +231,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             if player_obj.rect.colliderect(p["rect"]):
                 transition_to(p["to"], p["spawn"], player_obj)
                 break
-        
-    # Función para verificar si una posición colisiona con áreas negras o el estante
-    def colisiona_con_negro(rect):
-        # Verificar los cuatro puntos de las esquinas del rectángulo
-        puntos_a_verificar = [
-            (rect.left, rect.top),
-            (rect.right, rect.top),
-            (rect.left, rect.bottom),
-            (rect.right, rect.bottom),
-            (rect.centerx, rect.centery)
-        ]
-        
-        for x, y in puntos_a_verificar:
-            if 0 <= x < WIDTH and 0 <= y < HEIGHT:
-                if MAPA_MASK.get_at((x, y)):
-                    return True
-        return False
-
-    def choca_con_mapa(rect):
-        # Recorre el contorno del rect en pasos pequeños
-        step = 2
-        # lados horizontales
-        for x in range(rect.left, rect.right, step):
-            y1, y2 = rect.top, rect.bottom-1
-            if 0 <= x < WIDTH and 0 <= y1 < HEIGHT and MAPA_MASK.get_at((x, y1)): return True
-            if 0 <= x < WIDTH and 0 <= y2 < HEIGHT and MAPA_MASK.get_at((x, y2)): return True
-        # lados verticales
-        for y in range(rect.top, rect.bottom, step):
-            x1, x2 = rect.left, rect.right-1
-            if 0 <= x1 < WIDTH and 0 <= y < HEIGHT and MAPA_MASK.get_at((x1, y)): return True
-            if 0 <= x2 < WIDTH and 0 <= y < HEIGHT and MAPA_MASK.get_at((x2, y)): return True
-        return False
-    
-    def debug_dibujar_mask(screen, MAPA_MASK):
-        """Dibuja en rojo las zonas detectadas como colisión (paredes negras)."""
-        debug_surface = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
-        for y in range(HEIGHT):
-            for x in range(WIDTH):
-                if MAPA_MASK.get_at((x, y)):
-                    debug_surface.set_at((x, y), (255, 0, 0, 80))  # rojo semitransparente
-        screen.blit(debug_surface, (0, 0))
 
     def colisiona_con_obstaculo(rect):
         # Colisión con paredes del mapa (negras)
@@ -346,46 +305,47 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             
             # Movimiento normal
             if pressed_keys[K_UP] or pressed_keys[K_w]: 
-                self.rect.move_ip(0, -5)
+                self.rect.move_ip(0, -3)
                 if colisiona_con_obstaculo(self.rect):
                     self.rect = old_rect
                     
-            if pressed_keys[K_DOWN] or pressed_keys[K_s]: 
-                self.rect.move_ip(0, 5)
+            elif pressed_keys[K_DOWN] or pressed_keys[K_s]: 
+                self.rect.move_ip(0, 3)
                 if colisiona_con_obstaculo(self.rect):
                     self.rect = old_rect
                     
-            if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
-                self.rect.move_ip(-5, 0)
-                if colisiona_con_obstaculo(self.rect):
-                    self.rect = old_rect
+            else:
+                if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
+                    self.rect.move_ip(-3, 0)
+                    if colisiona_con_obstaculo(self.rect):
+                        self.rect = old_rect
                     
-            if pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
-                self.rect.move_ip(5, 0)
-                if colisiona_con_obstaculo(self.rect):
-                    self.rect = old_rect
+                elif pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
+                    self.rect.move_ip(3, 0)
+                    if colisiona_con_obstaculo(self.rect):
+                        self.rect = old_rect
 
             # Movimiento rápido con Shift
             if pressed_keys[K_LSHIFT]:  # correr más rápido
                 old_rect = self.rect.copy()
 
                 if pressed_keys[K_UP] or pressed_keys[K_w]: 
-                    self.rect.move_ip(0, -5.5)
+                    self.rect.move_ip(0, -3.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
 
                 if pressed_keys[K_DOWN] or pressed_keys[K_s]: 
-                    self.rect.move_ip(0, 5.5)
+                    self.rect.move_ip(0, 3.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect    
 
                 if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
-                    self.rect.move_ip(-5.5, 0)                   
+                    self.rect.move_ip(-3.5, 0)                   
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect     
 
                 if pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
-                    self.rect.move_ip(5.5, 0) 
+                    self.rect.move_ip(3.5, 0) 
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
 
@@ -434,7 +394,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     objeto_actual = None  # guarda el objeto con el que chocamos
 
     # === Temporizador ===
-    START_TIME = 1 * 60  # 3 minutos en segundos
+    START_TIME = 2 * 60 + 30 # 2 minutos en segundos
     start_ticks = pygame.time.get_ticks()
 
     # === Estado del juego ===
@@ -550,6 +510,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             # === No hay campo de visión limitada ===
         
         # === DIBUJAR ===
+        # Variables para la traducción del juego
         current_lang = settings.language
         current_anim = btn_anim[current_lang]
         current_img = btn_images[current_lang]
@@ -611,11 +572,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             if super_boton_visible:
                 boton_rect = img_boton_E.get_rect(midbottom=(player.rect.centerx, player.rect.top - 10))
                 screen.blit(img_boton_E, boton_rect.topleft)
-
-            # (Depuración) Mostrar máscara de colisión si presionas F1
-            keys = pygame.key.get_pressed()
-            if keys[pygame.K_F1]:
-                debug_dibujar_mask(screen, MAPA_MASK)
 
         elif game_state == "pausa":
             # Fondo (nivel) con blur
