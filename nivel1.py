@@ -1,7 +1,7 @@
 import pygame
 import settings
 from pathlib import Path
-from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music
+from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music
 from movimiento_de_personaje import AnimacionPersonaje
 from objetos_interactuables import GestorObjetosInteractuables
 from objetos_decorativos import GestorObjetosDecorativos
@@ -358,6 +358,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
         for event in pygame.event.get():
             if event.type == QUIT:
+                # Solicita música de menú niveles al volver
+                set_next_music("musica_menu_niveles.mp3")
                 return "niveles"
 
             # === BOTONES PAUSA ===
@@ -385,6 +387,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
                     if rect_salir.collidepoint(event.pos):
                         print("Regresando al menu Niveles")
+                        # Solicita música de menú niveles al volver
+                        set_next_music("musica_menu_niveles.mp3")
                         return "niveles"
                 
                 elif game_state == "config":
@@ -582,10 +586,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             screen.blit(pantalla_perdedor, (0,0))
             pygame.display.flip()
             pygame.time.delay(3000)
+            # Solicita música de menú niveles al volver
+            set_next_music("musica_menu_niveles.mp3")
             return "niveles"
         
         elif all(not obj.encendido for obj in objetos):
             screen.blit(pantalla_ganador, (0,0))
             pygame.display.flip()
             pygame.time.delay(3000)
+            # Solicita música de menú niveles al volver
+            set_next_music("musica_menu_niveles.mp3")
             return "niveles"

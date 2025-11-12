@@ -1,16 +1,29 @@
 import pygame, os, math, sys
 import settings
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, play_music, pause_music, resume_music
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, play_music, pause_music, resume_music, consume_next_music
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Música de menú niveles ===
-    # Reanuda si estaba pausada; si no hay música, la inicia.
+    # Si desde la escena anterior se solicitó una pista, la aplicamos;
+    # de lo contrario, reanudamos la música existente y solo iniciamos
+    # si no hay nada reproduciéndose.
     try:
-        resume_music()
+        next_track = consume_next_music()
+        if next_track:
+            play_music(next_track, volume=0.6, loops=-1)
+        else:
+            try:
+                resume_music()
+            except Exception:
+                pass
+            if not pygame.mixer.music.get_busy():
+                play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
     except Exception:
-        pass
-    if not pygame.mixer.music.get_busy():
-        play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
+        # En caso de error, aseguremos la música del menú.
+        try:
+            play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
+        except Exception:
+            pass
 
     # === Cargar imágenes ===
     bg_niv       = load_img("fondoniv.png", alpha=False)
