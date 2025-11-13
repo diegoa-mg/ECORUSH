@@ -1,7 +1,16 @@
 import pygame
 from pathlib import Path
 
+# === Lista de objetos que deben estar ENCENDIDOS al inicio del juego ===
+OBJETOS_PRENDIDOS_INICIALMENTE = [
+    "lamparaencendida",
+    "refrigerador encendido",
+    "airedeventanaencendido",
+    "grifoprendido" 
+]
+
 # === Configuración editable de posiciones ===
+<<<<<<< Updated upstream
 # Puedes ajustar aquí las coordenadas (x, y) de cada objeto por nombre.
 # Ejemplo: "airedeventanaencendido": (250, 200)
 POSICIONES_OBJETOS = {
@@ -11,9 +20,44 @@ POSICIONES_OBJETOS = {
 
     # Agrega más si lo deseas:
     # "ventilador encendido": (600, 360),
+=======
+POSICIONES_OBJETOS = {
+    "entrada_nivel1.png": [
+        {"nombre": "lamparaencendida", "pos": (1200, 614)}
+    ],
+    "sala_nivel1.png": [
+    ],
+    "cocina_nivel1.png": [
+        {"nombre": "refrigerador encendido", "pos": (865, 25)}
+    ],
+    "garaje_nivel1.png": [
+        # MODIFICADO: Grifo a tamaño 120
+        {"nombre": "grifoprendido", "pos": (110, 166), "size": 120}
+    ],
+    "cuarto1_nivel1.png": [
+        {"nombre": "airedeventanaencendido", "pos": (1200, 475)}
+    ],
+    "cuarto2_nivel1.png": [
+    ]
+>>>>>>> Stashed changes
 }
 
+# === COLISIONES ESTÁTICAS ADICIONALES (NUEVA SECCIÓN) ===
+# Define rectángulos de colisión fijos que no son objetos interactuables.
+# Formato: [x, y, ancho, alto] o pygame.Rect(x, y, ancho, alto)
+RECTS_BLOQUEO_ESTATICOS = {
+    "garaje_nivel1.png": [
+        # Colisión estática solicitada en (30, 42). 
+        # Tamaño asumido: (150, 150). AJUSTAR SI ES NECESARIO.
+        pygame.Rect(30, 42, 150, 150) 
+    ],
+    # Añadir otras habitaciones aquí si es necesario
+    # "otra_habitacion.png": [ ... ]
+}
+# --------------------------------------------------------
+
 class ObjetoInteractuable:
+<<<<<<< Updated upstream
     def __init__(self, x, y, imagen_encendida_path, nombre="objeto", imagen_apagada_path=None, hitbox_size=None, hitbox_top_left=None, hitbox_offset=None, hitbox_mode: str = "base", frames_encendido=None, frame_interval_ms: int = 180):
         """
         Clase para objetos interactuables con imágenes de encendido/apagado.
@@ -28,6 +72,18 @@ class ObjetoInteractuable:
         # Tamaños
         self.display_size = 80  # solicitado: imágenes de 40x40
         # hitbox_size puede ser int (cuadrado) o tupla (ancho, alto)
+=======
+    # CORREGIDO: Se añade 'display_size' como parámetro al constructor
+    def __init__(self, x, y, imagen_encendida_path, nombre="objeto", imagen_apagada_path=None, hitbox_size=None, hitbox_top_left=None, hitbox_offset=None, hitbox_mode: str = "base", frames_encendido=None, frame_interval_ms: int = 180, habitacion: str = "default", display_size=None):
+        self.nombre = nombre
+        # CORRECCIÓN CLAVE 1: Inicia APAGADO (False) por defecto
+        self.encendido = False 
+        self.habitacion = habitacion
+        
+        # Tamaños
+        # CORREGIDO: Usa el 'display_size' personalizado o el valor por defecto (80)
+        self.display_size = display_size if display_size is not None else 80
+>>>>>>> Stashed changes
         if isinstance(hitbox_size, (list, tuple)) and len(hitbox_size) == 2:
             lado_w, lado_h = int(hitbox_size[0]), int(hitbox_size[1])
         elif isinstance(hitbox_size, (int, float)):
@@ -40,6 +96,7 @@ class ObjetoInteractuable:
         try:
             if imagen_encendida_path:
                 encendida = pygame.image.load(imagen_encendida_path).convert_alpha()
+                # CORREGIDO: Redimensiona usando self.display_size
                 self.imagen_encendida = pygame.transform.scale(encendida, (self.display_size, self.display_size))
         except Exception:
             self.imagen_encendida = None
@@ -50,6 +107,7 @@ class ObjetoInteractuable:
             for ruta in frames_encendido:
                 try:
                     surf = pygame.image.load(str(ruta)).convert_alpha()
+                    # CORREGIDO: Redimensiona los frames usando self.display_size
                     surf = pygame.transform.scale(surf, (self.display_size, self.display_size))
                     self.frames_encendido.append(surf)
                 except Exception:
@@ -66,11 +124,13 @@ class ObjetoInteractuable:
         if imagen_apagada_path:
             try:
                 apagada = pygame.image.load(imagen_apagada_path).convert_alpha()
+                # CORREGIDO: Redimensiona usando self.display_size
                 self.imagen_apagada = pygame.transform.scale(apagada, (self.display_size, self.display_size))
             except FileNotFoundError:
                 self.imagen_apagada = None
 
         # Rect de imagen (posición de dibujo)
+        # CORREGIDO: Usa self.display_size
         self.image_rect = pygame.Rect(x, y, self.display_size, self.display_size)
 
         # Hitbox: modo de colocación
@@ -83,7 +143,7 @@ class ObjetoInteractuable:
             bloque_x = self.image_rect.centerx - lado_w // 2
             bloque_y = self.image_rect.centery - lado_h // 2
             self.rect_bloqueo = pygame.Rect(bloque_x, bloque_y, lado_w, lado_h)
-        else:  # "base"
+        else: # "base"
             bloque_x = self.image_rect.centerx - lado_w // 2
             bloque_y = self.image_rect.bottom - lado_h
             self.rect_bloqueo = pygame.Rect(bloque_x, bloque_y, lado_w, lado_h)
@@ -119,23 +179,29 @@ class ObjetoInteractuable:
                     ph.fill((255, 0, 255, 150))
                     surface.blit(ph, self.image_rect.topleft)
         else:
+<<<<<<< Updated upstream
             # Si hay imagen apagada, úsala; si no, aplicar tinte rojo
+=======
+            # CORRECCIÓN CLAVE para el color rojo: 
+            # Dibuja la imagen_apagada si existe, sin importar si hay frames_encendido.
+>>>>>>> Stashed changes
             if self.imagen_apagada:
                 surface.blit(self.imagen_apagada, self.image_rect.topleft)
+            elif self.imagen_encendida is not None:
+                # Lógica antigua de filtro rojo si NO hay imagen apagada específica
+                imagen_roja = self.imagen_encendida.copy()
+                imagen_roja.fill((255, 0, 0, 180), None, pygame.BLEND_RGBA_MULT)
+                surface.blit(imagen_roja, self.image_rect.topleft)
+            elif self.frames_encendido:
+                # Aplica el filtro rojo al primer frame si NO hay imagen apagada específica
+                frame = self.frames_encendido[0] 
+                imagen_roja = frame.copy()
+                imagen_roja.fill((255, 0, 0, 180), None, pygame.BLEND_RGBA_MULT)
+                surface.blit(imagen_roja, self.image_rect.topleft)
             else:
-                if self.imagen_encendida is not None:
-                    imagen_roja = self.imagen_encendida.copy()
-                    imagen_roja.fill((255, 0, 0, 180), None, pygame.BLEND_RGBA_MULT)
-                    surface.blit(imagen_roja, self.image_rect.topleft)
-                elif self.frames_encendido:
-                    frame = self.frames_encendido[self._frame_idx]
-                    imagen_roja = frame.copy()
-                    imagen_roja.fill((255, 0, 0, 180), None, pygame.BLEND_RGBA_MULT)
-                    surface.blit(imagen_roja, self.image_rect.topleft)
-                else:
-                    ph = pygame.Surface((self.display_size, self.display_size), pygame.SRCALPHA)
-                    ph.fill((255, 0, 255, 150))
-                    surface.blit(ph, self.image_rect.topleft)
+                ph = pygame.Surface((self.display_size, self.display_size), pygame.SRCALPHA)
+                ph.fill((255, 0, 255, 150))
+                surface.blit(ph, self.image_rect.topleft)
 
         # No dibujar el borde azul de la hitbox
 
@@ -190,12 +256,19 @@ class GestorObjetosInteractuables:
             # Ventilador apagado debe mostrar 'aireapagado' según solicitud
             "ventiladorencendido": "aireapagado",
         }
+<<<<<<< Updated upstream
 
         # Mapeo para animaciones especiales por objeto
         # clave = nombre del objeto encendido, valor = dict con prefijo y cantidad
         self.mapeo_animacion_especial = {
             # El ventilador usa frames: aireprendidoenmovimiento1..14
             "ventiladorencendido": {"prefix": "aireprendidoenmovimiento", "cantidad": 14}
+=======
+        
+        self.mapeo_animacion_especial = {
+            "ventiladorencendido": {"prefix": "aireprendidoenmovimiento", "cantidad": 14},
+            "grifoprendido": {"prefix": "grifo", "cantidad": 10}
+>>>>>>> Stashed changes
         }
         
         # Cargar todas las imágenes de la carpeta objetos_interactuables
@@ -211,12 +284,16 @@ class GestorObjetosInteractuables:
         if not objetos_path.exists():
             print("Error: Carpeta 'objetos_interactuables' no encontrada")
             return
+        
+        # Buscamos imágenes en la carpeta principal y en las subcarpetas (como 'grifo')
         for archivo in objetos_path.rglob("*.png"):
             nombre = archivo.stem
             self.objetos_disponibles[nombre] = str(archivo)
             try:
-                print(f"Objeto cargado: {nombre} ({archivo.parent.name})")
+                # print(f"Objeto cargado: {nombre} ({archivo.parent.name})") # Comentado para evitar log excesivo
+                pass
             except Exception:
+<<<<<<< Updated upstream
                 print(f"Objeto cargado: {nombre}")
         else:
             print("Error: Carpeta 'objetos_interactuables' no encontrada")
@@ -226,6 +303,15 @@ class GestorObjetosInteractuables:
         Crea un nuevo objeto interactuable
         x, y: posición
         nombre_imagen: nombre de la imagen (sin .png)
+=======
+                # print(f"Objeto cargado: {nombre}") # Comentado para evitar log excesivo
+                pass
+
+    # CORREGIDO: Se añade 'display_size' como parámetro
+    def crear_objeto(self, x, y, nombre_imagen, habitacion="default", display_size=None):
+        """
+        Crea un nuevo objeto interactuable
+>>>>>>> Stashed changes
         """
         # Intentar encontrar la imagen encendida (puede faltar)
         imagen_encendida_path = self.objetos_disponibles.get(nombre_imagen)
@@ -259,7 +345,12 @@ class GestorObjetosInteractuables:
                 objetos_path = self.assets_path / "objetos_interactuables"
                 frames = []
                 for i in range(1, cantidad + 1):
-                    coincidencias = list(objetos_path.rglob(f"{prefix}{i}.png"))
+                    ruta_busqueda = objetos_path
+                    if nombre_imagen == "grifoprendido":
+                        ruta_busqueda = objetos_path / "grifo"
+                        
+                    coincidencias = list(ruta_busqueda.rglob(f"{prefix}{i}.png")) 
+                    
                     if coincidencias:
                         frames.append(coincidencias[0])
                 if frames:
@@ -280,7 +371,13 @@ class GestorObjetosInteractuables:
             hitbox_offset=hitbox_offset,
             hitbox_mode=self.modo_hitbox,
             frames_encendido=frames_anim,
+<<<<<<< Updated upstream
             frame_interval_ms=150
+=======
+            frame_interval_ms=150,
+            habitacion=habitacion,
+            display_size=display_size # CORREGIDO: Pasa el tamaño al constructor
+>>>>>>> Stashed changes
         )
         self.objetos_activos.append(objeto)
         return objeto
@@ -291,11 +388,33 @@ class GestorObjetosInteractuables:
 
         posiciones = self.config_posiciones if self.config_posiciones else POSICIONES_OBJETOS
 
+<<<<<<< Updated upstream
         for nombre, (x, y) in posiciones.items():
             objeto = self.crear_objeto(x, y, nombre)
             if objeto:
                 objetos_creados.append(objeto)
 
+=======
+        for nombre_habitacion, lista_objetos in posiciones.items():
+            for obj_info in lista_objetos:
+                try:
+                    nombre = obj_info["nombre"]
+                    x, y = obj_info["pos"]
+                    # CORREGIDO: Obtiene el tamaño opcional
+                    size = obj_info.get("size")
+                    
+                    # Pasa el nombre de la habitación Y el tamaño al crear el objeto (inicia APAGADO)
+                    objeto = self.crear_objeto(x, y, nombre, habitacion=nombre_habitacion, display_size=size)
+                    
+                    if objeto:
+                        # CORRECCIÓN CLAVE 2: Enciende solo los objetos en la lista inicial
+                        if objeto.nombre in OBJETOS_PRENDIDOS_INICIALMENTE:
+                            objeto.encender()
+                        objetos_creados.append(objeto)
+                except Exception as e:
+                    print(f"Error al crear objeto {obj_info} en {nombre_habitacion}: {e}")
+            
+>>>>>>> Stashed changes
         return objetos_creados
 
     def configurar_hitbox_por_objeto(self, tamanos: dict):
@@ -335,7 +454,7 @@ class GestorObjetosInteractuables:
             
             # Mover a la siguiente posición
             x += separacion
-            if x > 1200:  # Si se sale del ancho, bajar fila
+            if x > 1200: # Si se sale del ancho, bajar fila
                 x = x_inicial
                 y += separacion
         
@@ -357,17 +476,57 @@ class GestorObjetosInteractuables:
     def verificar_colision(self, rect_jugador):
         """
         Verifica si el jugador colisiona con algún objeto
+<<<<<<< Updated upstream
         Retorna: (hay_colision, objeto_colisionado)
         """
         for objeto in self.objetos_activos:
             # Usar área de interacción (no el centro) para permitir presionar E estando cerca
             if rect_jugador.colliderect(objeto.rect_interaccion) and objeto.encendido:
                 return True, objeto
+=======
+        EN LA HABITACIÓN ACTUAL. (Usado para 'E' y colisión de rango, usa rect_interaccion)
+        Retorna: (hay_colision, objeto_colisionado)
+        """
+        for objeto in self.objetos_activos:
+            if objeto.habitacion == nombre_habitacion_actual:
+                # Usa rect_interaccion, que es un área más grande que el bloqueo
+                if rect_jugador.colliderect(objeto.rect_interaccion) and objeto.encendido:
+                    return True, objeto
+>>>>>>> Stashed changes
+        return False, None
+    
+    def verificar_interaccion(self, rect_jugador, nombre_habitacion_actual: str):
+        """
+        Verifica si el jugador está dentro del rango de interacción de un objeto.
+        Retorna: (hay_interaccion, objeto)
+        """
+        for objeto in self.objetos_activos:
+            if objeto.habitacion == nombre_habitacion_actual:
+                if rect_jugador.colliderect(objeto.rect_interaccion):
+                    # Retorna el objeto encontrado para que el bucle principal lo pueda manipular
+                    return True, objeto
         return False, None
 
+<<<<<<< Updated upstream
     def obtener_rects_bloqueo(self):
         """Devuelve rectángulos que bloquean el movimiento del jugador."""
         return [obj.rect_bloqueo for obj in self.objetos_activos]
+=======
+    def obtener_rects_bloqueo(self, nombre_habitacion_actual: str):
+        """Devuelve rectángulos que bloquean el movimiento
+        SOLO de la habitación actual, incluyendo objetos y colisiones estáticas."""
+        
+        # 1. Rects de objetos interactuables (excluyendo el grifo)
+        rects_objetos = [
+            obj.rect_bloqueo for obj in self.objetos_activos 
+            if obj.habitacion == nombre_habitacion_actual and obj.nombre != "grifoprendido"
+        ]
+        
+        # 2. Rects de colisiones estáticas (NUEVA LÓGICA)
+        rects_estaticos = RECTS_BLOQUEO_ESTATICOS.get(nombre_habitacion_actual, [])
+
+        return rects_objetos + rects_estaticos # Combina ambas listas
+>>>>>>> Stashed changes
     
     def apagar_objeto(self, objeto):
         """Apaga un objeto específico"""

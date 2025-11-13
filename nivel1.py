@@ -20,7 +20,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     from pygame.locals import (
         K_UP, K_DOWN, K_LEFT, K_RIGHT,
         K_w, K_a, K_s, K_d,
-        K_LSHIFT, K_e, K_ESCAPE, QUIT
+        K_LSHIFT, K_e, K_ESCAPE, QUIT, K_SPACE # <-- AGREGADO K_SPACE
     )
 
     # === Cargar imagenes ===
@@ -457,6 +457,47 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         settings.language = "eng"
                         print("Idioma: Inglés")
 
+<<<<<<< Updated upstream
+=======
+                    # BARRA DE VOLUMEN (Clic)
+                    elif rect_vol_bar.collidepoint(event.pos):
+                        is_dragging_volume = True
+                        # Actualizar volumen al primer clic
+                        mouse_x = event.pos[0]
+                        relative_x = mouse_x - rect_vol_bar.x
+                        volume_pct = max(0, min(1, relative_x / rect_vol_bar.width))
+                        settings.GLOBAL_VOLUME = volume_pct
+                        pygame.mixer.music.set_volume(settings.GLOBAL_VOLUME)
+
+            # --- BARRA DE VOLUMEN (Soltar Clic) ---
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                is_dragging_volume = False
+
+            # --- BARRA DE VOLUMEN (Arrastrar) ---
+            if event.type == pygame.MOUSEMOTION:
+                if is_dragging_volume:
+                    mouse_x = event.pos[0]
+                    relative_x = mouse_x - rect_vol_bar.x
+                    volume_pct = max(0, min(1, relative_x / rect_vol_bar.width))
+                    settings.GLOBAL_VOLUME = volume_pct
+                    pygame.mixer.music.set_volume(settings.GLOBAL_VOLUME)
+            
+            # === INTERACCIÓN (Grifo/Objetos Toggable) ===
+            # Usa la tecla K_SPACE para encender/apagar el grifo
+            if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE and game_state == "juego":
+                # Verificar interacción usando el nuevo método
+                hay_interaccion, objeto_interactuable = gestor_objetos.verificar_interaccion(player.rect, current_room)
+
+                if hay_interaccion and objeto_interactuable.nombre == "grifoprendido":
+                    # Alternar el estado del grifo
+                    if objeto_interactuable.encendido:
+                        objeto_interactuable.apagar() # Llama al método apagar del objeto
+                        print("Grifo apagado 💧")
+                    else:
+                        objeto_interactuable.encender() # Llama al método encender del objeto
+                        print("Grifo encendido 🌊")
+
+>>>>>>> Stashed changes
             # === ESC ===
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 if game_state == "juego":
@@ -495,6 +536,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             super_boton_visible = False
             hay_colision, objeto_colisionado = gestor_objetos.verificar_colision(player.rect)
             
+            # NOTA: La lógica de 'super_boton_visible' sigue funcionando
+            # para objetos que colisionan (no el grifo, que fue excluido de colisión)
             if hay_colision:
                 super_boton_visible = True
                 objeto_actual = objeto_colisionado
