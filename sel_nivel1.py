@@ -134,8 +134,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         except Exception:
                             pass
                         # Solicita música del nivel según dificultad
-                        if settings.DIFICULTAD == "sencillo" and nivel_seleccionado == 1:
-                            set_next_music("musica_nivel_facil.mp3")
+                        if nivel_seleccionado == 1:
+                            if settings.DIFICULTAD == "sencillo":
+                                set_next_music("musica_nivel_facil.mp3")
+                            elif settings.DIFICULTAD == "extremo":
+                                set_next_music("musica_nivel_extremo.mp3")
                         # Pausar música de menú antes de entrar al nivel
                         pause_music()
                         return "nivel1"
