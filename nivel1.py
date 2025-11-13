@@ -132,8 +132,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     gestor_objetos = GestorObjetosInteractuables(assets_path)
     
     # Configurar modo de colocación de hitbox y offsets por objeto
-    gestor_objetos.configurar_modo_hitbox("centro")
-    gestor_objetos.configurar_offset_hitbox_por_objeto({"pcencendida": (2, -1)})
+    assets_path = Path(__file__).parent / "assets"
+    gestor_objetos = GestorObjetosInteractuables(assets_path)
 
 
     # Fuente
