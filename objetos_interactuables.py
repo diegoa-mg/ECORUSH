@@ -22,27 +22,37 @@ def _crear_objeto(pos, size, img_on, hitbox=None):
 
 # --- 2. CONFIGURACIÓN CENTRALIZADA ---
 # ¡Ahora es incluso más limpia!
+"""
+    Ejemplo:
+    pos=(1200, 614), size=(80, 80), 
+    img_on="lamparaencendida.png
+"""
 CONFIG_OBJETOS = {
-    "entrada_nivel1.png": [
+    "entrada_nivel1.png": [],
+    "sala_nivel1.png": [
         _crear_objeto(
-            pos=(1200, 614), size=(80, 80), 
-            img_on="lamparaencendida.png"
+            pos=(383, 81), size=(238, 126),
+            img_on="TVprendida_sala.png"
+        ),
+        _crear_objeto(
+            pos=(1744, 164), size=(119, 154),
+            img_on="Lavabo.png"
         )
     ],
-    "sala_nivel1.png": [],
-    "cocina_nivel1.png": [
-        _crear_objeto(
-            pos=(865, 25), size=(150, 200),
-            img_on="refrigerador encendido.png",
-            hitbox=(870, 30, 140, 190)
-        )
-    ],
+    "cocina_nivel1.png": [],
     "garaje_nivel1.png": [],
     "cuarto1_nivel1.png": [
         _crear_objeto(
-            pos=(1200, 475), size=(100, 100),
-            img_on="airedeventanaencendido.png",
-            hitbox=(1200, 475, 100, 90)
+            pos=(674, 161), size=(548, 239),
+            img_on="TVprendida_cuarto1.png"
+        ),
+        _crear_objeto(
+            pos=(1424, 162), size=(119, 153),
+            img_on="Lavabo.png"
+        ),
+        _crear_objeto(
+            pos=(32, 761), size=(149, 283),
+            img_on="PC_cuarto1.png"
         )
     ],
     "cuarto2_nivel1.png": []
