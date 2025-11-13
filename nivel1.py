@@ -250,7 +250,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         return True
 
         # Objetos interactuables
-        for rb in gestor_objetos.obtener_rects_bloqueo():
+        for rb in gestor_objetos.obtener_rects_bloqueo(current_room):
             if rect.colliderect(rb):
                 return True
 
@@ -533,7 +533,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
            # === Detectar colisión con algún objeto ===
             super_boton_visible = False
-            hay_colision, objeto_colisionado = gestor_objetos.verificar_colision(player.rect)
+            hay_colision, objeto_colisionado = gestor_objetos.verificar_colision(player.rect, current_room)
             
             if hay_colision:
                 super_boton_visible = True
@@ -572,7 +572,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             # (Estante removido: ahora no se dibuja ni carga)
 
             # Dibujar todos los objetos interactuables
-            gestor_objetos.dibujar_todos(screen)
+            gestor_objetos.dibujar_todos(screen, current_room)
 
             # Dibujar personaje
             screen.blit(player.surf, player.rect)
