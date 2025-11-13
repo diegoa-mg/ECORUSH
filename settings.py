@@ -13,13 +13,15 @@ DIFICULTAD = "sencillo"  # Puede ser "sencillo" o "extremo"
 VALORES_DIFICULTAD = {
     "sencillo": {
         "TIEMPO_LIMITE": 150,      # segundos
-        "VELOCIDAD_ENERGIA": 1,    # El drenaje de energía es 1
-        "VELOCIDAD_ENERGIA_CORRER": 2 # El drenaje al correr es 2
+        "VELOCIDAD_ENERGIA": 2,    # El drenaje de energía es 2
+        "VELOCIDAD_ENERGIA_CORRER": 4, # El drenaje al correr es 4
+        "RECARGA_ENERGIA": 10 # Recarga 10 de energia
     },
     "extremo": {
         "TIEMPO_LIMITE": 90,       # segundos
-        "VELOCIDAD_ENERGIA": 2,    # El drenaje de energía es 2
-        "VELOCIDAD_ENERGIA_CORRER": 4 # El drenaje al correr es 4
+        "VELOCIDAD_ENERGIA": 4,    # El drenaje de energía es 4
+        "VELOCIDAD_ENERGIA_CORRER": 8, # El drenaje al correr es 8
+        "RECARGA_ENERGIA": 5 # Recarga 5 de energia
     }
 }
 
@@ -46,7 +48,6 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW= (255, 255, 0)
-
 ENERGIA_COLOR= (255, 175, 0)
 
 # === Configurar la ventana ===

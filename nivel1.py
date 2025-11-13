@@ -514,8 +514,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 objeto_actual.encendido = False
                 super_boton_visible = False
                 objeto_actual = None
-                player.add_energy(+10)  # recupera 10 puntos de energia
-                print("⚡ Objeto apagado: +10 energía ⚡")
+
+                # Recargar energia segun la dificultad
+                dificultad_actual = settings.DIFICULTAD
+                config_nivel = VALORES_DIFICULTAD[dificultad_actual]
+                recuperar_energia = config_nivel["RECARGA_ENERGIA"]
+
+                player.add_energy(+recuperar_energia)
+                print(f"⚡ Objeto apagado: +{recuperar_energia} energía ⚡")
 
             # === No hay campo de visión limitada ===
         
