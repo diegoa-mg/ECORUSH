@@ -1,7 +1,7 @@
 import pygame
 import settings
 from pathlib import Path
-from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music
+from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music, VALORES_DIFICULTAD
 from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
 from objetos_interactuables import GestorObjetosInteractuables
@@ -40,10 +40,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     eng_on       = load_img("eng_on.png")
     eng_off      = load_img("eng_off.png")
 
-    #  --- Pendiente de cambiar el idioma
-    pantalla_ganador    = load_img("ganador.png")
-    pantalla_perdedor   = load_img("perdedor.png")
-
     # --- Diccionario para imágenes de idioma ---
     btn_images = { "esp": {}, "eng": {} }
 
@@ -54,6 +50,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     btn_images["esp"]["btn_salir"] = load_img("btn_salir.png")
     btn_images["esp"]["config"] = load_img("config.png")
     btn_images["esp"]["botones_config"] = load_img("botonesconfig.png")
+    btn_images["esp"]["pantalla_ganador"] = load_img("ganador.png")
+    btn_images["esp"]["pantalla_perdedor"] = load_img("perdedor.png")
 
     # Carga tus nuevas imágenes en Inglés
     btn_images["eng"]["titulo_pausa"] = load_img("titulo_pausa_eng.png")
@@ -62,6 +60,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     btn_images["eng"]["btn_salir"] = load_img("btn_salir_eng.png")
     btn_images["eng"]["config"] = load_img("config_eng.png")
     btn_images["eng"]["botones_config"] = load_img("botonesconfig_eng.png")
+    btn_images["eng"]["pantalla_ganador"] = load_img("ganador_eng.png")
+    btn_images["eng"]["pantalla_perdedor"] = load_img("perdedor_eng.png")
 
     # === Escalar imagenes ===
     # Juego
@@ -73,9 +73,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     barra_energia_atras = pygame.transform.scale(barra_energia_atras, (348, 102))
     btn_pausa           = pygame.transform.scale(btn_pausa, (102, 102))
 
-    pantalla_ganador    = pygame.transform.scale(pantalla_ganador, (WIDTH, HEIGHT))
-    pantalla_perdedor   = pygame.transform.scale(pantalla_perdedor, (WIDTH, HEIGHT))
-
     for lang in ["esp", "eng"]:
         btn_images[lang]["titulo_pausa"] = pygame.transform.scale(btn_images[lang]["titulo_pausa"], (969, 146.5))
         btn_images[lang]["btn_continuar"] = pygame.transform.scale(btn_images[lang]["btn_continuar"], (454, 113.5))
@@ -83,6 +80,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         btn_images[lang]["btn_salir"] = pygame.transform.scale(btn_images[lang]["btn_salir"], (454, 113.5))
         btn_images[lang]["config"] = pygame.transform.scale(btn_images[lang]["config"], (1290, 733.5))
         btn_images[lang]["botones_config"] = pygame.transform.scale(btn_images[lang]["botones_config"], (768, 259.5))
+        btn_images[lang]["pantalla_ganador"] = pygame.transform.scale(btn_images[lang]["pantalla_ganador"], (WIDTH, HEIGHT))
+        btn_images[lang]["pantalla_perdedor"] = pygame.transform.scale(btn_images[lang]["pantalla_perdedor"], (WIDTH, HEIGHT))
 
     esp_on       = pygame.transform.scale(esp_on, (364, 131.5))
     esp_off      = pygame.transform.scale(esp_off, (364, 131.5))
@@ -363,10 +362,16 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             is_moving = any(pressed_keys[k] for k in (K_UP, K_DOWN, K_LEFT, K_RIGHT, K_w, K_s, K_a, K_d))
             is_sprinting = pressed_keys[K_LSHIFT] and is_moving and player.energy > 0
 
+            # Drenar segun la dificultad
+            dificultad_actual = settings.DIFICULTAD
+            config_nivel = VALORES_DIFICULTAD[dificultad_actual]
+
+            # Variables de drenado de energia
+            self.drain_walk_rate = config_nivel["VELOCIDAD_ENERGIA"]
+            self.drain_run_rate = config_nivel["VELOCIDAD_ENERGIA_CORRER"]
+
             if is_moving:
-                drain_walk = 2.0    # energía por segundo caminando
-                drain_run  = 5.0    # energía por segundo corriendo
-                player.add_energy(-(drain_run if is_sprinting else drain_walk) * dt)
+                player.add_energy(-(self.drain_run_rate if is_sprinting else self.drain_walk_rate) * dt)
 
     # === Objeto interactivo ===
     class Objeto:
@@ -395,7 +400,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     objeto_actual = None  # guarda el objeto con el que chocamos
 
     # === Temporizador ===
-    START_TIME = 2 * 60 + 30 # 2 minutos en segundos
+    # Modificar tiempo dependiendo la dificultad
+    dificultad_actual = settings.DIFICULTAD
+    config_nivel = VALORES_DIFICULTAD[dificultad_actual]
+
+    START_TIME = config_nivel["TIEMPO_LIMITE"]
     start_ticks = pygame.time.get_ticks()
 
     # === Estado del juego ===
@@ -638,7 +647,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
         # === Condiciones de fin de juego ===
         if time_left <= 0 or player.energy <= 0:
-            screen.blit(pantalla_perdedor, (0,0))
+            screen.blit(current_img["pantalla_perdedor"], (0,0))
             pygame.display.flip()
             pygame.time.delay(3000)
             # Solicita música de menú niveles al volver
@@ -646,7 +655,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             return "niveles"
         
         elif all(not obj.encendido for obj in objetos):
-            screen.blit(pantalla_ganador, (0,0))
+            screen.blit(current_img["pantalla_ganador"], (0,0))
             pygame.display.flip()
             pygame.time.delay(3000)
             # Solicita música de menú niveles al volver

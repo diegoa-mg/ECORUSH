@@ -5,6 +5,24 @@ from pathlib import Path
 # === Variable Idioma ===
 language = "esp" # esp/eng
 
+# === DIFICULTAD ===
+DIFICULTAD = "sencillo"  # Puede ser "sencillo" o "extremo"
+
+# Este diccionario guarda lo que significa cada dificultad
+# Es mucho más limpio que tener TIEMPO_SENCILLO, TIEMPO_EXTREMO, etc.
+VALORES_DIFICULTAD = {
+    "sencillo": {
+        "TIEMPO_LIMITE": 150,      # segundos
+        "VELOCIDAD_ENERGIA": 1,    # El drenaje de energía es 1
+        "VELOCIDAD_ENERGIA_CORRER": 2 # El drenaje al correr es 2
+    },
+    "extremo": {
+        "TIEMPO_LIMITE": 90,       # segundos
+        "VELOCIDAD_ENERGIA": 2,    # El drenaje de energía es 2
+        "VELOCIDAD_ENERGIA_CORRER": 4 # El drenaje al correr es 4
+    }
+}
+
 # === Personaje seleccionado ===
 # Valores posibles: "niño" | "niña"
 selected_character = "niño"
