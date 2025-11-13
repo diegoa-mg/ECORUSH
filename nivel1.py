@@ -186,7 +186,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_COCINA,  "spawn": (90,900 )},  # derecha → cocina
         ],
         ROOM_SALA: [
-            {"rect": pygame.Rect(860, 980, 200, 80),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
+            {"rect": pygame.Rect(960, 1075, 80, 5),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
             {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_CUARTO1, "spawn": (1700, 800)}, # izquierda → cuarto1
             {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_CUARTO2, "spawn": (90, 900)},  # derecha → cuarto2
         ],
@@ -310,23 +310,23 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             
             # Movimiento normal
             if pressed_keys[K_UP] or pressed_keys[K_w]: 
-                self.rect.move_ip(0, -3)
+                self.rect.move_ip(0, -5)
                 if colisiona_con_obstaculo(self.rect):
                     self.rect = old_rect
                     
             elif pressed_keys[K_DOWN] or pressed_keys[K_s]: 
-                self.rect.move_ip(0, 3)
+                self.rect.move_ip(0, 5)
                 if colisiona_con_obstaculo(self.rect):
                     self.rect = old_rect
                     
             else:
                 if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
-                    self.rect.move_ip(-3, 0)
+                    self.rect.move_ip(-5, 0)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
                     
                 elif pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
-                    self.rect.move_ip(3, 0)
+                    self.rect.move_ip(5, 0)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
 
@@ -335,23 +335,23 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 old_rect = self.rect.copy()
 
                 if pressed_keys[K_UP] or pressed_keys[K_w]: 
-                    self.rect.move_ip(0, -3.5)
+                    self.rect.move_ip(0, -5.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
                         
                 elif pressed_keys[K_DOWN] or pressed_keys[K_s]: 
-                    self.rect.move_ip(0, 3.5)
+                    self.rect.move_ip(0, 5.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
                         
                 else:
                     if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
-                        self.rect.move_ip(-3.5, 0)
+                        self.rect.move_ip(-5.5, 0)
                         if colisiona_con_obstaculo(self.rect):
                             self.rect = old_rect
                         
                     elif pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
-                        self.rect.move_ip(3.5, 0)
+                        self.rect.move_ip(5.5, 0)
                         if colisiona_con_obstaculo(self.rect):
                             self.rect = old_rect
 
