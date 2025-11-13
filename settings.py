@@ -5,6 +5,26 @@ from pathlib import Path
 # === Variable Idioma ===
 language = "esp" # esp/eng
 
+# === DIFICULTAD ===
+DIFICULTAD = "sencillo"  # Puede ser "sencillo" o "extremo"
+
+# Este diccionario guarda lo que significa cada dificultad
+# Es mucho más limpio que tener TIEMPO_SENCILLO, TIEMPO_EXTREMO, etc.
+VALORES_DIFICULTAD = {
+    "sencillo": {
+        "TIEMPO_LIMITE": 150,      # segundos
+        "VELOCIDAD_ENERGIA": 2,    # El drenaje de energía es 2
+        "VELOCIDAD_ENERGIA_CORRER": 4, # El drenaje al correr es 4
+        "RECARGA_ENERGIA": 10 # Recarga 10 de energia
+    },
+    "extremo": {
+        "TIEMPO_LIMITE": 90,       # segundos
+        "VELOCIDAD_ENERGIA": 4,    # El drenaje de energía es 4
+        "VELOCIDAD_ENERGIA_CORRER": 8, # El drenaje al correr es 8
+        "RECARGA_ENERGIA": 5 # Recarga 5 de energia
+    }
+}
+
 # === Personaje seleccionado ===
 # Valores posibles: "niño" | "niña"
 selected_character = "niño"
@@ -28,7 +48,6 @@ RED = (255, 0, 0)
 GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 YELLOW= (255, 255, 0)
-
 ENERGIA_COLOR= (255, 175, 0)
 
 # === Configurar la ventana ===
@@ -53,6 +72,9 @@ def load_img(name, alpha=True):
     path = IMG_DIR / name # une la carpeta con el nombre del archivo
     surf = pygame.image.load(str(path)) # pygame necesita string, por eso se usa el str
     return surf.convert_alpha() if alpha else surf.convert()
+
+# === VOLUMEN ===
+GLOBAL_VOLUME = .75 # 75%
 
 # === Música ===
 def play_music(name: str, volume: float = 0.6, loops: int = -1):

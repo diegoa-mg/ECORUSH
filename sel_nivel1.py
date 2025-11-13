@@ -83,7 +83,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Variables del selector de nivel
     nivel_seleccionado = 1      # 1, 2 o 3
-    dificultad_seleccionada = "sencillo" # sencillo o extremo
     personaje_seleccionado = 1  # 1 o 2
 
     # === Superficie para renderizar el menú (para blur) ===
@@ -103,12 +102,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
                 # Botones del selector de nivel individual
                 if game_state == "selector":
+                    # Seleccion de dificultad
                     if rect_sencillo.collidepoint(event.pos):
-                        dificultad_seleccionada = "sencillo"
+                        settings.DIFICULTAD = "sencillo" 
                         print("Dificultad: Sencillo")
                     elif rect_extremo.collidepoint(event.pos):
-                        dificultad_seleccionada = "extremo"
+                        settings.DIFICULTAD = "extremo"
                         print("Dificultad: Extremo")
+
                     elif rect_personaje1.collidepoint(event.pos):
                         personaje_seleccionado = 1
                         # Establece personaje global para uso en nivel1
@@ -126,14 +127,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                             pass
                         print("Personaje 2 seleccionado")
                     elif rect_jugar.collidepoint(event.pos):
-                        print(f"Iniciando Nivel {nivel_seleccionado} - Dificultad: {dificultad_seleccionada} - Personaje: {personaje_seleccionado}")
+                        print(f"Iniciando Nivel {nivel_seleccionado} - Dificultad: {settings.DIFICULTAD} - Personaje: {personaje_seleccionado}")
                         # Asegura que el personaje seleccionado se aplique antes de entrar al nivel
                         try:
                             set_selected_character("niña" if personaje_seleccionado == 2 else "niño")
                         except Exception:
                             pass
                         # Solicita música del nivel según dificultad
-                        if dificultad_seleccionada == "sencillo" and nivel_seleccionado == 1:
+                        if settings.DIFICULTAD == "sencillo" and nivel_seleccionado == 1:
                             set_next_music("musica_nivel_facil.mp3")
                         # Pausar música de menú antes de entrar al nivel
                         pause_music()
@@ -178,8 +179,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             mouse_pos = pygame.mouse.get_pos()
 
             # Dificultad: elige la imagen en base al estado
-            sencillo_img = current_img["btn_sencillo2"] if dificultad_seleccionada == "sencillo" else current_img["btn_sencillo"]
-            extremo_img  = current_img["btn_extremo2"]  if dificultad_seleccionada == "extremo" else current_img["btn_extremo"]
+            sencillo_img = current_img["btn_sencillo2"] if settings.DIFICULTAD == "sencillo" else current_img["btn_sencillo"]
+            extremo_img  = current_img["btn_extremo2"]  if settings.DIFICULTAD == "extremo" else current_img["btn_extremo"]
 
             blit_hoverable(screen, sencillo_img, rect_sencillo, mouse_pos)
             blit_hoverable(screen, extremo_img,  rect_extremo,  mouse_pos)

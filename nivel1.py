@@ -1,7 +1,7 @@
 import pygame
 import settings
 from pathlib import Path
-from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music
+from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music, VALORES_DIFICULTAD
 from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
 from objetos_interactuables import GestorObjetosInteractuables
@@ -12,7 +12,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     try:
         next_track = consume_next_music()
         if next_track:
-            play_music(next_track, volume=0.6, loops=-1)
+            play_music(next_track, volume=settings.GLOBAL_VOLUME, loops=-1)
     except Exception as e:
         print(f"[Audio] No se pudo configurar música del nivel: {e}")
 
@@ -40,10 +40,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     eng_on       = load_img("eng_on.png")
     eng_off      = load_img("eng_off.png")
 
-    #  --- Pendiente de cambiar el idioma
-    pantalla_ganador    = load_img("ganador.png")
-    pantalla_perdedor   = load_img("perdedor.png")
-
     # --- Diccionario para imágenes de idioma ---
     btn_images = { "esp": {}, "eng": {} }
 
@@ -54,6 +50,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     btn_images["esp"]["btn_salir"] = load_img("btn_salir.png")
     btn_images["esp"]["config"] = load_img("config.png")
     btn_images["esp"]["botones_config"] = load_img("botonesconfig.png")
+    btn_images["esp"]["pantalla_ganador"] = load_img("ganador.png")
+    btn_images["esp"]["pantalla_perdedor"] = load_img("perdedor.png")
 
     # Carga tus nuevas imágenes en Inglés
     btn_images["eng"]["titulo_pausa"] = load_img("titulo_pausa_eng.png")
@@ -62,6 +60,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     btn_images["eng"]["btn_salir"] = load_img("btn_salir_eng.png")
     btn_images["eng"]["config"] = load_img("config_eng.png")
     btn_images["eng"]["botones_config"] = load_img("botonesconfig_eng.png")
+    btn_images["eng"]["pantalla_ganador"] = load_img("ganador_eng.png")
+    btn_images["eng"]["pantalla_perdedor"] = load_img("perdedor_eng.png")
 
     # === Escalar imagenes ===
     # Juego
@@ -73,9 +73,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     barra_energia_atras = pygame.transform.scale(barra_energia_atras, (348, 102))
     btn_pausa           = pygame.transform.scale(btn_pausa, (102, 102))
 
-    pantalla_ganador    = pygame.transform.scale(pantalla_ganador, (WIDTH, HEIGHT))
-    pantalla_perdedor   = pygame.transform.scale(pantalla_perdedor, (WIDTH, HEIGHT))
-
     for lang in ["esp", "eng"]:
         btn_images[lang]["titulo_pausa"] = pygame.transform.scale(btn_images[lang]["titulo_pausa"], (969, 146.5))
         btn_images[lang]["btn_continuar"] = pygame.transform.scale(btn_images[lang]["btn_continuar"], (454, 113.5))
@@ -83,6 +80,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         btn_images[lang]["btn_salir"] = pygame.transform.scale(btn_images[lang]["btn_salir"], (454, 113.5))
         btn_images[lang]["config"] = pygame.transform.scale(btn_images[lang]["config"], (1290, 733.5))
         btn_images[lang]["botones_config"] = pygame.transform.scale(btn_images[lang]["botones_config"], (768, 259.5))
+        btn_images[lang]["pantalla_ganador"] = pygame.transform.scale(btn_images[lang]["pantalla_ganador"], (WIDTH, HEIGHT))
+        btn_images[lang]["pantalla_perdedor"] = pygame.transform.scale(btn_images[lang]["pantalla_perdedor"], (WIDTH, HEIGHT))
 
     esp_on       = pygame.transform.scale(esp_on, (364, 131.5))
     esp_off      = pygame.transform.scale(esp_off, (364, 131.5))
@@ -115,6 +114,18 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     config_x_rect   = config_x.get_rect(topright=(config_rect.right-20, config_rect.top+20))
     rect_esp   = esp_on.get_rect(topleft=(576, 680))
     rect_eng   = eng_on.get_rect(topleft=(980, 680))
+
+    # BARRA DE VOLUMEN
+    # Este rect es el "canal" oscuro de fondo de tu mockup
+    VOL_BAR_X = 565
+    VOL_BAR_Y = 481
+    VOL_BAR_ANCHO = 790
+    VOL_BAR_ALTO = 80
+    rect_vol_bar = pygame.Rect(VOL_BAR_X, VOL_BAR_Y, VOL_BAR_ANCHO, VOL_BAR_ALTO)
+    
+    # Colores para dibujar la barra (puedes cambiarlos)
+    COLOR_VOLUMEN_RELLENO = (255, 255, 255) # Blanco
+    COLOR_VOLUMEN_POMO = (211, 211, 211) # Gris claro
 
     # Inicializar gestor de objetos interactuables
     assets_path = Path(__file__).parent / "assets"
@@ -194,7 +205,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     }
 
     # Mostrar visualmente los portales en rojo (debug).
-    SHOW_PORTALS = True
+    # Desactivado para ocultar los contornos rojos.
+    SHOW_PORTALS = False
 
     def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
         if not portals:
@@ -326,21 +338,22 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     self.rect.move_ip(0, -3.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
-
-                if pressed_keys[K_DOWN] or pressed_keys[K_s]: 
+                        
+                elif pressed_keys[K_DOWN] or pressed_keys[K_s]: 
                     self.rect.move_ip(0, 3.5)
                     if colisiona_con_obstaculo(self.rect):
-                        self.rect = old_rect    
-
-                if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
-                    self.rect.move_ip(-3.5, 0)                   
-                    if colisiona_con_obstaculo(self.rect):
-                        self.rect = old_rect     
-
-                if pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
-                    self.rect.move_ip(3.5, 0) 
-                    if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
+                        
+                else:
+                    if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
+                        self.rect.move_ip(-3.5, 0)
+                        if colisiona_con_obstaculo(self.rect):
+                            self.rect = old_rect
+                        
+                    elif pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
+                        self.rect.move_ip(3.5, 0)
+                        if colisiona_con_obstaculo(self.rect):
+                            self.rect = old_rect
 
             # Actualizar animación (incluyendo si está corriendo)
             corriendo = pressed_keys[K_LSHIFT]
@@ -355,10 +368,16 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             is_moving = any(pressed_keys[k] for k in (K_UP, K_DOWN, K_LEFT, K_RIGHT, K_w, K_s, K_a, K_d))
             is_sprinting = pressed_keys[K_LSHIFT] and is_moving and player.energy > 0
 
+            # Drenar segun la dificultad
+            dificultad_actual = settings.DIFICULTAD
+            config_nivel = VALORES_DIFICULTAD[dificultad_actual]
+
+            # Variables de drenado de energia
+            self.drain_walk_rate = config_nivel["VELOCIDAD_ENERGIA"]
+            self.drain_run_rate = config_nivel["VELOCIDAD_ENERGIA_CORRER"]
+
             if is_moving:
-                drain_walk = 5.0    # energía por segundo caminando
-                drain_run  = 10.0    # energía por segundo corriendo
-                player.add_energy(-(drain_run if is_sprinting else drain_walk) * dt)
+                player.add_energy(-(self.drain_run_rate if is_sprinting else self.drain_walk_rate) * dt)
 
     # === Objeto interactivo ===
     class Objeto:
@@ -387,13 +406,18 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     objeto_actual = None  # guarda el objeto con el que chocamos
 
     # === Temporizador ===
-    START_TIME = 2 * 60 + 30 # 2 minutos en segundos
+    # Modificar tiempo dependiendo la dificultad
+    dificultad_actual = settings.DIFICULTAD
+    config_nivel = VALORES_DIFICULTAD[dificultad_actual]
+
+    START_TIME = config_nivel["TIEMPO_LIMITE"]
     start_ticks = pygame.time.get_ticks()
 
     # === Estado del juego ===
     game_state = "juego" # juego, pausa, config
     total_pause_ms = 0  # acumulado de tiempo en pausa
     pause_started = None  # instante en que empezó la pausa (ms)
+    is_dragging_volume = False
 
     # Imagen de fondo borrosa que se usará mientras esté en pausa
     paused_bg = None  # cache del blur 
@@ -450,6 +474,29 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                         settings.language = "eng"
                         print("Idioma: Inglés")
 
+                    # BARRA DE VOLUMEN (Clic)
+                    elif rect_vol_bar.collidepoint(event.pos):
+                        is_dragging_volume = True
+                        # Actualizar volumen al primer clic
+                        mouse_x = event.pos[0]
+                        relative_x = mouse_x - rect_vol_bar.x
+                        volume_pct = max(0, min(1, relative_x / rect_vol_bar.width))
+                        settings.GLOBAL_VOLUME = volume_pct
+                        pygame.mixer.music.set_volume(settings.GLOBAL_VOLUME)
+
+            # --- BARRA DE VOLUMEN (Soltar Clic) ---
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                is_dragging_volume = False
+
+            # --- BARRA DE VOLUMEN (Arrastrar) ---
+            if event.type == pygame.MOUSEMOTION:
+                if is_dragging_volume:
+                    mouse_x = event.pos[0]
+                    relative_x = mouse_x - rect_vol_bar.x
+                    volume_pct = max(0, min(1, relative_x / rect_vol_bar.width))
+                    settings.GLOBAL_VOLUME = volume_pct
+                    pygame.mixer.music.set_volume(settings.GLOBAL_VOLUME)
+
             # === ESC ===
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
                 if game_state == "juego":
@@ -497,8 +544,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 objeto_actual.encendido = False
                 super_boton_visible = False
                 objeto_actual = None
-                player.add_energy(+10)  # recupera 10 puntos de energia
-                print("⚡ Objeto apagado: +10 energía ⚡")
+
+                # Recargar energia segun la dificultad
+                dificultad_actual = settings.DIFICULTAD
+                config_nivel = VALORES_DIFICULTAD[dificultad_actual]
+                recuperar_energia = config_nivel["RECARGA_ENERGIA"]
+
+                player.add_energy(+recuperar_energia)
+                print(f"⚡ Objeto apagado: +{recuperar_energia} energía ⚡")
 
             # === No hay campo de visión limitada ===
         
@@ -607,6 +660,50 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             # Dibujar el contenido del panel (depende del idioma)
             screen.blit(current_img["botones_config"], (576, 410.25))
 
+            # --- DIBUJAR LA BARRA DE VOLUMEN ---
+            
+            # Ajusta estos valores para que la barra blanca tenga el tamaño exacto del canal azul
+            # y el pomo sobresalga ligeramente.
+            
+            # --- Ajustes para el mockup de la Image 2 ---
+            # Estos padding_x y padding_y determinan el tamaño real de la barra blanca y el pomo.
+            # Puedes ajustarlos finamente si tu imagen de fondo tiene diferentes márgenes.
+            padding_x = 10   # Distancia desde el borde izquierdo del rect_vol_bar al inicio de la barra blanca
+            padding_y = 10   # Distancia desde el borde superior/inferior del rect_vol_bar a la barra blanca
+
+            # El radio de los extremos redondeados de la barra y el pomo
+            knob_and_bar_radius = int((rect_vol_bar.height - (padding_y * 2)) / 2) # Mitad de la altura efectiva de la barra
+
+            # Calcular el ancho total que puede ocupar el relleno (sin contar el pomo)
+            fillable_width_without_knob = rect_vol_bar.width - (padding_x * 2) - knob_and_bar_radius 
+            
+            # El ancho real del relleno blanco, considerando el volumen
+            current_fill_width = fillable_width_without_knob * settings.GLOBAL_VOLUME
+            
+            # La altura de la barra blanca (se mantiene constante)
+            fill_height = rect_vol_bar.height - (padding_y * 2) 
+
+            # 1. Dibuja el relleno blanco (la parte principal de la barra)
+            # Este rectángulo se extiende hasta el punto donde debería comenzar la parte redondeada del pomo
+            rect_vol_fill = pygame.Rect(
+                rect_vol_bar.x + padding_x,
+                rect_vol_bar.y + padding_y,
+                current_fill_width + knob_and_bar_radius, # El ancho se extiende para cubrir el pomo parcialmente
+                fill_height
+            )
+            pygame.draw.rect(screen, COLOR_VOLUMEN_RELLENO, rect_vol_fill, border_radius=knob_and_bar_radius)
+
+            # 2. Dibuja el pomo (círculo) en el extremo de la barra
+            # Su posición central se calcula con el ancho del relleno, más el padding_x
+            knob_x = rect_vol_bar.x + padding_x + current_fill_width
+            knob_y = rect_vol_bar.centery # El pomo siempre está centrado verticalmente
+            
+            # Asegúrate de que el pomo no se salga de la barra visualmente por la derecha
+            # Clamp the knob_x position so it stays within the visual bounds of the bar
+            # knob_x = min(knob_x, rect_vol_bar.right - padding_x - knob_and_bar_radius)
+            
+            pygame.draw.circle(screen, COLOR_VOLUMEN_POMO, (int(knob_x), int(knob_y)), knob_and_bar_radius)
+
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
 
@@ -628,7 +725,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
         # === Condiciones de fin de juego ===
         if time_left <= 0 or player.energy <= 0:
-            screen.blit(pantalla_perdedor, (0,0))
+            screen.blit(current_img["pantalla_perdedor"], (0,0))
             pygame.display.flip()
             pygame.time.delay(3000)
             # Solicita música de menú niveles al volver
@@ -636,7 +733,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             return "niveles"
         
         elif all(not obj.encendido for obj in objetos):
-            screen.blit(pantalla_ganador, (0,0))
+            screen.blit(current_img["pantalla_ganador"], (0,0))
             pygame.display.flip()
             pygame.time.delay(3000)
             # Solicita música de menú niveles al volver
