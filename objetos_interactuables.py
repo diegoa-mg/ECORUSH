@@ -169,6 +169,29 @@ class GestorObjetosInteractuables:
                 except Exception as e:
                     print(f"Error al crear objeto {obj_data} en {habitacion}: {e}")
 
+    # === Métodos de compatibilidad usados por nivel1 ===
+    def crear_objetos_por_defecto(self):
+        """Carga los objetos definidos en CONFIG_OBJETOS a objetos_activos y devuelve la lista."""
+        try:
+            # Vaciar cualquier lista previa para evitar duplicados
+            self.objetos_activos = []
+            self.cargar_objetos_de_config(CONFIG_OBJETOS)
+        except Exception as e:
+            print(f"[Objetos] No se pudieron crear por defecto: {e}")
+        return self.objetos_activos
+
+    def listar_objetos_disponibles(self):
+        """Imprime un resumen simple de los objetos cargados por habitación."""
+        try:
+            resumen = {}
+            for obj in self.objetos_activos:
+                resumen.setdefault(obj.habitacion, 0)
+                resumen[obj.habitacion] += 1
+            for hab, count in resumen.items():
+                print(f"[Objetos] {hab}: {count} objeto(s)")
+        except Exception:
+            pass
+
     # --- Funciones de filtrado (Estas no cambian) ---
     
     def dibujar_todos(self, surface, nombre_habitacion_actual: str):
