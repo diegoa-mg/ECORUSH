@@ -14,12 +14,19 @@ TAMANOS_DECORATIVOS = {
 TAMANOS_HITBOX_DECORATIVOS = {
     # Ejemplos si deseas personalizar:
     # "cajonera1": (40, 40),
+    # Ejemplo: personalizar hitbox de cama (ancho, alto)
+    "cama": (100, 50),
+    # Ejemplo: personalizar hitbox de espejo
+    "espejo": (30, 60),
 }
 
 
 POSICIONES_DECORATIVOS = {
     # Coordenadas por defecto (modifícalas a tu gusto)
-
+    # Ejemplo: agregar una cama en la posición (800, 400)
+    "cama": (800, 400),
+    # Ejemplo: agregar un espejo en la posición (300, 200)
+    "espejo": (300, 200),
 }
 
 

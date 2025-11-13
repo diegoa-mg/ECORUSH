@@ -8,22 +8,27 @@ POSICIONES_OBJETOS = {
     "airedeventanaencendido": (1200, 475),
     "lamparaencendida": (1200, 614),
     "refrigerador encendido": (865, 25),
+    # Ejemplo: agregar una PC encendida en la posición (500, 300)
+    "pcencendida": (500, 300),
 
     # Agrega más si lo deseas:
-    # "ventilador encendido": (600, 360),
+    # "ventiladorencendido": (600, 360),
+    # "tarjallenadeagua": (400, 200),
 }
 
 class ObjetoInteractuable:
-    def __init__(self, x, y, imagen_encendida_path, nombre="objeto", imagen_apagada_path=None, hitbox_size=None, hitbox_top_left=None, hitbox_offset=None, hitbox_mode: str = "base", frames_encendido=None, frame_interval_ms: int = 180):
+    def __init__(self, x, y, imagen_encendida_path, nombre="objeto", imagen_apagada_path=None, hitbox_size=None, hitbox_top_left=None, hitbox_offset=None, hitbox_mode: str = "base", frames_encendido=None, frame_interval_ms: int = 180, habitacion=None):
         """
         Clase para objetos interactuables con imágenes de encendido/apagado.
         x, y: posición del objeto
         imagen_encendida_path: ruta a la imagen del objeto encendido
         imagen_apagada_path: ruta opcional a la imagen del objeto apagado
         nombre: nombre identificativo del objeto
+        habitacion: nombre de la habitación donde aparece (None = todas las habitaciones)
         """
         self.nombre = nombre
         self.encendido = True
+        self.habitacion = habitacion  # None = aparece en todas las habitaciones
         
         # Tamaños
         self.display_size = 80  # solicitado: imágenes de 40x40
@@ -164,6 +169,8 @@ class GestorObjetosInteractuables:
             # Ancho ligeramente mayor para estos objetos
             "airedeventanaencendido": (45, 37),
             "tarjallenadeagua": (43, 37),
+            # Ejemplo: personalizar hitbox de PC (ancho, alto)
+            "pcencendida": (50, 40),
         }
         # Offset de hitbox por objeto (nombre -> (dx, dy))
         self.offsets_hitbox = {}
@@ -221,11 +228,12 @@ class GestorObjetosInteractuables:
         else:
             print("Error: Carpeta 'objetos_interactuables' no encontrada")
     
-    def crear_objeto(self, x, y, nombre_imagen):
+    def crear_objeto(self, x, y, nombre_imagen, habitacion=None):
         """
         Crea un nuevo objeto interactuable
         x, y: posición
         nombre_imagen: nombre de la imagen (sin .png)
+        habitacion: nombre de la habitación donde aparece (None = todas las habitaciones)
         """
         # Intentar encontrar la imagen encendida (puede faltar)
         imagen_encendida_path = self.objetos_disponibles.get(nombre_imagen)
@@ -280,7 +288,8 @@ class GestorObjetosInteractuables:
             hitbox_offset=hitbox_offset,
             hitbox_mode=self.modo_hitbox,
             frames_encendido=frames_anim,
-            frame_interval_ms=150
+            frame_interval_ms=150,
+            habitacion=habitacion
         )
         self.objetos_activos.append(objeto)
         return objeto
@@ -341,9 +350,17 @@ class GestorObjetosInteractuables:
         
         return objetos_creados
     
-    def dibujar_todos(self, surface):
-        """Dibuja todos los objetos activos"""
+    def dibujar_todos(self, surface, habitacion_actual=None):
+        """
+        Dibuja todos los objetos activos
+        habitacion_actual: si se especifica, solo dibuja objetos de esa habitación o sin habitación asignada
+        """
         for objeto in self.objetos_activos:
+            # Filtrar por habitación si se especifica
+            if habitacion_actual is not None:
+                if objeto.habitacion is not None and objeto.habitacion != habitacion_actual:
+                    continue
+            
             objeto.draw(surface)
             # Dibujar advertencia sobre objetos encendidos
             if self.icono_advertencia and objeto.encendido:
@@ -354,20 +371,37 @@ class GestorObjetosInteractuables:
             # Depuración de hitbox: contorno rojo de la hitbox de bloqueo
             # Ocultar también el área de interacción (amarillo)
     
-    def verificar_colision(self, rect_jugador):
+    def verificar_colision(self, rect_jugador, habitacion_actual=None):
         """
         Verifica si el jugador colisiona con algún objeto
+        rect_jugador: rectángulo del jugador
+        habitacion_actual: si se especifica, solo verifica objetos de esa habitación o sin habitación asignada
         Retorna: (hay_colision, objeto_colisionado)
         """
         for objeto in self.objetos_activos:
+            # Filtrar por habitación si se especifica
+            if habitacion_actual is not None:
+                if objeto.habitacion is not None and objeto.habitacion != habitacion_actual:
+                    continue
+            
             # Usar área de interacción (no el centro) para permitir presionar E estando cerca
             if rect_jugador.colliderect(objeto.rect_interaccion) and objeto.encendido:
                 return True, objeto
         return False, None
 
-    def obtener_rects_bloqueo(self):
-        """Devuelve rectángulos que bloquean el movimiento del jugador."""
-        return [obj.rect_bloqueo for obj in self.objetos_activos]
+    def obtener_rects_bloqueo(self, habitacion_actual=None):
+        """
+        Devuelve rectángulos que bloquean el movimiento del jugador.
+        habitacion_actual: si se especifica, solo devuelve objetos de esa habitación o sin habitación asignada
+        """
+        rects = []
+        for obj in self.objetos_activos:
+            # Filtrar por habitación si se especifica
+            if habitacion_actual is not None:
+                if obj.habitacion is not None and obj.habitacion != habitacion_actual:
+                    continue
+            rects.append(obj.rect_bloqueo)
+        return rects
     
     def apagar_objeto(self, objeto):
         """Apaga un objeto específico"""

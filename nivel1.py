@@ -240,8 +240,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     if MAPA_MASK.get_at((x, y)):
                         return True
 
-        # Objetos interactuables
-        for rb in gestor_objetos.obtener_rects_bloqueo():
+        # Objetos interactuables (solo de la habitación actual)
+        for rb in gestor_objetos.obtener_rects_bloqueo(habitacion_actual=current_room):
             if rect.colliderect(rb):
                 return True
 
@@ -386,6 +386,20 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Crear objetos interactuables con imágenes (32x32)
     objetos = gestor_objetos.crear_objetos_por_defecto()
     
+    # === CONFIGURACIÓN ESPECÍFICA POR HABITACIÓN ===
+    # Configurar objetos específicos para la COCINA
+    # Puedes agregar objetos aquí que solo aparezcan en la cocina
+    objetos_cocina = [
+        # Ejemplo: agregar un refrigerador en la cocina
+        gestor_objetos.crear_objeto(800, 200, "refrigerador encendido", habitacion=ROOM_COCINA),
+        # Ejemplo: agregar una tarja en la cocina
+        gestor_objetos.crear_objeto(600, 400, "tarjallenadeagua", habitacion=ROOM_COCINA),
+        # Ejemplo: agregar una estufa (si existe la imagen)
+        # gestor_objetos.crear_objeto(1000, 300, "estufaencendida", habitacion=ROOM_COCINA),
+    ]
+    # Filtrar None (objetos que no se pudieron crear)
+    objetos_cocina = [obj for obj in objetos_cocina if obj is not None]
+    
     # Mostrar objetos disponibles (opcional)
     gestor_objetos.listar_objetos_disponibles()
 
@@ -493,7 +507,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
            # === Detectar colisión con algún objeto ===
             super_boton_visible = False
-            hay_colision, objeto_colisionado = gestor_objetos.verificar_colision(player.rect)
+            hay_colision, objeto_colisionado = gestor_objetos.verificar_colision(player.rect, habitacion_actual=current_room)
             
             if hay_colision:
                 super_boton_visible = True
@@ -527,8 +541,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
             # (Estante removido: ahora no se dibuja ni carga)
 
-            # Dibujar todos los objetos interactuables
-            gestor_objetos.dibujar_todos(screen)
+            # Dibujar todos los objetos interactuables (solo de la habitación actual)
+            gestor_objetos.dibujar_todos(screen, habitacion_actual=current_room)
 
             # Dibujar personaje
             screen.blit(player.surf, player.rect)
@@ -644,7 +658,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             set_next_music("musica_menu_niveles.mp3")
             return "niveles"
         
-        elif all(not obj.encendido for obj in objetos):
+        elif all(not obj.encendido for obj in gestor_objetos.objetos_activos):
             screen.blit(pantalla_ganador, (0,0))
             pygame.display.flip()
             pygame.time.delay(3000)
