@@ -6,11 +6,8 @@ import sel_nivel1
 import sel_nivel2
 import sel_nivel3
 import nivel1
-# import nivel1_extremo
-# import nivel2_sencillo
-# import nivel2_extremo
-# import nivel3_sencillo
-# import nivel3_extremo
+# import nivel2
+# import nivel3
 
 def main():
     pygame.init()
