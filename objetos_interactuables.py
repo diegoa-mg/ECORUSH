@@ -51,7 +51,7 @@ CONFIG_OBJETOS = {
             img_on="Lavabo.png"
         ),
         _crear_objeto(
-            pos=(32, 761), size=(149, 283),
+            pos=(30, 761), size=(149, 283),
             img_on="PC_cuarto1.png"
         )
     ],
