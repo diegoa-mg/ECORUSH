@@ -333,21 +333,22 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     self.rect.move_ip(0, -3.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
-
-                if pressed_keys[K_DOWN] or pressed_keys[K_s]: 
+                        
+                elif pressed_keys[K_DOWN] or pressed_keys[K_s]: 
                     self.rect.move_ip(0, 3.5)
                     if colisiona_con_obstaculo(self.rect):
-                        self.rect = old_rect    
-
-                if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
-                    self.rect.move_ip(-3.5, 0)                   
-                    if colisiona_con_obstaculo(self.rect):
-                        self.rect = old_rect     
-
-                if pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
-                    self.rect.move_ip(3.5, 0) 
-                    if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
+                        
+                else:
+                    if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
+                        self.rect.move_ip(-3.5, 0)
+                        if colisiona_con_obstaculo(self.rect):
+                            self.rect = old_rect
+                        
+                    elif pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
+                        self.rect.move_ip(3.5, 0)
+                        if colisiona_con_obstaculo(self.rect):
+                            self.rect = old_rect
 
             # Actualizar animación (incluyendo si está corriendo)
             corriendo = pressed_keys[K_LSHIFT]
@@ -363,8 +364,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             is_sprinting = pressed_keys[K_LSHIFT] and is_moving and player.energy > 0
 
             if is_moving:
-                drain_walk = 5.0    # energía por segundo caminando
-                drain_run  = 10.0    # energía por segundo corriendo
+                drain_walk = 2.0    # energía por segundo caminando
+                drain_run  = 5.0    # energía por segundo corriendo
                 player.add_energy(-(drain_run if is_sprinting else drain_walk) * dt)
 
     # === Objeto interactivo ===

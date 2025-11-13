@@ -120,7 +120,7 @@ class AnimacionPersonajeNina:
         for dir_key in ["arriba", "derecha", "izquierda", "abajo"]:
             if not self.animaciones[dir_key]:
                 print(f"[Animación] Advertencia: No se encontraron frames para '{dir_key}'. Usando placeholder.")
-                ph = pygame.Surface((40, 40), pygame.SRCALPHA)
+                ph = pygame.Surface((400, 400), pygame.SRCALPHA)
                 ph.fill((255, 0, 255, 180))
                 self.animaciones[dir_key] = [ph]
 
@@ -135,7 +135,7 @@ class AnimacionPersonajeNina:
         # Redimensionar todas las imágenes a un tamaño consistente
         for direccion, frames in self.animaciones.items():
             for i, frame in enumerate(frames):
-                self.animaciones[direccion][i] = pygame.transform.scale(frame, (40,40))
+                self.animaciones[direccion][i] = pygame.transform.scale(frame, (120,120))
 
     def actualizar(self, direccion, esta_moviendose, corriendo=False):
         """
