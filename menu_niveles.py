@@ -10,7 +10,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     try:
         next_track = consume_next_music()
         if next_track:
-            play_music(next_track, volume=0.6, loops=-1)
+            play_music(next_track, volume=settings.GLOBAL_VOLUME, loops=-1)
         else:
             try:
                 resume_music()
