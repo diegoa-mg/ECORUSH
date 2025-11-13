@@ -1,5 +1,6 @@
 import pygame, os, math, sys
 from settings import WIDTH, HEIGHT, FPS, with_fade, fade_to_black
+from pathlib import Path
 import menu_principal
 import menu_niveles
 import sel_nivel1
@@ -20,6 +21,12 @@ def main():
     screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN | pygame.SCALED)
     pygame.display.set_caption("EcoRush!")
     clock = pygame.time.Clock()
+
+    # Icono
+    script_dir = Path(__file__).parent
+    icon_path = script_dir / "assets" / "logo" / "ECORUSH_LOGO.png"
+    game_icon = pygame.image.load(str(icon_path))
+    pygame.display.set_icon(game_icon)
 
     SCENES = {
         "menu":        menu_principal.run,
