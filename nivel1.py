@@ -5,7 +5,7 @@ from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLO
 from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
 from objetos_interactuables import GestorObjetosInteractuables
-from objetos_decorativos import GestorObjetosDecorativos
+
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Música del nivel (si fue solicitada por el selector) ===
@@ -124,9 +124,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     gestor_objetos.configurar_modo_hitbox("centro")
     gestor_objetos.configurar_offset_hitbox_por_objeto({"pcencendida": (2, -1)})
 
-    # Inicializar decorativos y crearlos según posiciones configuradas
-    gestor_decorativos = GestorObjetosDecorativos(assets_path)
-    decorativos = gestor_decorativos.crear_decorativos_por_defecto()
 
     # Fuente
     FONT_PATH = Path(__file__).parent / "assets" / "fonts" / "horizon.otf"
@@ -173,26 +170,26 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Los rects están pensados para 1920x1080 y pueden ajustarse luego.
     room_portals: dict[str, list[dict]] = {
         ROOM_ENTRADA: [
-            {"rect": pygame.Rect(550, 3, 800, 60), "to": ROOM_SALA,    "spawn": (960, 900)},  # arriba → sala
-            {"rect": pygame.Rect(60, 540, 80, 200),   "to": ROOM_GARAJE,  "spawn": (1700, 540)}, # izquierda → garaje
-            {"rect": pygame.Rect(1780, 540, 80, 200), "to": ROOM_COCINA,  "spawn": (120, 540)},  # derecha → cocina
+            {"rect": pygame.Rect(550, 3, 800, 60), "to": ROOM_SALA,    "spawn": (1200, 1400)},  # arriba → sala
+            {"rect": pygame.Rect(2, 800, 19, 300),   "to": ROOM_GARAJE,  "spawn": (1700, 800)}, # izquierda → garaje
+            {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_COCINA,  "spawn": (90,900 )},  # derecha → cocina
         ],
         ROOM_SALA: [
             {"rect": pygame.Rect(860, 980, 200, 80),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
-            {"rect": pygame.Rect(40, 540, 80, 200),   "to": ROOM_CUARTO1, "spawn": (1700, 540)}, # izquierda → cuarto1
-            {"rect": pygame.Rect(1800, 540, 80, 200), "to": ROOM_CUARTO2, "spawn": (120, 540)},  # derecha → cuarto2
+            {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_CUARTO1, "spawn": (1700, 800)}, # izquierda → cuarto1
+            {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_CUARTO2, "spawn": (90, 900)},  # derecha → cuarto2
         ],
         ROOM_GARAJE: [
-            {"rect": pygame.Rect(1800, 540, 80, 200), "to": ROOM_ENTRADA, "spawn": (160, 540)},  # derecha → entrada
+            {"rect": pygame.Rect(1890, 800, 80, 200), "to": ROOM_ENTRADA, "spawn": (100, 1000)},  # derecha → entrada
         ],
         ROOM_COCINA: [
-            {"rect": pygame.Rect(40, 540, 80, 200),   "to": ROOM_ENTRADA, "spawn": (1760, 540)}, # izquierda → entrada
+            {"rect": pygame.Rect(2, 850, 10, 300),   "to": ROOM_ENTRADA, "spawn": (1760, 800)}, # izquierda → entrada
         ],
         ROOM_CUARTO1: [
-            {"rect": pygame.Rect(1800, 540, 80, 200), "to": ROOM_SALA,    "spawn": (160, 540)},  # derecha → sala
+            {"rect": pygame.Rect(1890, 800, 80, 200), "to": ROOM_SALA,    "spawn": (160, 540)},  # derecha → sala
         ],
         ROOM_CUARTO2: [
-            {"rect": pygame.Rect(40, 540, 80, 200),   "to": ROOM_SALA,    "spawn": (1760, 540)}, # izquierda → sala
+            {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_SALA,    "spawn": (1760,850)}, # izquierda → sala
         ],
     }
 
@@ -245,10 +242,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             if rect.colliderect(rb):
                 return True
 
-        # Objetos decorativos
-        for rb in gestor_decorativos.obtener_rects_bloqueo():
-            if rect.colliderect(rb):
-                return True
 
         return False
 
@@ -522,8 +515,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             if SHOW_PORTALS:
                 draw_portals_overlay(screen, room_portals.get(current_room, []))
 
-            # Dibujar decorativos (muebles, alfombras, etc.)
-            gestor_decorativos.dibujar_todos(screen)
 
             # (Estante removido: ahora no se dibuja ni carga)
 
