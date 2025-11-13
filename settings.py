@@ -73,6 +73,9 @@ def load_img(name, alpha=True):
     surf = pygame.image.load(str(path)) # pygame necesita string, por eso se usa el str
     return surf.convert_alpha() if alpha else surf.convert()
 
+# === VOLUMEN ===
+GLOBAL_VOLUME = .75 # 75%
+
 # === Música ===
 def play_music(name: str, volume: float = 0.6, loops: int = -1):
     """Carga y reproduce música desde assets/musica.

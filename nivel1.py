@@ -115,6 +115,18 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     rect_esp   = esp_on.get_rect(topleft=(576, 680))
     rect_eng   = eng_on.get_rect(topleft=(980, 680))
 
+    # BARRA DE VOLUMEN
+    # Este rect es el "canal" oscuro de fondo de tu mockup
+    VOL_BAR_X = 565
+    VOL_BAR_Y = 481
+    VOL_BAR_ANCHO = 790
+    VOL_BAR_ALTO = 80
+    rect_vol_bar = pygame.Rect(VOL_BAR_X, VOL_BAR_Y, VOL_BAR_ANCHO, VOL_BAR_ALTO)
+    
+    # Colores para dibujar la barra (puedes cambiarlos)
+    COLOR_VOLUMEN_RELLENO = (255, 255, 255) # Blanco
+    COLOR_VOLUMEN_POMO = (211, 211, 211) # Gris claro
+
     # Inicializar gestor de objetos interactuables
     assets_path = Path(__file__).parent / "assets"
     gestor_objetos = GestorObjetosInteractuables(assets_path)
@@ -411,6 +423,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     game_state = "juego" # juego, pausa, config
     total_pause_ms = 0  # acumulado de tiempo en pausa
     pause_started = None  # instante en que empezó la pausa (ms)
+    is_dragging_volume = False
 
     # Imagen de fondo borrosa que se usará mientras esté en pausa
     paused_bg = None  # cache del blur 
@@ -466,6 +479,29 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     elif rect_eng.collidepoint(event.pos):
                         settings.language = "eng"
                         print("Idioma: Inglés")
+
+                    # BARRA DE VOLUMEN (Clic)
+                    elif rect_vol_bar.collidepoint(event.pos):
+                        is_dragging_volume = True
+                        # Actualizar volumen al primer clic
+                        mouse_x = event.pos[0]
+                        relative_x = mouse_x - rect_vol_bar.x
+                        volume_pct = max(0, min(1, relative_x / rect_vol_bar.width))
+                        settings.GLOBAL_VOLUME = volume_pct
+                        pygame.mixer.music.set_volume(settings.GLOBAL_VOLUME)
+
+            # --- BARRA DE VOLUMEN (Soltar Clic) ---
+            if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
+                is_dragging_volume = False
+
+            # --- BARRA DE VOLUMEN (Arrastrar) ---
+            if event.type == pygame.MOUSEMOTION:
+                if is_dragging_volume:
+                    mouse_x = event.pos[0]
+                    relative_x = mouse_x - rect_vol_bar.x
+                    volume_pct = max(0, min(1, relative_x / rect_vol_bar.width))
+                    settings.GLOBAL_VOLUME = volume_pct
+                    pygame.mixer.music.set_volume(settings.GLOBAL_VOLUME)
 
             # === ESC ===
             if event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE:
@@ -631,6 +667,50 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             
             # Dibujar el contenido del panel (depende del idioma)
             screen.blit(current_img["botones_config"], (576, 410.25))
+
+            # --- DIBUJAR LA BARRA DE VOLUMEN ---
+            
+            # Ajusta estos valores para que la barra blanca tenga el tamaño exacto del canal azul
+            # y el pomo sobresalga ligeramente.
+            
+            # --- Ajustes para el mockup de la Image 2 ---
+            # Estos padding_x y padding_y determinan el tamaño real de la barra blanca y el pomo.
+            # Puedes ajustarlos finamente si tu imagen de fondo tiene diferentes márgenes.
+            padding_x = 10   # Distancia desde el borde izquierdo del rect_vol_bar al inicio de la barra blanca
+            padding_y = 10   # Distancia desde el borde superior/inferior del rect_vol_bar a la barra blanca
+
+            # El radio de los extremos redondeados de la barra y el pomo
+            knob_and_bar_radius = int((rect_vol_bar.height - (padding_y * 2)) / 2) # Mitad de la altura efectiva de la barra
+
+            # Calcular el ancho total que puede ocupar el relleno (sin contar el pomo)
+            fillable_width_without_knob = rect_vol_bar.width - (padding_x * 2) - knob_and_bar_radius 
+            
+            # El ancho real del relleno blanco, considerando el volumen
+            current_fill_width = fillable_width_without_knob * settings.GLOBAL_VOLUME
+            
+            # La altura de la barra blanca (se mantiene constante)
+            fill_height = rect_vol_bar.height - (padding_y * 2) 
+
+            # 1. Dibuja el relleno blanco (la parte principal de la barra)
+            # Este rectángulo se extiende hasta el punto donde debería comenzar la parte redondeada del pomo
+            rect_vol_fill = pygame.Rect(
+                rect_vol_bar.x + padding_x,
+                rect_vol_bar.y + padding_y,
+                current_fill_width + knob_and_bar_radius, # El ancho se extiende para cubrir el pomo parcialmente
+                fill_height
+            )
+            pygame.draw.rect(screen, COLOR_VOLUMEN_RELLENO, rect_vol_fill, border_radius=knob_and_bar_radius)
+
+            # 2. Dibuja el pomo (círculo) en el extremo de la barra
+            # Su posición central se calcula con el ancho del relleno, más el padding_x
+            knob_x = rect_vol_bar.x + padding_x + current_fill_width
+            knob_y = rect_vol_bar.centery # El pomo siempre está centrado verticalmente
+            
+            # Asegúrate de que el pomo no se salga de la barra visualmente por la derecha
+            # Clamp the knob_x position so it stays within the visual bounds of the bar
+            # knob_x = min(knob_x, rect_vol_bar.right - padding_x - knob_and_bar_radius)
+            
+            pygame.draw.circle(screen, COLOR_VOLUMEN_POMO, (int(knob_x), int(knob_y)), knob_and_bar_radius)
 
             # Posición del mouse para hover
             mouse_pos = pygame.mouse.get_pos()
