@@ -141,7 +141,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                                 set_next_music("musica_nivel_extremo.mp3")
                         # Pausar música de menú antes de entrar al nivel
                         pause_music()
-                        return "nivel1"
+                        return "pantalla_carga"
                     
                     # Regresar a niveles
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:

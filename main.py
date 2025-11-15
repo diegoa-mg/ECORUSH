@@ -7,6 +7,7 @@ import sel_nivel1
 import sel_nivel2
 import sel_nivel3
 import nivel1
+import pantalla_cargaa
 # import nivel2
 # import nivel3
 
@@ -34,6 +35,7 @@ def main():
         "sel_nivel1":  sel_nivel1.run,
         "sel_nivel2":  sel_nivel2.run,
         "sel_nivel3":  sel_nivel3.run,
+        "pantalla_carga": with_fade(pantalla_cargaa.run, in_ms=100),
         "nivel1":      with_fade(nivel1.run, in_ms=100),
     }
 
