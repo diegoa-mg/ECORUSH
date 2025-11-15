@@ -67,11 +67,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Juego
     # MAPA se gestiona dinámicamente más abajo (MAPA_SURF)
     img_boton_E         = pygame.transform.scale(img_boton_E, (100, 100))
-    img_temporizador    = pygame.transform.scale(img_temporizador, (288, 108))
+    img_temporizador    = pygame.transform.scale(img_temporizador, (144, 54))
     img_advertencia     = pygame.transform.scale(img_advertencia, (150, 150))
-    barra_energia       = pygame.transform.scale(barra_energia, (348, 102))
-    barra_energia_atras = pygame.transform.scale(barra_energia_atras, (348, 102))
-    btn_pausa           = pygame.transform.scale(btn_pausa, (102, 102))
+    barra_energia       = pygame.transform.scale(barra_energia, (174, 51))
+    barra_energia_atras = pygame.transform.scale(barra_energia_atras, (174, 51))
+    btn_pausa           = pygame.transform.scale(btn_pausa, (51, 51))
 
     for lang in ["esp", "eng"]:
         btn_images[lang]["titulo_pausa"] = pygame.transform.scale(btn_images[lang]["titulo_pausa"], (969, 146.5))
@@ -105,7 +105,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # === Hitbox de botones ===
     # Rects de botones que cambian de idioma (usamos "esp" como referencia)
-    rect_pausa = btn_pausa.get_rect(topleft=(1788, 50))
+    rect_pausa = btn_pausa.get_rect(topleft=(1820, 50))
     rect_conti = btn_images["esp"]["btn_continuar"].get_rect(topleft=(733, 450))
     rect_config = btn_images["esp"]["btn_config"].get_rect(topleft=(733, 600))
     rect_salir = btn_images["esp"]["btn_salir"].get_rect(topleft=(733, 750))
@@ -138,7 +138,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Fuente
     FONT_PATH = Path(__file__).parent / "assets" / "fonts" / "horizon.otf"
-    font = pygame.font.Font(str(FONT_PATH), 40)  # tamaño 
+    font = pygame.font.Font(str(FONT_PATH), 20)  # tamaño 
 
     # === Gestor de habitaciones con portales (plano_mapa1) ===
     plano_dir = Path(__file__).parent / "assets" / "plano_mapa1"
