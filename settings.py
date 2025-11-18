@@ -41,6 +41,18 @@ def set_selected_character(name: str):
 def get_selected_character() -> str:
     return selected_character
 
+# === Nivel actual (para pantalla de carga) ===
+# Valores posibles: "nivel1" | "nivel2" | "nivel3"
+CURRENT_LEVEL = "nivel1"
+
+def set_current_level(name: str):
+    global CURRENT_LEVEL
+    name = (name or "").strip().lower()
+    if name in ("nivel1", "nivel2", "nivel3"):
+        CURRENT_LEVEL = name
+    else:
+        CURRENT_LEVEL = "nivel1"
+
 # === Colores ===
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)

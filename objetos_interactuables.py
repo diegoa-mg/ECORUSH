@@ -55,7 +55,15 @@ CONFIG_OBJETOS = {
             img_on="PC_cuarto1.png"
         )
     ],
-    "cuarto2_nivel1.png": []
+    "cuarto2_nivel1.png": [],
+    # --- Nivel 2 (plano_mapa2) ---
+    "entrada_nivel2.png": [],
+    "sala nivel 2.png": [],
+    "cuarto__nivel2.png": [],
+    "baño_nivel2.png": [],
+    "cocina_nivel2.png": [],
+    # --- Nivel 3 (plano_mapa3) ---
+    "cuarto_nivel3.png": []
 }
 
 
