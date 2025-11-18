@@ -27,14 +27,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 return "niveles"
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_e:
-                    return "nivel1"
+                    return settings.CURRENT_LEVEL
                 if event.key == pygame.K_ESCAPE:
                     return "niveles"
 
         # Avance automático después de 10 segundos si no se presiona E
         elapsed_ms = pygame.time.get_ticks() - inicio_ms
         if elapsed_ms >= 10_000:
-            return "nivel1"
+            return settings.CURRENT_LEVEL
 
         # Dibujo
         screen.blit(bg, (0, 0))
@@ -42,4 +42,4 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         pygame.display.flip()
 
     # Por seguridad, si saliera del bucle
-    return "nivel1"
+    return settings.CURRENT_LEVEL

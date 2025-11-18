@@ -1,8 +1,15 @@
 import pygame, os, math, sys
 import settings
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, resume_music, play_music, pause_music, set_next_music, set_selected_character, set_current_level
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
+    # === Música en selector de nivel 3: reanuda o inicia si no está activa ===
+    try:
+        resume_music()
+    except Exception:
+        pass
+    if not pygame.mixer.get_init() or not pygame.mixer.music.get_busy():
+        play_music("musica_menu_niveles.mp3", volume=0.6, loops=-1)
     # === Cargar imagenes ===
     bg_niv       = load_img("fondoniv.png", alpha=False)
     btn_jugar      = load_img("play_jugar_N.png")
@@ -75,7 +82,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Variables del selector de nivel
     nivel_seleccionado = 3
-    dificultad_seleccionada = "sencillo" # sencillo o extremo
     personaje_seleccionado = 1  # 1 o 2
 
     # === Superficie para renderizar el menú (para blur) ===
@@ -96,19 +102,41 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 # Botones del selector de nivel individual
                 if game_state == "selector":
                     if rect_sencillo.collidepoint(event.pos):
-                        dificultad_seleccionada = "sencillo"
+                        settings.DIFICULTAD = "sencillo"
                         print("Dificultad: Sencillo")
                     elif rect_extremo.collidepoint(event.pos):
-                        dificultad_seleccionada = "extremo"
+                        settings.DIFICULTAD = "extremo"
                         print("Dificultad: Extremo")
                     elif rect_personaje1.collidepoint(event.pos):
                         personaje_seleccionado = 1
+                        try:
+                            set_selected_character("niño")
+                        except Exception:
+                            pass
                         print("Personaje 1 seleccionado")
                     elif rect_personaje2.collidepoint(event.pos):
                         personaje_seleccionado = 2
+                        try:
+                            set_selected_character("niña")
+                        except Exception:
+                            pass
                         print("Personaje 2 seleccionado")
                     elif rect_jugar.collidepoint(event.pos):
-                        print(f"Iniciando Nivel {nivel_seleccionado} - Dificultad: {dificultad_seleccionada} - Personaje: {personaje_seleccionado}")
+                        print(f"Iniciando Nivel {nivel_seleccionado} - Dificultad: {settings.DIFICULTAD} - Personaje: {personaje_seleccionado}")
+                        try:
+                            set_selected_character("niña" if personaje_seleccionado == 2 else "niño")
+                        except Exception:
+                            pass
+                        # Solicita música del nivel según dificultad
+                        if settings.DIFICULTAD == "sencillo":
+                            set_next_music("musica_nivel_facil.mp3")
+                        elif settings.DIFICULTAD == "extremo":
+                            set_next_music("musica_nivel_extremo.mp3")
+                        # Pausar música de menú antes de entrar al nivel
+                        pause_music()
+                        # Señalar que vamos a nivel3
+                        set_current_level("nivel3")
+                        return "pantalla_carga"
                     
                     # Regresar a niveles
                     if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
@@ -149,8 +177,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             mouse_pos = pygame.mouse.get_pos()
 
             # Dificultad: elige la imagen en base al estado
-            sencillo_img = current_img["btn_sencillo2"] if dificultad_seleccionada == "sencillo" else current_img["btn_sencillo"]
-            extremo_img  = current_img["btn_extremo2"]  if dificultad_seleccionada == "extremo" else current_img["btn_extremo"]
+            sencillo_img = current_img["btn_sencillo2"] if settings.DIFICULTAD == "sencillo" else current_img["btn_sencillo"]
+            extremo_img  = current_img["btn_extremo2"]  if settings.DIFICULTAD == "extremo" else current_img["btn_extremo"]
 
             blit_hoverable(screen, sencillo_img, rect_sencillo, mouse_pos)
             blit_hoverable(screen, extremo_img,  rect_extremo,  mouse_pos)
