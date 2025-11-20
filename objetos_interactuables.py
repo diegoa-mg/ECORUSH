@@ -55,15 +55,59 @@ CONFIG_OBJETOS = {
             img_on="PC_cuarto1.png"
         )
     ],
-    "cuarto2_nivel1.png": [],
+    "cuarto2_nivel1.png": [
+        _crear_objeto(
+            pos=(249, 654), size=(229, 463),
+            img_on="bañeraencendida.png"
+        ),
+        _crear_objeto(
+            pos=(500, 164), size=(209, 249),
+            img_on="lavamanosencendido.png"
+        ),
+        _crear_objeto(
+            pos=(882, 880), size=(137, 307),
+            img_on="teleencendida.png"
+        ),
+        _crear_objeto(
+            pos=(1421, 303), size=(213, 142),
+            img_on="compuencendida.png"
+        ),
+    ],
     # --- Nivel 2 (plano_mapa2) ---
-    "entrada_nivel2.png": [],
+    "entrada_nivel2.png": [
+         _crear_objeto(
+            pos=(1491, 120), size=(300, 228),
+            img_on="lamparaencendida.png"
+         ),
+    ],
     "sala nivel 2.png": [],
     "cuarto__nivel2.png": [],
     "baño_nivel2.png": [],
     "cocina_nivel2.png": [],
     # --- Nivel 3 (plano_mapa3) ---
-    "cuarto_nivel3.png": []
+    "cuarto_nivel3.png": [],
+    "cuarto2_nivel3.png": [
+        _crear_objeto(
+            pos=(1898, 263), size=(58, 101),
+            img_on="lamparachica.png"
+        ),
+        _crear_objeto(
+            pos=(252, 654), size=(229, 461),
+            img_on="bañeraencendida.png"
+        ),
+        _crear_objeto(
+            pos=(708, 414), size=(211, 253),
+            img_on="lavamanosencendido.png"
+        ),
+        _crear_objeto(
+            pos=(882, 878), size=(139, 303),
+            img_on="teleencendida.png"
+        ),
+        _crear_objeto(
+            pos=(1898, 263), size=(57, 100),
+            img_on="compuencendida.png"
+        ),
+    ],
 }
 
 
