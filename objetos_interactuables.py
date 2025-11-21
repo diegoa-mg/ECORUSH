@@ -57,26 +57,26 @@ CONFIG_OBJETOS = {
     ],
     "cuarto2_nivel1.png": [
         _crear_objeto(
-            pos=(249, 654), size=(229, 463),
+            pos=(36, 152), size=(227, 461),
             img_on="bañeraencendida.png"
         ),
         _crear_objeto(
-            pos=(500, 164), size=(209, 249),
+            pos=(494, 164), size=(207, 255),
             img_on="lavamanosencendido.png"
         ),
         _crear_objeto(
-            pos=(882, 880), size=(137, 307),
+            pos=(748, 572), size=(137, 311),
             img_on="teleencendida.png"
         ),
         _crear_objeto(
-            pos=(1421, 303), size=(213, 142),
+            pos=(1210, 162), size=(211, 143),
             img_on="compuencendida.png"
         ),
     ],
     # --- Nivel 2 (plano_mapa2) ---
     "entrada_nivel2.png": [
          _crear_objeto(
-            pos=(1491, 120), size=(300, 228),
+            pos=(1492, 118), size=(85, 229),
             img_on="lamparaencendida.png"
          ),
     ],
