@@ -1,6 +1,7 @@
 import pygame
 
 ROOM_HITBOXES_NIVEL1: dict[str, list[pygame.Rect]] = {
+    # Nivel 1
     "entrada_nivel1.png": [],
     "sala_nivel1.png": [],
     "cocina_nivel1.png": [],
@@ -12,11 +13,13 @@ ROOM_HITBOXES_NIVEL1: dict[str, list[pygame.Rect]] = {
         pygame.Rect(736, 12, 265, 245),
         pygame.Rect(1126, 12, 89, 241),
         pygame.Rect(1452, 16, 157, 405),
-        pygame.Rect(1176, 304, 285, 29),
-        pygame.Rect(45, 168, 211, 433),
+        # pygame.Rect(1176, 304, 285, 29),
+        # pygame.Rect(45, 168, 211, 433),
         pygame.Rect(1642, 766, 245, 313),
         pygame.Rect(1623, 63, 223, 391),
     ],
+    # Nivel 2
+    # Nivel 3
 }
 
 def dibujar_overlay(screen: pygame.Surface, habitacion: str,
