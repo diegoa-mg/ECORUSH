@@ -4,7 +4,7 @@ from pathlib import Path
 from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music, VALORES_DIFICULTAD
 from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
-from objetos_interactuables import GestorObjetosInteractuables
+from objetos_interactuables import GestorObjetosInteractuables, OBJETOS_NIVEL1
 from indicadores_portales import IndicadorPortales
 import hitboxes_nivel1 as hb_n1
 
@@ -129,15 +129,16 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     COLOR_VOLUMEN_RELLENO = (255, 255, 255) # Blanco
     COLOR_VOLUMEN_POMO = (211, 211, 211) # Gris claro
 
-    # Inicializar gestor de objetos interactuables
+    # === Inicializar gestor de objetos  ===
     assets_path = Path(__file__).parent / "assets"
     gestor_objetos = GestorObjetosInteractuables(assets_path)
     indicadores_portales = IndicadorPortales(Path(__file__).parent / "assets")
-    
-    # Configurar modo de colocación de hitbox y offsets por objeto
-    assets_path = Path(__file__).parent / "assets"
-    gestor_objetos = GestorObjetosInteractuables(assets_path)
 
+    # --- Cargar objetos especificos ---
+    gestor_objetos.cargar_objetos_de_config(OBJETOS_NIVEL1)
+    
+    # Guardamos los objetos
+    objetos = gestor_objetos.objetos_activos
 
     # Fuente
     FONT_PATH = Path(__file__).parent / "assets" / "fonts" / "horizon.otf"
@@ -145,8 +146,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # === Gestor de habitaciones con portales (plano_mapa1) ===
     plano_dir = Path(__file__).parent / "assets" / "plano_mapa1"
-
-    # Habitaciones disponibles (coinciden con archivos de la carpeta)
     ROOM_ENTRADA = "entrada_nivel1.png"
     ROOM_SALA    = "sala_nivel1.png"
     ROOM_COCINA  = "cocina_nivel1.png"
@@ -422,12 +421,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Crear jugador
     player = Player()
-
-    # Crear objetos interactuables con imágenes (32x32)
-    objetos = gestor_objetos.crear_objetos_por_defecto()
-    
-    # Mostrar objetos disponibles (opcional)
-    gestor_objetos.listar_objetos_disponibles()
 
     # Control de super botón
     super_boton_visible = False

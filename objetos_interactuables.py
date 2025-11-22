@@ -27,16 +27,17 @@ def _crear_objeto(pos, size, img_on, hitbox=None):
     pos=(1200, 614), size=(80, 80), 
     img_on="lamparaencendida.png
 """
-CONFIG_OBJETOS = {
+OBJETOS_NIVEL1 = {
+    # --- Nivel 1 (plano_mapa1) ---
     "entrada_nivel1.png": [],
     "sala_nivel1.png": [
         _crear_objeto(
             pos=(383, 81), size=(238, 126),
-            img_on="TVprendida_sala.png"
+            img_on="TV_sala.png"
         ),
         _crear_objeto(
             pos=(1744, 164), size=(119, 154),
-            img_on="Lavabo.png"
+            img_on="Lavamanos.png"
         )
     ],
     "cocina_nivel1.png": [],
@@ -44,11 +45,11 @@ CONFIG_OBJETOS = {
     "cuarto1_nivel1.png": [
         _crear_objeto(
             pos=(674, 161), size=(548, 239),
-            img_on="TVprendida_cuarto1.png"
+            img_on="TV_cuarto1.png"
         ),
         _crear_objeto(
             pos=(1424, 162), size=(119, 153),
-            img_on="Lavabo.png"
+            img_on="Lavamanos.png"
         ),
         _crear_objeto(
             pos=(30, 761), size=(149, 283),
@@ -57,22 +58,24 @@ CONFIG_OBJETOS = {
     ],
     "cuarto2_nivel1.png": [
         _crear_objeto(
-            pos=(249, 654), size=(229, 463),
-            img_on="bañeraencendida.png"
+            pos=(34, 138), size=(228, 464),
+            img_on="Bañera_cuarto2.png"
         ),
         _crear_objeto(
-            pos=(500, 164), size=(209, 249),
-            img_on="lavamanosencendido.png"
+            pos=(484, 162), size=(215, 258),
+            img_on="Lavamanos_cuarto2.png"
         ),
         _crear_objeto(
-            pos=(882, 880), size=(137, 307),
-            img_on="teleencendida.png"
+            pos=(742, 576), size=(144, 305),
+            img_on="TV_cuarto2.png"
         ),
         _crear_objeto(
-            pos=(1421, 303), size=(213, 142),
-            img_on="compuencendida.png"
+            pos=(1210, 162), size=(212, 143),
+            img_on="PC_cuarto2.png"
         ),
     ],
+}
+OBJETOS_NIVEL2 = {
     # --- Nivel 2 (plano_mapa2) ---
     "entrada_nivel2.png": [
          _crear_objeto(
@@ -84,36 +87,32 @@ CONFIG_OBJETOS = {
     "cuarto__nivel2.png": [],
     "baño_nivel2.png": [],
     "cocina_nivel2.png": [],
+}
+OBJETOS_NIVEL3 = {
     # --- Nivel 3 (plano_mapa3) ---
     "cuarto_nivel3.png": [],
     "cuarto2_nivel3.png": [
         _crear_objeto(
-            pos=(1898, 263), size=(58, 101),
-            img_on="lamparachica.png"
+            pos=(34, 138), size=(228, 464),
+            img_on="Bañera_cuarto2.png"
         ),
         _crear_objeto(
-            pos=(252, 654), size=(229, 461),
-            img_on="bañeraencendida.png"
+            pos=(484, 162), size=(215, 258),
+            img_on="Lavamanos_cuarto2.png"
         ),
         _crear_objeto(
-            pos=(708, 414), size=(211, 253),
-            img_on="lavamanosencendido.png"
+            pos=(742, 576), size=(144, 305),
+            img_on="TV_cuarto2.png"
         ),
         _crear_objeto(
-            pos=(882, 878), size=(139, 303),
-            img_on="teleencendida.png"
-        ),
-        _crear_objeto(
-            pos=(1898, 263), size=(57, 100),
-            img_on="compuencendida.png"
+            pos=(1210, 162), size=(212, 143),
+            img_on="PC_cuarto2.png"
         ),
     ],
 }
 
-
-# --- 3. CLASE DE OBJETO SIMPLIFICADA ---
+# --- 3. CLASE DE OBJETO ---
 class ObjetoInteractuable:
-    # --- MODIFICADO: 'img_off_path' eliminado ---
     def __init__(self, habitacion, pos, size, hitbox_rect, img_on_data):
         self.habitacion = habitacion
         self.encendido = True
@@ -125,25 +124,18 @@ class ObjetoInteractuable:
         self._frame_interval = 150 
 
         try:
-            # --- Carga de Imagen/Animación de ENCENDIDO ---
             if isinstance(img_on_data, list):
-                # Es una animación (lista de paths)
                 for path in img_on_data:
                     img = pygame.image.load(path).convert_alpha()
                     self.frames_encendido.append(pygame.transform.scale(img, size))
                 self.imagen_encendida = self.frames_encendido[0]
             else:
-                # Es una imagen estática (un solo path)
                 img = pygame.image.load(img_on_data).convert_alpha()
                 self.imagen_encendida = pygame.transform.scale(img, size)
         except Exception as e:
-            print(f"Error al cargar imagen ENCENDIDA '{img_on_data}': {e}")
+            print(f"Error al cargar imagen '{img_on_data}': {e}")
             self.imagen_encendida = None 
 
-        # --- Carga de Imagen de APAGADO (ELIMINADA) ---
-        # Ya no necesitamos 'self.imagen_apagada'
-
-        # --- Rects ---
         if self.imagen_encendida:
              self.image_rect = self.imagen_encendida.get_rect(topleft=pos)
         else:
@@ -153,11 +145,9 @@ class ObjetoInteractuable:
         self.rect_interaccion = self.rect_bloqueo.inflate(8, 8)
 
     def draw(self, surface):
-        # --- MODIFICADO: Lógica de dibujo simplificada ---
         if self.encendido:
             img_to_draw = None
             if self.frames_encendido:
-                # Lógica de animación
                 now = pygame.time.get_ticks()
                 if self._last_frame_ts == 0: self._last_frame_ts = now
                 elif now - self._last_frame_ts >= self._frame_interval:
@@ -167,47 +157,35 @@ class ObjetoInteractuable:
             else:
                 img_to_draw = self.imagen_encendida
             
-            # Dibuja la imagen de encendido
             if img_to_draw:
                 surface.blit(img_to_draw, self.image_rect)
             else:
-                # Dibuja un cuadrado fucsia si las imágenes fallaron
                 pygame.draw.rect(surface, (255, 0, 255), self.image_rect)
-        
-        else:
-            # Si está apagado, no dibuja NADA.
-            pass
 
     def apagar(self):
         self.encendido = False
 
-
-# --- 4. CLASE GESTOR SIMPLIFICADA ---
+# --- 4. CLASE GESTOR ---
 class GestorObjetosInteractuables:
     def __init__(self, assets_path):
         self.assets_path = Path(assets_path)
         self.objetos_activos = []
         
-        # Cargar el icono de advertencia
         self.icono_advertencia = None
         try:
             icon_path = self.assets_path / "img" / "advertencia_objetos.png"
             icon = pygame.image.load(str(icon_path)).convert_alpha()
             self.icono_advertencia = pygame.transform.scale(icon, (35, 35))
         except Exception as e:
-            print(f"[Advertencia] No se pudo cargar 'advertencia_objetos.png': {e}")
+            pass
 
     def cargar_objetos_de_config(self, config_data):
-        """
-        Lee el diccionario de configuración, crea todos los objetos
-        y los añade a la lista de 'objetos_activos'.
-        """
+        """Lee el diccionario y crea los objetos."""
         base_path = self.assets_path / "objetos_interactuables"
         
         for habitacion, lista_objetos in config_data.items():
             for obj_data in lista_objetos:
                 try:
-                    # --- Construir rutas de imágenes ---
                     img_on_data = obj_data["img_on"]
                     img_on_path = ""
                     
@@ -216,9 +194,6 @@ class GestorObjetosInteractuables:
                     else:
                         img_on_path = base_path / img_on_data
                     
-                    # --- Lógica de 'img_off' ELIMINADA ---
-
-                    # --- Crear el objeto ---
                     obj = ObjetoInteractuable(
                         habitacion = habitacion,
                         pos = obj_data["pos"],
@@ -229,39 +204,12 @@ class GestorObjetosInteractuables:
                     self.objetos_activos.append(obj)
                 
                 except Exception as e:
-                    print(f"Error al crear objeto {obj_data} en {habitacion}: {e}")
+                    print(f"Error al crear objeto en {habitacion}: {e}")
 
-    # === Métodos de compatibilidad usados por nivel1 ===
-    def crear_objetos_por_defecto(self):
-        """Carga los objetos definidos en CONFIG_OBJETOS a objetos_activos y devuelve la lista."""
-        try:
-            # Vaciar cualquier lista previa para evitar duplicados
-            self.objetos_activos = []
-            self.cargar_objetos_de_config(CONFIG_OBJETOS)
-        except Exception as e:
-            print(f"[Objetos] No se pudieron crear por defecto: {e}")
-        return self.objetos_activos
-
-    def listar_objetos_disponibles(self):
-        """Imprime un resumen simple de los objetos cargados por habitación."""
-        try:
-            resumen = {}
-            for obj in self.objetos_activos:
-                resumen.setdefault(obj.habitacion, 0)
-                resumen[obj.habitacion] += 1
-            for hab, count in resumen.items():
-                print(f"[Objetos] {hab}: {count} objeto(s)")
-        except Exception:
-            pass
-
-    # --- Funciones de filtrado (Estas no cambian) ---
-    
     def dibujar_todos(self, surface, nombre_habitacion_actual: str):
-        """Dibuja todos los objetos activos en la habitación actual"""
         for objeto in self.objetos_activos:
             if objeto.habitacion == nombre_habitacion_actual:
                 objeto.draw(surface)
-                # Dibuja la advertencia SÓLO si está encendido
                 if self.icono_advertencia and objeto.encendido:
                     icon_w, icon_h = self.icono_advertencia.get_size()
                     x = objeto.image_rect.centerx - icon_w // 2
@@ -269,22 +217,14 @@ class GestorObjetosInteractuables:
                     surface.blit(self.icono_advertencia, (x, y))
 
     def verificar_colision(self, rect_jugador, nombre_habitacion_actual: str):
-        """
-        Verifica si el jugador colisiona con algún objeto
-        EN LA HABITACIÓN ACTUAL.
-        """
         for objeto in self.objetos_activos:
             if objeto.habitacion == nombre_habitacion_actual:
-                # Solo se puede interactuar si está encendido
                 if rect_jugador.colliderect(objeto.rect_interaccion) and objeto.encendido:
                     return True, objeto
         return False, None
 
     def obtener_rects_bloqueo(self, nombre_habitacion_actual: str):
-        """Devuelve rectángulos que bloquean el movimiento
-        SOLO de la habitación actual."""
         return [obj.rect_bloqueo for obj in self.objetos_activos if obj.habitacion == nombre_habitacion_actual]
     
     def obtener_objetos_encendidos(self):
-        """Retorna lista de objetos que están encendidos (en TODAS las habitaciones)"""
         return [obj for obj in self.objetos_activos if obj.encendido]
