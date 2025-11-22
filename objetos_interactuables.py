@@ -29,7 +29,6 @@ def _crear_objeto(pos, size, img_on, hitbox=None):
 """
 OBJETOS_NIVEL1 = {
     # --- Nivel 1 (plano_mapa1) ---
-    "entrada_nivel1.png": [],
     "sala_nivel1.png": [
         _crear_objeto(
             pos=(383, 81), size=(238, 126),
@@ -40,8 +39,22 @@ OBJETOS_NIVEL1 = {
             img_on="Lavamanos.png"
         )
     ],
-    "cocina_nivel1.png": [],
-    "garaje_nivel1.png": [],
+    "cocina_nivel1.png": [
+        _crear_objeto(
+            pos=(37, 80), size=(161, 362),
+            img_on="Refrigerador.png"
+        ),
+        _crear_objeto(
+            pos=(1232, 191), size=(249, 259),
+            img_on="Estufa.png"
+        )
+    ],
+    "garaje_nivel1.png": [
+        _crear_objeto(
+            pos=(108, 170), size=(105, 120),
+            img_on="Grifo.png"
+        )
+    ],
     "cuarto1_nivel1.png": [
         _crear_objeto(
             pos=(674, 161), size=(548, 239),

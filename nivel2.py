@@ -4,7 +4,7 @@ from pathlib import Path
 from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music, VALORES_DIFICULTAD
 from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
-from objetos_interactuables import GestorObjetosInteractuables
+from objetos_interactuables import GestorObjetosInteractuables, OBJETOS_NIVEL2
 from indicadores_portales import IndicadorPortales
 
 
@@ -121,6 +121,13 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     gestor_objetos = GestorObjetosInteractuables(assets_path)
     indicadores_portales = IndicadorPortales(Path(__file__).parent / "assets")
 
+    # --- Cargar objetos especificos ---
+    gestor_objetos.cargar_objetos_de_config(OBJETOS_NIVEL2)
+    
+    # Guardamos los objetos
+    objetos = gestor_objetos.objetos_activos
+
+    # Fuente
     FONT_PATH = Path(__file__).parent / "assets" / "fonts" / "horizon.otf"
     font = pygame.font.Font(str(FONT_PATH), 20)
 
@@ -334,8 +341,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 player.add_energy(-(self.drain_run_rate if is_sprinting else self.drain_walk_rate) * dt)
 
     player = Player()
-    objetos = gestor_objetos.crear_objetos_por_defecto()
-    gestor_objetos.listar_objetos_disponibles()
     super_boton_visible = False
     objeto_actual = None
 
