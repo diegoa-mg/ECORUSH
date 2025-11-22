@@ -169,8 +169,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 if color[0] < THRESHOLD and color[1] < THRESHOLD and color[2] < THRESHOLD:
                     mask.set_at((x, y), 1)
         return mask
-
-    current_room = ROOM_ENTRADA if ROOM_ENTRADA in rooms_disponibles else (rooms_disponibles[0] if rooms_disponibles else ROOM_CUARTO)
+    
+    current_room = ROOM_ENTRADA if ROOM_ENTRADA in rooms_disponibles else (rooms_disponibles[0] if rooms_disponibles else ROOM_CUARTO1)
     MAPA_SURF = cargar_habitacion(current_room)
     MAPA_MASK = construir_mask(MAPA_SURF)
 

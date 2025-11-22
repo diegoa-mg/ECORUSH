@@ -6,6 +6,7 @@ from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
 from objetos_interactuables import GestorObjetosInteractuables, OBJETOS_NIVEL2
 from indicadores_portales import IndicadorPortales
+import hitboxes_nivel2 as hb_n2
 
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
@@ -141,6 +142,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     ROOM_COCINA  = "cocina_nivel2.png"
     ROOM_BANO    = "baño_nivel2.png"
 
+    rooms_disponibles = [
+        ROOM_ENTRADA,
+        ROOM_SALA,
+        ROOM_CUARTO,
+        ROOM_BANO,
+        ROOM_COCINA,
+    ]
+
     def cargar_habitacion(nombre_archivo: str) -> pygame.Surface:
         ruta = plano_dir / nombre_archivo
         try:
@@ -161,7 +170,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     mask.set_at((x, y), 1)
         return mask
 
-    current_room = ROOM_ENTRADA
+    current_room = ROOM_ENTRADA if ROOM_ENTRADA in rooms_disponibles else (rooms_disponibles[0] if rooms_disponibles else ROOM_CUARTO)
     MAPA_SURF = cargar_habitacion(current_room)
     MAPA_MASK = construir_mask(MAPA_SURF)
 
@@ -213,7 +222,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         ],
     }
 
-    SHOW_PORTALS = True
+    # Mostrar visualmente los portales en rojo (debug).
+    # Desactivado para ocultar los contornos rojos.
+    SHOW_PORTALS = False
+    SHOW_CUSTOM_HITBOXES = True
+    SHOW_INTERACTION_HITBOXES = True
 
     def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
         if not portals:
@@ -225,32 +238,48 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             pygame.draw.rect(overlay, (255, 0, 0, 180), r, 3)
         screen.blit(overlay, (0, 0))
 
-    def transition_to(room_name: str, spawn_pos: tuple[int, int], player_obj: pygame.sprite.Sprite):
-        nonlocal current_room, MAPA_SURF, MAPA_MASK
-        try:
-            settings.fade_to_black(screen, duration_ms=120)
-        except Exception:
-            pass
-        current_room = room_name
-        MAPA_SURF = cargar_habitacion(current_room)
-        MAPA_MASK = construir_mask(MAPA_SURF)
-        player_obj.rect.center = spawn_pos
-        try:
-            settings.fade_from_black(screen, duration_ms=120)
-        except Exception:
-            pass
+    def draw_interaction_overlay(screen: pygame.Surface, gestor_objetos: GestorObjetosInteractuables, habitacion: str):
+        rects = [obj.rect_interaccion for obj in gestor_objetos.objetos_activos if obj.habitacion == habitacion and obj.encendido]
+        if not rects:
+            return
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        for r in rects:
+            pygame.draw.rect(overlay, (0, 0, 255, 90), r)
+            pygame.draw.rect(overlay, (0, 0, 255, 180), r, 3)
+        screen.blit(overlay, (0, 0))    
 
     def check_portals_and_transition(player_obj: pygame.sprite.Sprite):
+        nonlocal current_room, MAPA_SURF, MAPA_MASK
         portals = room_portals.get(current_room, [])
         for p in portals:
             if player_obj.rect.colliderect(p["rect"]):
-                transition_to(p["to"], p["spawn"], player_obj)
+                room_to = p.get("to", current_room)
+                spawn = p.get("spawn", player_obj.rect.center)
+                try:
+                    settings.fade_to_black(screen, duration_ms=120)
+                except Exception:
+                    pass
+                current_room = room_to
+                MAPA_SURF = cargar_habitacion(current_room)
+                MAPA_MASK = construir_mask(MAPA_SURF)
+                player_obj.rect.center = spawn
+                try:
+                    settings.fade_from_black(screen, duration_ms=120)
+                except Exception:
+                    pass
                 break
 
     def colisiona_con_obstaculo(rect):
+        # Objetos interactuables
         for rb in gestor_objetos.obtener_rects_bloqueo(current_room):
             if rect.colliderect(rb):
                 return True
+
+        # Hitboxes definidas por habitación (cuadrados)
+        for rb in hb_n2.ROOM_HITBOXES_NIVEL2.get(current_room, []):
+            if rect.colliderect(rb):
+                return True
+            
         return False
 
     class Player(pygame.sprite.Sprite):
@@ -459,6 +488,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             screen.blit(MAPA_SURF, (0, 0))
             if SHOW_PORTALS:
                 draw_portals_overlay(screen, room_portals.get(current_room, []))
+            if SHOW_CUSTOM_HITBOXES:
+                hb_n2.dibujar_overlay(screen, current_room)
+            if SHOW_INTERACTION_HITBOXES:
+                draw_interaction_overlay(screen, gestor_objetos, current_room)
             # Dibujar flechas de portales siempre (solo donde hay objetos encendidos)
             indicadores_portales.draw(screen, current_room, room_portals, gestor_objetos, flechas_portales)
             gestor_objetos.dibujar_todos(screen, current_room)

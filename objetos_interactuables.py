@@ -29,105 +29,127 @@ def _crear_objeto(pos, size, img_on, hitbox=None):
 """
 OBJETOS_NIVEL1 = {
     # --- Nivel 1 (plano_mapa1) ---
+    "entrada_nivel1.png": [],
     "sala_nivel1.png": [
         _crear_objeto(
             pos=(383, 81), size=(238, 126),
-            img_on="TV_sala.png"
+            img_on="TV_sala.png",
+            hitbox=(383, 81, 238, 126)
         ),
         _crear_objeto(
             pos=(1744, 164), size=(119, 154),
-            img_on="Lavamanos.png"
+            img_on="Lavamanos.png",
+            hitbox=(1744, 164, 119, 154)
         )
-    ],
+    ], 
     "cocina_nivel1.png": [
         _crear_objeto(
             pos=(37, 80), size=(166, 376),
-            img_on="Refrigerador.png"
+            img_on="Refrigerador.png",
+            hitbox=(37, 80, 166, 376)
         ),
         _crear_objeto(
             pos=(1232, 191), size=(249, 259),
-            img_on="Estufa.png"
+            img_on="Estufa.png",
+            hitbox=(1232, 191, 249, 259)
         )
     ],
     "garaje_nivel1.png": [
         _crear_objeto(
             pos=(108, 170), size=(105, 120),
-            img_on="Grifo.png"
+            img_on="Grifo.png",
+            hitbox=(108, 170, 105, 120)
         )
     ],
     "cuarto1_nivel1.png": [
         _crear_objeto(
             pos=(674, 161), size=(548, 239),
-            img_on="TV_cuarto1.png"
+            img_on="TV_cuarto1.png",
+            hitbox=(674, 161, 548, 239)
         ),
         _crear_objeto(
             pos=(1424, 162), size=(119, 153),
-            img_on="Lavamanos.png"
+            img_on="Lavamanos.png",
+            hitbox=(1424, 162, 119, 153)
         ),
         _crear_objeto(
             pos=(30, 761), size=(149, 283),
-            img_on="PC_cuarto1.png"
+            img_on="PC_cuarto1.png",
+            hitbox=(30, 761, 149, 283)
         )
     ],
     "cuarto2_nivel1.png": [
         _crear_objeto(
             pos=(34, 138), size=(228, 464),
-            img_on="Bañera_cuarto2.png"
+            img_on="Bañera_cuarto2.png",
+            hitbox=(34, 138, 228, 464)
         ),
         _crear_objeto(
             pos=(484, 162), size=(215, 258),
-            img_on="Lavamanos_cuarto2.png"
+            img_on="Lavamanos_cuarto2.png",
+            hitbox=(484, 162, 215, 258)
         ),
         _crear_objeto(
             pos=(742, 576), size=(144, 305),
-            img_on="TV_cuarto2.png"
+            img_on="TV_cuarto2.png",
+            hitbox=(742, 576, 144, 305)
         ),
         _crear_objeto(
             pos=(1210, 162), size=(212, 143),
-            img_on="PC_cuarto2.png"
+            img_on="PC_cuarto2.png",
+            hitbox=(1210, 162, 212, 143)
         ),
     ],
 }
+
 OBJETOS_NIVEL2 = {
     # --- Nivel 2 (plano_mapa2) ---
     "entrada_nivel2.png": [
          _crear_objeto(
             pos=(1488, 117), size=(90, 230),
-            img_on="Lampara.png"
+            img_on="Lampara.png",
+            hitbox=(1488, 117, 90, 230)
          )
     ],
     "sala nivel 2.png": [
         _crear_objeto(
             pos=(1514, 274), size=(163, 107),
-            img_on="TV_sala2.png"
+            img_on="TV_sala2.png",
+            hitbox=(1514, 274, 163, 107)
         )
     ],
     "cuarto__nivel2.png": [
         _crear_objeto(
             pos=(1745, 650), size=(150, 283),
-            img_on="PC2.png"
+            img_on="PC2.png",
+            hitbox=(1745, 650, 150, 283)
          ),
          _crear_objeto(
             pos=(30, 133), size=(548, 239),
-            img_on="TV_cuarto1.png"
+            img_on="TV_cuarto1.png",
+            hitbox=(30, 133, 548, 239)
          )
     ],
     "baño_nivel2.png": [],
     "cocina_nivel2.png": [
         _crear_objeto(
             pos=(51, 179), size=(256, 250),
-            img_on="Estufa.png"
+            img_on="Estufa.png",
+            hitbox=(51, 179, 256, 250)
         ),
         _crear_objeto(
             pos=(1156, 66), size=(166, 376),
-            img_on="Refrigerador.png"
+            img_on="Refrigerador.png",
+            hitbox=(1156, 66, 166, 376)
         ),
         _crear_objeto(
             pos=(1717, 69), size=(166, 376),
-            img_on="Refrigerador.png"
+            img_on="Refrigerador.png",
+            hitbox=(1717, 69, 166, 376)
         )
     ],
 }
+
 OBJETOS_NIVEL3 = {
     # --- Nivel 3 (plano_mapa3) ---
     "cuarto_nivel3.png": [],
