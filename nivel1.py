@@ -6,6 +6,7 @@ from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
 from objetos_interactuables import GestorObjetosInteractuables
 from indicadores_portales import IndicadorPortales
+import hitboxes_nivel1 as hb_n1
 
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
@@ -190,7 +191,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         ROOM_SALA: [
             {"rect": pygame.Rect(960, 1075, 80, 5),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
             {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_CUARTO1, "spawn": (1700, 800)}, # izquierda → cuarto1
-            {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_CUARTO2, "spawn": (90, 900)},  # derecha → cuarto2
+            {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_CUARTO2, "spawn": (74, 954)},  # derecha → cuarto2
         ],
         ROOM_GARAJE: [
             {"rect": pygame.Rect(1890, 800, 80, 200), "to": ROOM_ENTRADA, "spawn": (100, 1000)},  # derecha → entrada
@@ -237,6 +238,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Mostrar visualmente los portales en rojo (debug).
     # Desactivado para ocultar los contornos rojos.
     SHOW_PORTALS = False
+    SHOW_CUSTOM_HITBOXES = True
 
     def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
         if not portals:
@@ -244,7 +246,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
         for p in portals:
             r = p["rect"]
-            # Relleno rojo semitransparente + borde rojo más intenso
             pygame.draw.rect(overlay, (255, 0, 0, 90), r)
             pygame.draw.rect(overlay, (255, 0, 0, 180), r, 3)
         screen.blit(overlay, (0, 0))
@@ -272,15 +273,13 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 break
 
     def colisiona_con_obstaculo(rect):
-        # Colisión con paredes del mapa (negras)
-        for x in range(rect.left, rect.right, 5):
-            for y in range(rect.top, rect.bottom, 5):
-                if 0 <= x < WIDTH and 0 <= y < HEIGHT:
-                    if MAPA_MASK.get_at((x, y)):
-                        return True
-
         # Objetos interactuables
         for rb in gestor_objetos.obtener_rects_bloqueo(current_room):
+            if rect.colliderect(rb):
+                return True
+
+        # Hitboxes definidas por habitación (cuadrados)
+        for rb in hb_n1.ROOM_HITBOXES_NIVEL1.get(current_room, []):
             if rect.colliderect(rb):
                 return True
 
@@ -416,7 +415,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             self.encendido = True
 
         def draw(self, surface):
-            # Dibujar objeto - siempre amarillo cuando está encendido
             if self.encendido:
                 pygame.draw.rect(surface, YELLOW, self.rect)
             else:
@@ -594,9 +592,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         if game_state == "juego":
             screen.blit(MAPA_SURF, (0, 0))  # dibuja el mapa dinámico de fondo
 
-            # Dibuja overlay de portales (en rojo) si está habilitado
             if SHOW_PORTALS:
                 draw_portals_overlay(screen, room_portals.get(current_room, []))
+            if SHOW_CUSTOM_HITBOXES:
+                hb_n1.dibujar_overlay(screen, current_room)
             # Dibujar flechas SIEMPRE, independientemente del overlay
             indicadores_portales.draw(screen, current_room, room_portals, gestor_objetos, flechas_portales)
 
