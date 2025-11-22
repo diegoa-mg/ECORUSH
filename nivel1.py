@@ -597,7 +597,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 hb_n1.dibujar_overlay(screen, current_room)
             if SHOW_INTERACTION_HITBOXES:
                 draw_interaction_overlay(screen, gestor_objetos, current_room)
-
             # Dibujar flechas SIEMPRE, independientemente del overlay
             indicadores_portales.draw(screen, current_room, room_portals, gestor_objetos, flechas_portales)
 

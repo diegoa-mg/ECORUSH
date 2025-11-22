@@ -87,7 +87,7 @@ OBJETOS_NIVEL1 = {
         _crear_objeto(
             pos=(484, 162), size=(215, 258),
             img_on="Lavamanos_cuarto2.png",
-            hitbox=(484, 162, 215, 258)
+            hitbox=(484, 162, 215, 268)
         ),
         _crear_objeto(
             pos=(742, 576), size=(144, 305),
@@ -106,10 +106,10 @@ OBJETOS_NIVEL2 = {
     # --- Nivel 2 (plano_mapa2) ---
     "entrada_nivel2.png": [
          _crear_objeto(
-            pos=(1488, 117), size=(90, 230),
-            img_on="Lampara.png",
-            hitbox=(1488, 117, 90, 230)
-         )
+            pos=(1491, 120), size=(300, 228),
+            img_on="lamparaencendida.png",
+            hitbox=(1491, 120, 300, 228)
+         ),
     ],
     "sala nivel 2.png": [
         _crear_objeto(
