@@ -134,19 +134,23 @@ OBJETOS_NIVEL3 = {
     "cuarto2_nivel3.png": [
         _crear_objeto(
             pos=(34, 138), size=(228, 464),
-            img_on="Bañera_cuarto2.png"
+            img_on="Bañera_cuarto2.png",
+            hitbox=(34, 138, 228, 464)
         ),
         _crear_objeto(
             pos=(484, 162), size=(215, 258),
-            img_on="Lavamanos_cuarto2.png"
+            img_on="Lavamanos_cuarto2.png",
+            hitbox=(484, 162, 215, 258)
         ),
         _crear_objeto(
             pos=(742, 576), size=(144, 305),
-            img_on="TV_cuarto2.png"
+            img_on="TV_cuarto2.png",
+            hitbox=(742, 576, 144, 305)
         ),
         _crear_objeto(
             pos=(1210, 162), size=(212, 143),
-            img_on="PC_cuarto2.png"
+            img_on="PC_cuarto2.png",
+            hitbox=(1210, 162, 212, 143)
         ),
     ],
 }

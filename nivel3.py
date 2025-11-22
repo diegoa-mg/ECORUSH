@@ -228,6 +228,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     SHOW_PORTALS = True
     SHOW_CUSTOM_HITBOXES = True
+    SHOW_INTERACTION_HITBOXES = True
 
     def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
         if not portals:
@@ -237,6 +238,16 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             r = p["rect"]
             pygame.draw.rect(overlay, (255, 0, 0, 90), r)
             pygame.draw.rect(overlay, (255, 0, 0, 180), r, 3)
+        screen.blit(overlay, (0, 0))
+
+    def draw_interaction_overlay(screen: pygame.Surface, gestor_objetos: GestorObjetosInteractuables, habitacion: str):
+        rects = [obj.rect_interaccion for obj in gestor_objetos.objetos_activos if obj.habitacion == habitacion and obj.encendido]
+        if not rects:
+            return
+        overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+        for r in rects:
+            pygame.draw.rect(overlay, (0, 0, 255, 90), r)
+            pygame.draw.rect(overlay, (0, 0, 255, 180), r, 3)
         screen.blit(overlay, (0, 0))
 
     def check_portals_and_transition(player_obj: pygame.sprite.Sprite):
@@ -477,6 +488,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 draw_portals_overlay(screen, room_portals.get(current_room, []))
             if SHOW_CUSTOM_HITBOXES:
                 hb_n3.dibujar_overlay(screen, current_room)
+            if SHOW_INTERACTION_HITBOXES:
+                draw_interaction_overlay(screen, gestor_objetos, current_room)
             # Dibujar flechas de portales siempre (si existen portales y objetos encendidos)
             indicadores_portales.draw(screen, current_room, room_portals, gestor_objetos, flechas_portales)
             gestor_objetos.dibujar_todos(screen, current_room)
