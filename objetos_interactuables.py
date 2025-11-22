@@ -33,7 +33,8 @@ OBJETOS_NIVEL1 = {
     "sala_nivel1.png": [
         _crear_objeto(
             pos=(383, 81), size=(238, 126),
-            img_on="TV_sala.png"
+            img_on="TV_sala.png",
+            hitbox=(383, 81, 238, 126)
         ),
         _crear_objeto(
             pos=(1744, 164), size=(119, 154),
@@ -80,11 +81,13 @@ OBJETOS_NIVEL1 = {
     "cuarto2_nivel1.png": [
         _crear_objeto(
             pos=(34, 138), size=(228, 464),
-            img_on="Bañera_cuarto2.png"
+            img_on="Bañera_cuarto2.png",
+            hitbox=(34, 138, 228, 464)
         ),
         _crear_objeto(
             pos=(484, 162), size=(215, 258),
-            img_on="Lavamanos_cuarto2.png"
+            img_on="Lavamanos_cuarto2.png",
+            hitbox=(484, 162, 215, 268)
         ),
         _crear_objeto(
             pos=(742, 576), size=(144, 305),
@@ -104,7 +107,8 @@ OBJETOS_NIVEL2 = {
     "entrada_nivel2.png": [
          _crear_objeto(
             pos=(1491, 120), size=(300, 228),
-            img_on="lamparaencendida.png"
+            img_on="lamparaencendida.png",
+            hitbox=(1491, 120, 300, 228)
          ),
     ],
     "sala nivel 2.png": [
