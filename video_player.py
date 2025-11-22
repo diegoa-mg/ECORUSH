@@ -35,14 +35,14 @@ def reproducir_video(screen, nombre_video, nombre_audio=None):
                 return "quit"
             
             if event.type == pygame.KEYDOWN:
-                # ESC -> Regresar al menú de niveles
+                # ESC -> Salir al menú
                 if event.key == pygame.K_ESCAPE:
-                    resultado = "niveles"
+                    resultado = "salir"
                     reproduciendo = False
                 
-                # E -> Saltar intro y jugar
+                # E -> Saltar al juego inmediatamente
                 if event.key == pygame.K_e:
-                    resultado = "juego"
+                    resultado = "saltar"
                     reproduciendo = False
 
         frame = cv2.resize(frame, (WIDTH, HEIGHT))
