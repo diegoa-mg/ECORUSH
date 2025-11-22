@@ -41,7 +41,7 @@ OBJETOS_NIVEL1 = {
     ],
     "cocina_nivel1.png": [
         _crear_objeto(
-            pos=(37, 80), size=(161, 362),
+            pos=(37, 80), size=(166, 376),
             img_on="Refrigerador.png"
         ),
         _crear_objeto(
@@ -99,7 +99,20 @@ OBJETOS_NIVEL2 = {
     "sala nivel 2.png": [],
     "cuarto__nivel2.png": [],
     "baño_nivel2.png": [],
-    "cocina_nivel2.png": [],
+    "cocina_nivel2.png": [
+        _crear_objeto(
+            pos=(51, 179), size=(256, 250),
+            img_on="Estufa.png"
+        ),
+        _crear_objeto(
+            pos=(1156, 66), size=(166, 376),
+            img_on="Refrigerador.png"
+        ),
+        _crear_objeto(
+            pos=(1717, 69), size=(166, 376),
+            img_on="Refrigerador.png"
+        )
+    ],
 }
 OBJETOS_NIVEL3 = {
     # --- Nivel 3 (plano_mapa3) ---
