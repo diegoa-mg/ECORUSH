@@ -198,7 +198,6 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             {"to": ROOM_SALA,   "pos": (924, 60),   "orient": "arriba"},
         ],
         ROOM_SALA: [
-            {"to": ROOM_ENTRADA, "pos": (924, 1000), "orient": "abajo"},
             {"to": ROOM_CUARTO,  "pos": (924, 60),   "orient": "arriba"},
             {"to": ROOM_COCINA,  "pos": (60, 850),   "orient": "izquierda"},
         ],
