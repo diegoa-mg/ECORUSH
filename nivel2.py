@@ -177,17 +177,17 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         ],
         # Cuarto superior ↔ Sala (puerta inferior) y Cuarto ↔ Baño (izquierda)
         ROOM_CUARTO: [
-            {"rect": pygame.Rect(6, 466, 13, 331),    "to": ROOM_BANO, "spawn": (1804, 918)},
+            {"rect": pygame.Rect(6, 550, 20, 270),    "to": ROOM_BANO, "spawn": (1804, 918)},
         ],
         # Cocina ↔ Sala (derecha)
         ROOM_COCINA: [
-            {"rect": pygame.Rect(1890, 651, 25, 244),    "to": ROOM_BANO, "spawn": (114, 866)},
+            {"rect": pygame.Rect(1890, 681, 25, 230),    "to": ROOM_BANO, "spawn": (114, 910)},
              {"rect": pygame.Rect(44, 1052, 200, 20), "to": ROOM_ENTRADA, "spawn": (261, 108)},
         ],
         # Baño ↔ Cuarto (derecha)
         ROOM_BANO: [
             {"rect": pygame.Rect(1896,864, 24, 220), "to": ROOM_CUARTO, "spawn": (95, 624)},
-            {"rect": pygame.Rect(4, 868, 25, 211),    "to": ROOM_COCINA,  "spawn": (1740, 724)},
+            {"rect": pygame.Rect(4, 868, 25, 211),    "to": ROOM_COCINA,  "spawn": (1740, 738)},
         ],
     }
 

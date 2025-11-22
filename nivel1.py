@@ -183,7 +183,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Los rects están pensados para 1920x1080 y pueden ajustarse luego.
     room_portals: dict[str, list[dict]] = {
         ROOM_ENTRADA: [
-            {"rect": pygame.Rect(550, 3, 800, 60), "to": ROOM_SALA,    "spawn": (1200, 1400)},  # arriba → sala
+            {"rect": pygame.Rect(550, 3, 800, 60), "to": ROOM_SALA,    "spawn": (982, 950)},  # arriba → sala
             {"rect": pygame.Rect(2, 800, 19, 300),   "to": ROOM_GARAJE,  "spawn": (1700, 800)}, # izquierda → garaje
             {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_COCINA,  "spawn": (90,900 )},  # derecha → cocina
         ],

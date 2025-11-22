@@ -92,12 +92,26 @@ OBJETOS_NIVEL2 = {
     # --- Nivel 2 (plano_mapa2) ---
     "entrada_nivel2.png": [
          _crear_objeto(
-            pos=(1491, 120), size=(300, 228),
-            img_on="lamparaencendida.png"
-         ),
+            pos=(1488, 117), size=(90, 230),
+            img_on="Lampara.png"
+         )
     ],
-    "sala nivel 2.png": [],
-    "cuarto__nivel2.png": [],
+    "sala nivel 2.png": [
+        _crear_objeto(
+            pos=(1514, 274), size=(163, 107),
+            img_on="TV_sala2.png"
+        )
+    ],
+    "cuarto__nivel2.png": [
+        _crear_objeto(
+            pos=(1745, 650), size=(150, 283),
+            img_on="PC2.png"
+         ),
+         _crear_objeto(
+            pos=(30, 133), size=(548, 239),
+            img_on="TV_cuarto1.png"
+         )
+    ],
     "baño_nivel2.png": [],
     "cocina_nivel2.png": [
         _crear_objeto(
