@@ -1,45 +1,21 @@
 import pygame
 import settings
-from settings import WIDTH, HEIGHT, FPS, load_img
-
+from video_player import reproducir_video
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     """
     Pantalla de carga / tutorial previa al nivel.
-    - Fondo: "pantalla_tutorial.png"
-    - Avanza al nivel al presionar la tecla E
-    - Si no se presiona E en 10 segundos, avanza automáticamente
-    - ESC regresa al menú de niveles
+    - Reproduce el video tutorial.mp4
+    - ESC -> Regresa a "niveles"
+    - E (o fin del video) -> Entra al nivel actual
     """
-
-    # Cargar fondo y ayudas según idioma
-    bg = load_img("pantalla_tutorial.png", alpha=False)
     
-   
-    inicio_ms = pygame.time.get_ticks()
+    # Reproducimos el video y guardamos qué decidió el usuario
+    accion = reproducir_video(screen, "pantalla_tutorial.mp4")
 
-    running = True
-    while running:
-        clock.tick(FPS)
-
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                return "niveles"
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_e:
-                    return settings.CURRENT_LEVEL
-                if event.key == pygame.K_ESCAPE:
-                    return "niveles"
-
-        # Avance automático después de 10 segundos si no se presiona E
-        elapsed_ms = pygame.time.get_ticks() - inicio_ms
-        if elapsed_ms >= 10_000:
-            return settings.CURRENT_LEVEL
-
-        # Dibujo
-        screen.blit(bg, (0, 0))
-       
-        pygame.display.flip()
-
-    # Por seguridad, si saliera del bucle
+    # Si el usuario presionó ESC, regresamos
+    if accion == "niveles":
+        return "niveles"
+    
+    # Si el usuario presionó E o el video terminó, vamos al nivel
     return settings.CURRENT_LEVEL

@@ -34,6 +34,7 @@ Diseñar y aplicar un videojuego educativo enfocado en la ODS 13 (Acción por el
 
 * Python
 * Pygame
+* OpenCV
 * LibreSprite
 * Canva
 
