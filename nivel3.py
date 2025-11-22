@@ -6,6 +6,7 @@ from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
 from objetos_interactuables import GestorObjetosInteractuables, OBJETOS_NIVEL3
 from indicadores_portales import IndicadorPortales
+import hitboxes_nivel3 as hb_n3
 
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
@@ -134,8 +135,20 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Gestor de habitaciones con portales (plano_mapa3) ===
     plano_dir = Path(__file__).parent / "assets" / "plano_mapa3"
 
-    # Habitaciones disponibles (según assets encontrados)
-    ROOM_UNICO  = "cuarto_nivel3.png"
+    # Habitaciones disponibles: descubre automáticamente todos los PNG del directorio
+    ROOM_ENTRADA = "entrada_nivel_3.png"
+    ROOM_COMEDOR = "comedornivel3.png"
+    ROOM_CUARTO1 = "cuarto_nivel3.png"
+    ROOM_CUARTO2 = "cuarto2_nivel3.png"
+    ROOM_COCINA  = "cuartodecocinanivel3.png"
+
+    rooms_disponibles = [
+        ROOM_ENTRADA,
+        ROOM_COMEDOR,
+        ROOM_CUARTO1,
+        ROOM_CUARTO2,
+        ROOM_COCINA,
+    ]
 
     def cargar_habitacion(nombre_archivo: str) -> pygame.Surface:
         ruta = plano_dir / nombre_archivo
@@ -157,21 +170,64 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                     mask.set_at((x, y), 1)
         return mask
 
-    current_room = ROOM_UNICO
+    current_room = ROOM_ENTRADA if ROOM_ENTRADA in rooms_disponibles else (rooms_disponibles[0] if rooms_disponibles else ROOM_CUARTO)
     MAPA_SURF = cargar_habitacion(current_room)
     MAPA_MASK = construir_mask(MAPA_SURF)
 
-    # En nivel 3 actualmente no hay portales entre habitaciones
+    # Portales por habitación (inicialmente vacíos). Puedes agregarlos según necesites.
+    _room_portals_base: dict[str, list[dict]] = {
+        ROOM_ENTRADA: [
+            {"rect": pygame.Rect(1892, 762, 25, 318),  "to": ROOM_COMEDOR, "spawn": (72, 873)},
+            {"rect": pygame.Rect(33, 3, 598, 16),     "to": ROOM_COCINA,  "spawn": (76, 972)},
+        ],
+        ROOM_COMEDOR: [
+            {"rect": pygame.Rect(1, 756, 7, 324),      "to": ROOM_ENTRADA, "spawn": (1790, 885)},
+        ],
+        ROOM_CUARTO1: [
+            {"rect": pygame.Rect(6, 466, 13, 331),     "to": ROOM_CUARTO2, "spawn": (1804, 918)},
+        ],
+        ROOM_COCINA: [
+            {"rect": pygame.Rect(1890, 651, 25, 244),  "to": ROOM_CUARTO2, "spawn": (114, 866)},
+            {"rect": pygame.Rect(44, 1052, 200, 20),   "to": ROOM_ENTRADA, "spawn": (261, 108)},
+        ],
+        ROOM_CUARTO2: [
+            {"rect": pygame.Rect(1896, 864, 24, 220),  "to": ROOM_CUARTO1, "spawn": (95, 624)},
+            {"rect": pygame.Rect(4, 868, 25, 211),     "to": ROOM_COCINA,  "spawn": (1740, 724)},
+        ],
+    }
     room_portals: dict[str, list[dict]] = {
-        ROOM_UNICO: []
+        room: [p for p in _room_portals_base.get(room, []) if p.get("to") in rooms_disponibles]
+        for room in rooms_disponibles
     }
 
     # Flechas por coordenadas (por habitación): listo para cuando definas portales
+    _flechas_portales_base: dict[str, list[dict]] = {
+        ROOM_ENTRADA: [
+            {"to": ROOM_COMEDOR, "pos": (924, 60),   "orient": "arriba"},
+            {"to": ROOM_COCINA,  "pos": (60, 120),   "orient": "izquierda"},
+        ],
+        ROOM_COMEDOR: [
+            {"to": ROOM_ENTRADA, "pos": (924, 1000), "orient": "abajo"},
+        ],
+        ROOM_CUARTO1: [
+            {"to": ROOM_CUARTO2, "pos": (60, 500),   "orient": "izquierda"},
+        ],
+        ROOM_COCINA: [
+            {"to": ROOM_CUARTO2, "pos": (1820, 850), "orient": "derecha"},
+            {"to": ROOM_ENTRADA, "pos": (200, 1030), "orient": "abajo"},
+        ],
+        ROOM_CUARTO2: [
+            {"to": ROOM_CUARTO1, "pos": (1820, 500), "orient": "derecha"},
+            {"to": ROOM_COCINA,  "pos": (60, 900),   "orient": "izquierda"},
+        ],
+    }
     flechas_portales: dict[str, list[dict]] = {
-        ROOM_UNICO: []
+        room: [f for f in _flechas_portales_base.get(room, []) if f.get("to") in rooms_disponibles]
+        for room in rooms_disponibles
     }
 
-    SHOW_PORTALS = False
+    SHOW_PORTALS = True
+    SHOW_CUSTOM_HITBOXES = True
 
     def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
         if not portals:
@@ -184,10 +240,31 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         screen.blit(overlay, (0, 0))
 
     def check_portals_and_transition(player_obj: pygame.sprite.Sprite):
-        pass  # No hay portales definidos por ahora
+        nonlocal current_room, MAPA_SURF, MAPA_MASK
+        portals = room_portals.get(current_room, [])
+        for p in portals:
+            if player_obj.rect.colliderect(p["rect"]):
+                room_to = p.get("to", current_room)
+                spawn = p.get("spawn", player_obj.rect.center)
+                try:
+                    settings.fade_to_black(screen, duration_ms=120)
+                except Exception:
+                    pass
+                current_room = room_to
+                MAPA_SURF = cargar_habitacion(current_room)
+                MAPA_MASK = construir_mask(MAPA_SURF)
+                player_obj.rect.center = spawn
+                try:
+                    settings.fade_from_black(screen, duration_ms=120)
+                except Exception:
+                    pass
+                break
 
     def colisiona_con_obstaculo(rect):
         for rb in gestor_objetos.obtener_rects_bloqueo(current_room):
+            if rect.colliderect(rb):
+                return True
+        for rb in hb_n3.ROOM_HITBOXES_NIVEL3.get(current_room, []):
             if rect.colliderect(rb):
                 return True
         return False
@@ -398,6 +475,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             screen.blit(MAPA_SURF, (0, 0))
             if SHOW_PORTALS:
                 draw_portals_overlay(screen, room_portals.get(current_room, []))
+            if SHOW_CUSTOM_HITBOXES:
+                hb_n3.dibujar_overlay(screen, current_room)
             # Dibujar flechas de portales siempre (si existen portales y objetos encendidos)
             indicadores_portales.draw(screen, current_room, room_portals, gestor_objetos, flechas_portales)
             gestor_objetos.dibujar_todos(screen, current_room)
