@@ -208,7 +208,7 @@ class ObjetoInteractuable:
              self.image_rect = pygame.Rect(pos[0], pos[1], size[0], size[1])
              
         self.rect_bloqueo = pygame.Rect(hitbox_rect)
-        self.rect_interaccion = self.rect_bloqueo.inflate(8, 8)
+        self.rect_interaccion = self.rect_bloqueo.inflate(20, 20)
 
     def draw(self, surface):
         if self.encendido:
