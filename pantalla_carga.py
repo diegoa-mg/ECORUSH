@@ -11,11 +11,16 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     """
     
     # Reproducimos el video y guardamos qué decidió el usuario
-    accion = reproducir_video(screen, "pantalla_tutorial.mp4")
+    for i in range(3):
+        accion = reproducir_video(screen, "pantalla_tutorial.mp4")
 
-    # Si el usuario presionó ESC, regresamos
-    if accion == "niveles":
-        return "niveles"
+        # 1. Si presionó ESC, nos vamos al menú de niveles inmediatamente
+        if accion == "salir":
+            return "niveles"
+        
+        # 2. Si presionó E ("saltar"), rompemos el ciclo y vamos al juego
+        if accion == "saltar":
+            return settings.CURRENT_LEVEL
     
     # Si el usuario presionó E o el video terminó, vamos al nivel
     return settings.CURRENT_LEVEL

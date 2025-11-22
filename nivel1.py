@@ -197,7 +197,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_COCINA,  "spawn": (90,900 )},  # derecha → cocina
         ],
         ROOM_SALA: [
-            {"rect": pygame.Rect(960, 1075, 80, 5),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
+            {"rect": pygame.Rect(760, 1075, 400, 5),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
             {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_CUARTO1, "spawn": (1700, 800)}, # izquierda → cuarto1
             {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_CUARTO2, "spawn": (74, 954)},  # derecha → cuarto2
         ],

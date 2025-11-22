@@ -65,7 +65,7 @@ OBJETOS_NIVEL1 = {
         _crear_objeto(
             pos=(674, 161), size=(548, 239),
             img_on="TV_cuarto1.png",
-            hitbox=(674, 161, 548, 239)
+            hitbox=(674, 151, 548, 239)
         ),
         _crear_objeto(
             pos=(1424, 162), size=(119, 153),
