@@ -68,7 +68,7 @@ WIDTH, HEIGHT = 1920, 1080
 
 # === Rutas relativas con pathlib ===
 # BASE_DIR: carpeta donde esta el archivo main.py
-BASE_DIR = Path(__file__).resolve().parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 # IMG_DIR: carpeta donde se guardan las imagenes del proyecto
 IMG_DIR = BASE_DIR / "assets" / "img"
 # MUSIC_DIR: carpeta donde se guardan las músicas del proyecto

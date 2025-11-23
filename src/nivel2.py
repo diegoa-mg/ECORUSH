@@ -4,9 +4,9 @@ from pathlib import Path
 from settings import WIDTH, HEIGHT, FPS, BLACK, WHITE, RED, YELLOW, ENERGIA_COLOR, load_img, make_hover_pair, make_blur, blit_hoverable, play_music, consume_next_music, set_next_music, VALORES_DIFICULTAD
 from movimiento_de_personaje import AnimacionPersonaje
 from movimiento_de_personaje_niña import AnimacionPersonajeNina
-from objetos_interactuables import GestorObjetosInteractuables, OBJETOS_NIVEL3
+from objetos_interactuables import GestorObjetosInteractuables, OBJETOS_NIVEL2
 from indicadores_portales import IndicadorPortales
-import hitboxes_nivel3 as hb_n3
+import hitboxes_nivel2 as hb_n2
 
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
@@ -118,35 +118,35 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     COLOR_VOLUMEN_POMO = (211, 211, 211)
 
     # Inicializar gestor de objetos interactuables
-    assets_path = Path(__file__).parent / "assets"
+    assets_path = Path(__file__).parent.parent / "assets"
     gestor_objetos = GestorObjetosInteractuables(assets_path)
-    indicadores_portales = IndicadorPortales(Path(__file__).parent / "assets")
+    indicadores_portales = IndicadorPortales(Path(__file__).parent.parent / "assets")
 
     # --- Cargar objetos especificos ---
-    gestor_objetos.cargar_objetos_de_config(OBJETOS_NIVEL3)
+    gestor_objetos.cargar_objetos_de_config(OBJETOS_NIVEL2)
     
     # Guardamos los objetos
     objetos = gestor_objetos.objetos_activos
 
-    # Fuentes
-    FONT_PATH = Path(__file__).parent / "assets" / "fonts" / "horizon.otf"
+    # Fuente
+    FONT_PATH = Path(__file__).parent.parent / "assets" / "fonts" / "horizon.otf"
     font = pygame.font.Font(str(FONT_PATH), 20)
 
-    # === Gestor de habitaciones con portales (plano_mapa3) ===
-    plano_dir = Path(__file__).parent / "assets" / "plano_mapa3"
+    # === Gestor de habitaciones con portales (plano_mapa2) ===
+    plano_dir = Path(__file__).parent.parent / "assets" / "plano_mapa1"
 
-    # Habitaciones disponibles: descubre automáticamente todos los PNG del directorio
-    ROOM_ENTRADA = "entrada_nivel_3.png"
-    ROOM_COMEDOR = "comedornivel3.png"
-    ROOM_CUARTO1 = "cuarto_nivel3.png"
-    ROOM_CUARTO2 = "cuarto2_nivel3.png"
-    ROOM_COCINA  = "cuartodecocinanivel3.png"
+    # Habitaciones disponibles (coinciden con archivos de la carpeta)
+    ROOM_ENTRADA = "entrada_nivel2.png"
+    ROOM_SALA    = "sala nivel 2.png"
+    ROOM_CUARTO  = "cuarto__nivel2.png"
+    ROOM_COCINA  = "cocina_nivel2.png"
+    ROOM_BANO    = "baño_nivel2.png"
 
     rooms_disponibles = [
         ROOM_ENTRADA,
-        ROOM_COMEDOR,
-        ROOM_CUARTO1,
-        ROOM_CUARTO2,
+        ROOM_SALA,
+        ROOM_CUARTO,
+        ROOM_BANO,
         ROOM_COCINA,
     ]
 
@@ -170,65 +170,61 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 if color[0] < THRESHOLD and color[1] < THRESHOLD and color[2] < THRESHOLD:
                     mask.set_at((x, y), 1)
         return mask
-    
+
     # Estado actual de habitación
-    current_room = ROOM_ENTRADA if ROOM_ENTRADA in rooms_disponibles else (rooms_disponibles[0] if rooms_disponibles else ROOM_CUARTO1)
+    current_room = ROOM_ENTRADA if ROOM_ENTRADA in rooms_disponibles else (rooms_disponibles[0] if rooms_disponibles else ROOM_CUARTO)
     MAPA_SURF = cargar_habitacion(current_room)
     MAPA_MASK = construir_mask(MAPA_SURF)
 
     # Definición de portales por habitación con rectángulos aproximados
     # Los rects están pensados para 1920x1080 y pueden ajustarse luego.
-    _room_portals_base: dict[str, list[dict]] = {
-        ROOM_ENTRADA: [
-            {"rect": pygame.Rect(1892, 762, 25, 318),  "to": ROOM_COMEDOR, "spawn": (72, 873)},
-            {"rect": pygame.Rect(33, 3, 598, 16),     "to": ROOM_COCINA,  "spawn": (76, 972)},
-        ],
-        ROOM_COMEDOR: [
-            {"rect": pygame.Rect(1, 756, 7, 324),      "to": ROOM_ENTRADA, "spawn": (1790, 885)},
-        ],
-        ROOM_CUARTO1: [
-            {"rect": pygame.Rect(6, 466, 13, 331),     "to": ROOM_CUARTO2, "spawn": (1804, 918)},
-        ],
-        ROOM_COCINA: [
-            {"rect": pygame.Rect(1890, 651, 25, 244),  "to": ROOM_CUARTO2, "spawn": (114, 866)},
-            {"rect": pygame.Rect(44, 1052, 200, 20),   "to": ROOM_ENTRADA, "spawn": (261, 108)},
-        ],
-        ROOM_CUARTO2: [
-            {"rect": pygame.Rect(1896, 864, 24, 220),  "to": ROOM_CUARTO1, "spawn": (95, 624)},
-            {"rect": pygame.Rect(4, 868, 25, 211),     "to": ROOM_COCINA,  "spawn": (1740, 724)},
-        ],
-    }
     room_portals: dict[str, list[dict]] = {
-        room: [p for p in _room_portals_base.get(room, []) if p.get("to") in rooms_disponibles]
-        for room in rooms_disponibles
+        # Entrada/Recibidor → Sala (puerta superior)
+        ROOM_ENTRADA: [
+            {"rect": pygame.Rect(1892, 762, 25, 318),  "to": ROOM_SALA,   "spawn": (72, 873)},
+            {"rect": pygame.Rect(33, 3, 598, 16),    "to": ROOM_COCINA,  "spawn": (76, 972)},
+        ],
+        # Sala ↔ Entrada y Sala → Cuarto (arriba) y Sala ↔ Cocina (izquierda)
+        ROOM_SALA: [
+            {"rect": pygame.Rect(1, 756, 7, 324), "to": ROOM_ENTRADA, "spawn": (1790, 885)},
+        ],
+        # Cuarto superior ↔ Sala (puerta inferior) y Cuarto ↔ Baño (izquierda)
+        ROOM_CUARTO: [
+            {"rect": pygame.Rect(6, 550, 20, 270),    "to": ROOM_BANO, "spawn": (1804, 918)},
+        ],
+        # Cocina ↔ Sala (derecha)
+        ROOM_COCINA: [
+            {"rect": pygame.Rect(1890, 681, 25, 230),    "to": ROOM_BANO, "spawn": (114, 910)},
+             {"rect": pygame.Rect(44, 1052, 200, 20), "to": ROOM_ENTRADA, "spawn": (261, 108)},
+        ],
+        # Baño ↔ Cuarto (derecha)
+        ROOM_BANO: [
+            {"rect": pygame.Rect(1896,864, 24, 220), "to": ROOM_CUARTO, "spawn": (95, 624)},
+            {"rect": pygame.Rect(4, 868, 25, 211),    "to": ROOM_COCINA,  "spawn": (1740, 738)},
+        ],
     }
 
     # Flechas por coordenadas (por habitación): solo se muestran
     # si en la habitación destino hay objetos encendidos.
     # Formato: habitacion_actual: [{"to": ROOM_*, "pos": (x, y), "orient": "arriba|abajo|izquierda|derecha"}]
-    _flechas_portales_base: dict[str, list[dict]] = {
+    flechas_portales: dict[str, list[dict]] = {
         ROOM_ENTRADA: [
-            {"to": ROOM_COMEDOR, "pos": (924, 60),   "orient": "arriba"},
-            {"to": ROOM_COCINA,  "pos": (60, 120),   "orient": "izquierda"},
+            {"to": ROOM_SALA,   "pos": (924, 60),   "orient": "arriba"},
         ],
-        ROOM_COMEDOR: [
-            {"to": ROOM_ENTRADA, "pos": (924, 1000), "orient": "abajo"},
+        ROOM_SALA: [
+            {"to": ROOM_CUARTO,  "pos": (924, 60),   "orient": "arriba"},
+            {"to": ROOM_COCINA,  "pos": (60, 850),   "orient": "izquierda"},
         ],
-        ROOM_CUARTO1: [
-            {"to": ROOM_CUARTO2, "pos": (60, 500),   "orient": "izquierda"},
+        ROOM_CUARTO: [
+            {"to": ROOM_SALA, "pos": (924, 1000), "orient": "abajo"},
+            {"to": ROOM_BANO, "pos": (60, 500),   "orient": "izquierda"},
         ],
         ROOM_COCINA: [
-            {"to": ROOM_CUARTO2, "pos": (1820, 850), "orient": "derecha"},
-            {"to": ROOM_ENTRADA, "pos": (200, 1030), "orient": "abajo"},
+            {"to": ROOM_SALA, "pos": (1820, 850), "orient": "derecha"},
         ],
-        ROOM_CUARTO2: [
-            {"to": ROOM_CUARTO1, "pos": (1820, 500), "orient": "derecha"},
-            {"to": ROOM_COCINA,  "pos": (60, 900),   "orient": "izquierda"},
+        ROOM_BANO: [
+            {"to": ROOM_CUARTO, "pos": (1820, 500), "orient": "derecha"},
         ],
-    }
-    flechas_portales: dict[str, list[dict]] = {
-        room: [f for f in _flechas_portales_base.get(room, []) if f.get("to") in rooms_disponibles]
-        for room in rooms_disponibles
     }
 
     # Mostrar visualmente los portales en rojo (debug).
@@ -285,24 +281,23 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 return True
 
         # Hitboxes definidas por habitación (cuadrados)
-        for rb in hb_n3.ROOM_HITBOXES_NIVEL1.get(current_room, []):
+        for rb in hb_n2.ROOM_HITBOXES_NIVEL2.get(current_room, []):
             if rect.colliderect(rb):
                 return True
             
         return False
-
+    
     # === Jugador ===
     class Player(pygame.sprite.Sprite):
         def __init__(self):
             super().__init__()
             # Inicializar animaciones
-            assets_path = Path(__file__).parent / "assets"
+            assets_path = Path(__file__).parent.parent / "assets"
             # Elegir animación según personaje seleccionado
             try:
                 personaje = getattr(settings, "selected_character", "niño")
             except Exception:
                 personaje = "niño"
-
             if personaje == "niña":
                 self.animacion = AnimacionPersonajeNina(assets_path)
             else:
@@ -313,8 +308,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             self.rect = self.surf.get_rect(center=(WIDTH//2, HEIGHT//2))
 
             # ENERGÍA
-            self.energy = 100  
-            self.energy_max = 100 # MAX_ENERGY
+            self.energy = 100
+            self.energy_max = 100
 
         def add_energy(self, amount: float):
             self.energy = max(0, min(self.energy + amount, self.energy_max))
@@ -326,7 +321,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 screen.blit(bg_img, (x, y))
             # barra rellena (un rectángulo recortado al ancho)
             pct = self.energy / self.energy_max
-            inner_margin = 6  # ajusta al arte de tu barra
+            inner_margin = 6 # ajusta al arte de tu barra
             fill_rect = pygame.Rect(x + inner_margin, y + inner_margin,
                                     int((w - inner_margin*2) * pct),
                                     h - inner_margin*2)
@@ -341,49 +336,42 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             
             # Obtener dirección y estado de movimiento para animaciones
             direccion, esta_moviendose = self.animacion.obtener_direccion_movimiento(pressed_keys)
-            
+
             # Movimiento normal
             if pressed_keys[K_UP] or pressed_keys[K_w]: 
                 self.rect.move_ip(0, -5)
                 if colisiona_con_obstaculo(self.rect):
                     self.rect = old_rect
-                    
             elif pressed_keys[K_DOWN] or pressed_keys[K_s]: 
                 self.rect.move_ip(0, 5)
                 if colisiona_con_obstaculo(self.rect):
                     self.rect = old_rect
-                    
             else:
                 if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
                     self.rect.move_ip(-5, 0)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
-                    
                 elif pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
                     self.rect.move_ip(5, 0)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
 
             # Movimiento rápido con Shift
-            if pressed_keys[K_LSHIFT]:  # correr más rápido
+            if pressed_keys[K_LSHIFT]: # Correr más rápido
                 old_rect = self.rect.copy()
-
                 if pressed_keys[K_UP] or pressed_keys[K_w]: 
                     self.rect.move_ip(0, -5.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
-                        
                 elif pressed_keys[K_DOWN] or pressed_keys[K_s]: 
                     self.rect.move_ip(0, 5.5)
                     if colisiona_con_obstaculo(self.rect):
                         self.rect = old_rect
-                        
                 else:
                     if pressed_keys[K_LEFT] or pressed_keys[K_a]: 
                         self.rect.move_ip(-5.5, 0)
                         if colisiona_con_obstaculo(self.rect):
                             self.rect = old_rect
-                        
                     elif pressed_keys[K_RIGHT] or pressed_keys[K_d]: 
                         self.rect.move_ip(5.5, 0)
                         if colisiona_con_obstaculo(self.rect):
@@ -394,10 +382,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             self.animacion.actualizar(direccion, esta_moviendose, corriendo)
             self.surf = self.animacion.obtener_frame_actual()
 
-            self.rect.clamp_ip(screen.get_rect())  # no salir de pantalla
+            self.rect.clamp_ip(screen.get_rect()) # no salir de pantalla
             # Verificar transición de mapa por portales
             check_portals_and_transition(self)
-
+            
             # Drenaje de energía según movimiento
             is_moving = any(pressed_keys[k] for k in (K_UP, K_DOWN, K_LEFT, K_RIGHT, K_w, K_s, K_a, K_d))
             is_sprinting = pressed_keys[K_LSHIFT] and is_moving and player.energy > 0
@@ -405,11 +393,10 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             # Drenar segun la dificultad
             dificultad_actual = settings.DIFICULTAD
             config_nivel = VALORES_DIFICULTAD[dificultad_actual]
-
+            
             # Variables de drenado de energia
             self.drain_walk_rate = config_nivel["VELOCIDAD_ENERGIA"]
             self.drain_run_rate = config_nivel["VELOCIDAD_ENERGIA_CORRER"]
-
             if is_moving:
                 player.add_energy(-(self.drain_run_rate if is_sprinting else self.drain_walk_rate) * dt)
 
@@ -418,7 +405,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Control de super botón
     super_boton_visible = False
-    objeto_actual = None  # guarda el objeto con el que chocamos
+    objeto_actual = None # Guarda el objeto con el que chocamos
 
     # === Temporizador ===
     # Modificar tiempo dependiendo la dificultad
@@ -429,13 +416,13 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     start_ticks = pygame.time.get_ticks()
 
     # === Estado del juego ===
-    game_state = "juego" # juego, pausa, config
+    game_state = "juego"   # juego, pausa, config
     total_pause_ms = 0  # acumulado de tiempo en pausa
-    pause_started = None  # instante en que empezó la pausa (ms)
+    pause_started = None    # instante en que empezó la pausa (ms)
     is_dragging_volume = False
 
     # Imagen de fondo borrosa que se usará mientras esté en pausa
-    paused_bg = None  # cache del blur 
+    paused_bg = None # cache del blur 
 
     running = True
     while running:
@@ -582,7 +569,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             if SHOW_PORTALS:
                 draw_portals_overlay(screen, room_portals.get(current_room, []))
             if SHOW_CUSTOM_HITBOXES:
-                hb_n3.dibujar_overlay(screen, current_room)
+                hb_n2.dibujar_overlay(screen, current_room)
             if SHOW_INTERACTION_HITBOXES:
                 draw_interaction_overlay(screen, gestor_objetos, current_room)
             # Dibujar flechas SIEMPRE, independientemente del overlay
