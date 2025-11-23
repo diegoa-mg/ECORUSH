@@ -130,9 +130,9 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     COLOR_VOLUMEN_POMO = (211, 211, 211) # Gris claro
 
     # === Inicializar gestor de objetos  ===
-    assets_path = Path(__file__).parent / "assets"
+    assets_path = Path(__file__).parent.parent / "assets"
     gestor_objetos = GestorObjetosInteractuables(assets_path)
-    indicadores_portales = IndicadorPortales(Path(__file__).parent / "assets")
+    indicadores_portales = IndicadorPortales(Path(__file__).parent.parent / "assets")
 
     # --- Cargar objetos especificos ---
     gestor_objetos.cargar_objetos_de_config(OBJETOS_NIVEL1)
@@ -141,11 +141,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     objetos = gestor_objetos.objetos_activos
 
     # Fuente
-    FONT_PATH = Path(__file__).parent / "assets" / "fonts" / "horizon.otf"
+    FONT_PATH = Path(__file__).parent.parent / "assets" / "fonts" / "horizon.otf"
     font = pygame.font.Font(str(FONT_PATH), 20)  # tamaño 
 
     # === Gestor de habitaciones con portales (plano_mapa1) ===
-    plano_dir = Path(__file__).parent / "assets" / "plano_mapa1"
+    plano_dir = Path(__file__).parent.parent / "assets" / "plano_mapa1"
     ROOM_ENTRADA = "entrada_nivel1.png"
     ROOM_SALA    = "sala_nivel1.png"
     ROOM_COCINA  = "cocina_nivel1.png"
@@ -308,7 +308,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         def __init__(self):
             super().__init__()
             # Inicializar animaciones
-            assets_path = Path(__file__).parent / "assets"
+            assets_path = Path(__file__).parent.parent / "assets"
             # Elegir animación según personaje seleccionado
             try:
                 personaje = getattr(settings, "selected_character", "niño")

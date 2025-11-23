@@ -24,7 +24,7 @@ def main():
     clock = pygame.time.Clock()
 
     # Icono
-    script_dir = Path(__file__).parent
+    script_dir = Path(__file__).parent.parent
     icon_path = script_dir / "assets" / "logo" / "ECORUSH_LOGO.png"
     game_icon = pygame.image.load(str(icon_path))
     pygame.display.set_icon(game_icon)

@@ -8,7 +8,7 @@ def reproducir_video(screen, nombre_video, nombre_audio=None):
     Reproduce video. 
     Retorna: "juego" (si termina o presiona E) o "niveles" (si presiona ESC).
     """
-    base_dir = Path(__file__).parent
+    base_dir = Path(__file__).parent.parent
     ruta_video = base_dir / "assets" / "video" / nombre_video
     
     cap = cv2.VideoCapture(str(ruta_video))
