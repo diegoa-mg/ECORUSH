@@ -1,1 +1,1 @@
-pythonw.exe main.py
+pythonw.exe src/main.py
