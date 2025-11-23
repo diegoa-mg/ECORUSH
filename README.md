@@ -9,7 +9,7 @@
   
   <img src="https://img.shields.io/badge/HECHO%20CON-PYGAME-green?style=flat-square" alt="Pygame">
   
-  <img src="https://img.shields.io/badge/ESTADO-FINALIZADO-brightgreen?style=flat-square" alt="Estado">
+  <img src="https://img.shields.io/badge/ESTADO-EN-PROCESO-brightorange?style=flat-square" alt="Estado">
   
   <br> <img src="https://img.shields.io/badge/ODS-13%20ACCIÓN%20POR%20EL%20CLIMA-orange?style=flat-square" alt="ODS 13">
 </div>
