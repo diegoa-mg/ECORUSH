@@ -3,9 +3,9 @@
 </div>
 
 <h1 align="center">ECORUSH!</h1>
----
+
 <div align="center">
-  <img src="https://img.shields.io/badge/PYTHON-3.8%2B-007396?style=flat-square&logo=python&logoColor=white" alt="Python">
+  <img src="https://img.shields.io/badge/PYTHON-3.10%2B-007396?style=flat-square&logo=python&logoColor=white" alt="Python">
   
   <img src="https://img.shields.io/badge/HECHO%20CON-PYGAME-green?style=flat-square" alt="Pygame">
   
