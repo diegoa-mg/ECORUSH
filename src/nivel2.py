@@ -732,17 +732,22 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
         # === Condiciones de fin de juego ===
         if time_left <= 0 or player.energy <= 0:
+            play_music("derrota.mp3", volume=settings.GLOBAL_VOLUME, loops=0)
             screen.blit(current_img["pantalla_perdedor"], (0,0))
             pygame.display.flip()
-            pygame.time.delay(3000)
+            pygame.time.delay(8000)
+
             # Solicita música de menú niveles al volver
             set_next_music("musica_menu_niveles.mp3")
             return "niveles"
         
         elif all(not obj.encendido for obj in objetos):
+            play_music("victoria.mp3", volume=settings.GLOBAL_VOLUME, loops=0)
+            set_next_music("victoria.mp3")
             screen.blit(current_img["pantalla_ganador"], (0,0))
             pygame.display.flip()
-            pygame.time.delay(3000)
+            pygame.time.delay(8000)
+
             # Solicita música de menú niveles al volver
             set_next_music("musica_menu_niveles.mp3")
             return "niveles"
