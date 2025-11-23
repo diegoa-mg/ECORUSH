@@ -16,6 +16,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
         # 1. Si presionó ESC, nos vamos al menú de niveles inmediatamente
         if accion == "salir":
+            # "Cancelamos" la música del nivel y pedimos la del menú
+            settings.set_next_music("musica_menu_niveles.mp3")
             return "niveles"
         
         # 2. Si presionó E ("saltar"), rompemos el ciclo y vamos al juego
