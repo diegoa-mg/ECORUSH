@@ -133,7 +133,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     font = pygame.font.Font(str(FONT_PATH), 20)
 
     # === Gestor de habitaciones con portales (plano_mapa3) ===
-    plano_dir = Path(__file__).parent.parent / "assets" / "plano_mapa1"
+    plano_dir = Path(__file__).parent.parent / "assets" / "plano_mapa3"
 
     # Habitaciones disponibles: descubre automáticamente todos los PNG del directorio
     ROOM_ENTRADA = "entrada_nivel_3.png"
