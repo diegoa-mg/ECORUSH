@@ -11,6 +11,9 @@ import nivel2
 import nivel3
 import pantalla_carga
 import pantalla_inicio
+import video_nivel1
+import video_nivel2
+import video_nivel3
 
 def main():
     pygame.init()
@@ -41,6 +44,9 @@ def main():
         "nivel1":      with_fade(nivel1.run, in_ms=100),
         "nivel2":      with_fade(nivel2.run, in_ms=100),
         "nivel3":      with_fade(nivel3.run, in_ms=100),
+        "video_nivel1": with_fade(video_nivel1.run, in_ms=100),
+        "video_nivel2": with_fade(video_nivel2.run, in_ms=100),
+        "video_nivel3": with_fade(video_nivel3.run, in_ms=100),
     }
 
     # Arranca en el menú principal
@@ -49,6 +55,13 @@ def main():
     while True:
         # Ejecuta la escena actual (viene con fade-in integrado)
         next_scene = SCENES[scene](screen, clock)
+        if scene == "pantalla_carga":
+            if next_scene == "nivel1":
+                next_scene = "video_nivel1"
+            elif next_scene == "nivel2":
+                next_scene = "video_nivel2"
+            elif next_scene == "nivel3":
+                next_scene = "video_nivel3"
 
         if next_scene == "quit":
             pygame.quit()

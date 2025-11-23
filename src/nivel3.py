@@ -180,22 +180,24 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Los rects están pensados para 1920x1080 y pueden ajustarse luego.
     _room_portals_base: dict[str, list[dict]] = {
         ROOM_ENTRADA: [
-            {"rect": pygame.Rect(1892, 762, 25, 318),  "to": ROOM_COMEDOR, "spawn": (72, 873)},
-            {"rect": pygame.Rect(33, 3, 598, 16),     "to": ROOM_COCINA,  "spawn": (76, 972)},
+            {"rect": pygame.Rect(1888, 860, 29, 213),  "to": ROOM_COMEDOR, "spawn": (148, 1004)},
         ],
         ROOM_COMEDOR: [
-            {"rect": pygame.Rect(1, 756, 7, 324),      "to": ROOM_ENTRADA, "spawn": (1790, 885)},
+            {"rect": pygame.Rect(6, 819, 25, 261),      "to": ROOM_ENTRADA, "spawn": (1776, 948)},
+            {"rect": pygame.Rect(622, 0,701, 9),     "to": ROOM_COCINA,  "spawn": (308, 956)},
         ],
         ROOM_CUARTO1: [
-            {"rect": pygame.Rect(6, 466, 13, 331),     "to": ROOM_CUARTO2, "spawn": (1804, 918)},
+            {"rect": pygame.Rect(0, 866, 11, 214),     "to": ROOM_COCINA, "spawn": (1824, 952)},
         ],
         ROOM_COCINA: [
-            {"rect": pygame.Rect(1890, 651, 25, 244),  "to": ROOM_CUARTO2, "spawn": (114, 866)},
-            {"rect": pygame.Rect(44, 1052, 200, 20),   "to": ROOM_ENTRADA, "spawn": (261, 108)},
+            {"rect": pygame.Rect(2, 863, 8, 216),  "to": ROOM_CUARTO2, "spawn": (1808, 920)},
+            {"rect": pygame.Rect(280, 1072, 169, 5),   "to": ROOM_COMEDOR, "spawn": (926, 84)},
+            {"rect": pygame.Rect(1912, 865, 7,213),   "to": ROOM_CUARTO1, "spawn": (144, 952)},
+
         ],
         ROOM_CUARTO2: [
-            {"rect": pygame.Rect(1896, 864, 24, 220),  "to": ROOM_CUARTO1, "spawn": (95, 624)},
-            {"rect": pygame.Rect(4, 868, 25, 211),     "to": ROOM_COCINA,  "spawn": (1740, 724)},
+
+            {"rect": pygame.Rect(4, 868, 25, 211),     "to": ROOM_COCINA,  "spawn": (112, 956)},
         ],
     }
     room_portals: dict[str, list[dict]] = {
@@ -285,7 +287,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                 return True
 
         # Hitboxes definidas por habitación (cuadrados)
-        for rb in hb_n3.ROOM_HITBOXES_NIVEL1.get(current_room, []):
+        for rb in hb_n3.ROOM_HITBOXES_NIVEL3.get(current_room, []):
             if rect.colliderect(rb):
                 return True
             
