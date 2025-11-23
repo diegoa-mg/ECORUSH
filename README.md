@@ -3,6 +3,16 @@
 </div>
 
 <h1 align="center">ECORUSH!</h1>
+---
+<div align="center">
+  <img src="https://img.shields.io/badge/PYTHON-3.8%2B-007396?style=flat-square&logo=python&logoColor=white" alt="Python">
+  
+  <img src="https://img.shields.io/badge/HECHO%20CON-PYGAME-green?style=flat-square" alt="Pygame">
+  
+  <img src="https://img.shields.io/badge/ESTADO-FINALIZADO-brightgreen?style=flat-square" alt="Estado">
+  
+  <br> <img src="https://img.shields.io/badge/ODS-13%20ACCIÓN%20POR%20EL%20CLIMA-orange?style=flat-square" alt="ODS 13">
+</div>
 
 <p align="center">
   ECORUSH! es un videojuego educativo en 2D con estética pixel art, desarrollado en Python y Pygame. Este proyecto nace como una iniciativa académica para la Facultad de Ingeniería Electromecánica de la Universidad de Colima, con el fin de abordar de manera interactiva el Objetivo de Desarrollo Sostenible 13 (ODS 13): Acción por el Clima.
