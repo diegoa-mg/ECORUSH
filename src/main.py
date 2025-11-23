@@ -10,6 +10,7 @@ import nivel1
 import nivel2
 import nivel3
 import pantalla_carga
+import pantalla_inicio
 
 def main():
     pygame.init()
@@ -30,7 +31,8 @@ def main():
     pygame.display.set_icon(game_icon)
 
     SCENES = {
-        "menu":        menu_principal.run,
+        "inicio":      with_fade(pantalla_inicio.run, in_ms=100),
+        "menu":        with_fade(menu_principal.run, in_ms=100),
         "niveles":     menu_niveles.run,
         "sel_nivel1":  sel_nivel1.run,
         "sel_nivel2":  sel_nivel2.run,
@@ -42,7 +44,7 @@ def main():
     }
 
     # Arranca en el menú principal
-    scene = "menu"
+    scene = "inicio"
 
     while True:
         # Ejecuta la escena actual (viene con fade-in integrado)
