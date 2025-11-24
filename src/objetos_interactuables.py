@@ -106,9 +106,9 @@ OBJETOS_NIVEL2 = {
     # --- Nivel 2 (plano_mapa2) ---
     "entrada_nivel2.png": [
          _crear_objeto(
-            pos=(1491, 120), size=(300, 228),
-            img_on="lamparaencendida.png",
-            hitbox=(1491, 120, 300, 228)
+            pos=(1488, 117), size=(90, 230),
+            img_on="Lampara.png",
+            hitbox=(1488, 117, 90, 230)
          ),
     ],
     "sala nivel 2.png": [
@@ -130,7 +130,18 @@ OBJETOS_NIVEL2 = {
             hitbox=(30, 133, 548, 239)
          )
     ],
-    "baño_nivel2.png": [],
+    "baño_nivel2.png": [
+        _crear_objeto(
+            pos=(1549, 207), size=(158, 174),
+            img_on="Lavadora.png",
+            hitbox=(1549, 207, 158, 174)
+         ),
+         _crear_objeto(
+            pos=(260, 165), size=(141, 147),
+            img_on="Lavamanos_nivel2.png",
+            hitbox=(260, 165, 141, 147)
+         )
+    ],
     "cocina_nivel2.png": [
         _crear_objeto(
             pos=(51, 179), size=(256, 250),
