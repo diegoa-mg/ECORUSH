@@ -7,7 +7,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     pj = settings.get_selected_character()
     nombre = "video_niñaNV1.mp4" if pj == "niña" else "video_niñoNV1.mp4"
     base_dir = Path(__file__).parent.parent
-    ruta = base_dir / "assets" / "videos_niveles" / nombre
+    ruta = base_dir / "assets" / "video" / nombre
     cap = cv2.VideoCapture(str(ruta))
     if not cap.isOpened():
         return "nivel1"
