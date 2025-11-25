@@ -33,7 +33,7 @@
   <img src="assets/screenshots/captura4.png" alt="Niña en la casa" width="400" style="margin: 10px;">
 </div>
 
-## Gameplay
+## 💻 Gameplay
 <div align="center">
   <img src="assets/screenshots/GIF.gif" alt="Demo del juego" width="600" style="margin: 10px;">
 </div>
