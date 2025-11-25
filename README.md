@@ -33,6 +33,11 @@
   <img src="assets/screenshots/captura4.png" alt="Niña en la casa" width="400" style="margin: 10px;">
 </div>
 
+## Gameplay
+<div align="center">
+  <img src="assets/screenshots/GIF.gif" alt="Demo del juego" width="600" style="margin: 10px;">
+</div>
+
 ## 🔧 Mecánica Principal
 La premisa del juego es un reto de gestión de tiempo y recursos. El jugador elige un personaje (niño o niña) y debe recorrer una casa para apagar luces, cerrar llaves de agua y apagar aparatos electrónicos que están desperdiciando energía.
 
