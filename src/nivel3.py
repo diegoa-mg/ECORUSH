@@ -136,11 +136,11 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     plano_dir = Path(__file__).parent.parent / "assets" / "plano_mapa3"
 
     # Habitaciones disponibles: descubre automáticamente todos los PNG del directorio
-    ROOM_ENTRADA = "entrada_nivel_3.png"
-    ROOM_COMEDOR = "comedornivel3.png"
+    ROOM_ENTRADA = "entrada_nivel3.png"
+    ROOM_COMEDOR = "comedor_nivel3.png"
     ROOM_CUARTO1 = "cuarto_nivel3.png"
     ROOM_CUARTO2 = "cuarto2_nivel3.png"
-    ROOM_COCINA  = "cuartodecocinanivel3.png"
+    ROOM_COCINA  = "cocina_nivel3.png"
 
     rooms_disponibles = [
         ROOM_ENTRADA,
@@ -184,14 +184,14 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         ],
         ROOM_COMEDOR: [
             {"rect": pygame.Rect(6, 819, 25, 261),      "to": ROOM_ENTRADA, "spawn": (1776, 948)},
-            {"rect": pygame.Rect(622, 0,701, 9),     "to": ROOM_COCINA,  "spawn": (308, 956)},
+            {"rect": pygame.Rect(622, 0,701, 9),     "to": ROOM_COCINA,  "spawn": (960, 1000)},
         ],
         ROOM_CUARTO1: [
             {"rect": pygame.Rect(0, 866, 11, 214),     "to": ROOM_COCINA, "spawn": (1824, 952)},
         ],
         ROOM_COCINA: [
             {"rect": pygame.Rect(2, 863, 8, 216),  "to": ROOM_CUARTO2, "spawn": (1808, 920)},
-            {"rect": pygame.Rect(280, 1072, 169, 5),   "to": ROOM_COMEDOR, "spawn": (926, 84)},
+            {"rect": pygame.Rect(760, 1075, 400, 5),   "to": ROOM_COMEDOR, "spawn": (926, 84)},
             {"rect": pygame.Rect(1912, 865, 7,213),   "to": ROOM_CUARTO1, "spawn": (144, 952)},
 
         ],
