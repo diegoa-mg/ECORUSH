@@ -137,8 +137,8 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Habitaciones disponibles (coinciden con archivos de la carpeta)
     ROOM_ENTRADA = "entrada_nivel2.png"
-    ROOM_SALA    = "sala nivel 2.png"
-    ROOM_CUARTO  = "cuarto__nivel2.png"
+    ROOM_SALA    = "sala_nivel2.png"
+    ROOM_CUARTO  = "cuarto_nivel2.png"
     ROOM_COCINA  = "cocina_nivel2.png"
     ROOM_BANO    = "baño_nivel2.png"
 

@@ -8,14 +8,14 @@ ROOM_HITBOXES_NIVEL2: dict[str, list[pygame.Rect]] = {
         pygame.Rect(1596,12,313,273),
 
     ],
-    "sala nivel 2.png": [
+    "sala_nivel2.png": [
         pygame.Rect(30,202,301,137),
         pygame.Rect(380,134,525,187),
         pygame.Rect(880,14,1033,245),
         pygame.Rect(1368,567,430,166),
 
     ],
-    "cuarto__nivel2.png": [
+    "cuarto_nivel2.png": [
         pygame.Rect(588,48,445,208),
         pygame.Rect(669,78,193,292),
         pygame.Rect(1188,12,319,253),
@@ -27,7 +27,7 @@ ROOM_HITBOXES_NIVEL2: dict[str, list[pygame.Rect]] = {
         pygame.Rect(633,22,514,415),
         pygame.Rect(318,255,487,181),
         pygame.Rect(1323,51,382,394),
-        pygame.Rect(656,580,625,361),
+        pygame.Rect(656,580,625,300), # Mesa del centro
         pygame.Rect(492,676,137,197),
         pygame.Rect(1288,664,149,221),
 

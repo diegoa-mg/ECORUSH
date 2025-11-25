@@ -111,14 +111,14 @@ OBJETOS_NIVEL2 = {
             hitbox=(1488, 117, 90, 230)
          ),
     ],
-    "sala nivel 2.png": [
+    "sala_nivel2.png": [
         _crear_objeto(
             pos=(1514, 274), size=(163, 107),
             img_on="TV_sala2.png",
             hitbox=(1514, 274, 163, 107)
         )
     ],
-    "cuarto__nivel2.png": [
+    "cuarto_nivel2.png": [
         _crear_objeto(
             pos=(1745, 650), size=(150, 283),
             img_on="PC2.png",
@@ -163,8 +163,7 @@ OBJETOS_NIVEL2 = {
 
 OBJETOS_NIVEL3 = {
     # --- Nivel 3 (plano_mapa3) ---
-    "cuarto_nivel3.png": [],
-    "cuarto2_nivel3.png": [
+    "cuarto_nivel3.png": [
         _crear_objeto(
             pos=(34, 138), size=(228, 464),
             img_on="Bañera_cuarto2.png",
@@ -186,6 +185,53 @@ OBJETOS_NIVEL3 = {
             hitbox=(1210, 162, 212, 143)
         ),
     ],
+    "cuarto2_nivel3.png": [
+        _crear_objeto(
+            pos=(674, 161), size=(548, 239),
+            img_on="TV_cuarto1.png",
+            hitbox=(674, 151, 548, 239)
+        ),
+        _crear_objeto(
+            pos=(1424, 162), size=(119, 153),
+            img_on="Lavamanos.png",
+            hitbox=(1424, 162, 119, 153)
+        ),
+        _crear_objeto(
+            pos=(30, 761), size=(149, 283),
+            img_on="PC_cuarto1.png",
+            hitbox=(30, 761, 149, 283)
+        )
+    ],
+    "cocina_nivel3.png": [
+        _crear_objeto(
+            pos=(51, 178), size=(256, 250),
+            img_on="Estufa.png",
+            hitbox=(51, 178, 256, 250)
+        ),
+        _crear_objeto(
+            pos=(1612, 184), size=(256, 250),
+            img_on="Estufa.png",
+            hitbox=(1612, 184, 256, 250)
+        ),
+        _crear_objeto(
+            pos=(829, 60), size=(165, 373),
+            img_on="Refrigerador.png",
+            hitbox=(829, 60, 165, 373)
+        ),
+        _crear_objeto(
+            pos=(1014, 57), size=(166, 376),
+            img_on="Refrigerador.png",
+            hitbox=(1014, 57, 166, 376)
+        )
+    ],
+    "comedor_nivel3.png": [],
+    "entrada_nivel3.png": [
+        _crear_objeto(
+            pos=(1726, 151), size=(144, 190),
+            img_on="Lampara_nivel3.png",
+            hitbox=(1726, 151, 144, 190)
+        )
+    ]
 }
 
 # --- 3. CLASE DE OBJETO ---

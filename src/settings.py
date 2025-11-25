@@ -12,16 +12,16 @@ DIFICULTAD = "sencillo"  # Puede ser "sencillo" o "extremo"
 # Es mucho más limpio que tener TIEMPO_SENCILLO, TIEMPO_EXTREMO, etc.
 VALORES_DIFICULTAD = {
     "sencillo": {
-        "TIEMPO_LIMITE": 180,      # 180 segundos
+        "TIEMPO_LIMITE": 120,      # 180 segundos
         "VELOCIDAD_ENERGIA": 2,    # El drenaje de energía es 2
         "VELOCIDAD_ENERGIA_CORRER": 4, # El drenaje al correr es 4
         "RECARGA_ENERGIA": 15 # Recarga 10 de energia
     },
     "extremo": {
-        "TIEMPO_LIMITE": 120,       
-        "VELOCIDAD_ENERGIA": 4,    
-        "VELOCIDAD_ENERGIA_CORRER": 6, 
-        "RECARGA_ENERGIA": 10 
+        "TIEMPO_LIMITE": 90,       
+        "VELOCIDAD_ENERGIA": 2,    
+        "VELOCIDAD_ENERGIA_CORRER": 5.5, 
+        "RECARGA_ENERGIA": 12 
     }
 }
 
