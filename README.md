@@ -40,13 +40,45 @@ Diseñar y aplicar un videojuego educativo enfocado en la ODS 13 (Acción por el
 * **Fomentar** la reflexión crítica sobre la importancia de la acción climática en la vida cotidiana.
 * **Evaluar** el impacto del videojuego en la adquisición de conocimientos y actitudes ambientales en los usuarios.
 
-## 🛠️ Herramientas Utilizadas
+## 🚀 Pasos de Instalación
 
-* Python
-* Pygame
-* OpenCV
-* LibreSprite
-* Canva
+Sigue estos pasos para ejecutar el juego en tu computadora:
+
+### Requisitos previos
+* Python 3.10 o superior
+* Git
+
+### 1. Clona el Repositorio
+Abre tu terminal y clona el proyecto.
+
+```bash
+git clone https://github.com/diegoa-mg/ecorush.git
+```
+### 2. Entra a la carpeta
+
+```bash
+cd ecorush
+```
+### 3. Crear entorno virtual
+```bash
+# En Windows
+python -m venv venv
+.\venv\Scripts\activate
+
+# En Mac/Linux
+python3 -m venv venv
+source venv/bin/activate
+```
+### 4. Instalar dependencias
+
+```bash
+pip install pygame opencv-python
+```
+### 5. Ejecutar el juego
+
+```bash
+python src/main.py
+```
 
 ## 🎮 Controles
 
