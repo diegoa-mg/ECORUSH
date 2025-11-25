@@ -105,3 +105,13 @@ python src/main.py
 | Moverse | W, A, S, D |
 | Correr | Shift |
 | Interactuar | E |
+
+## 👤Colaboradores
+
+* Morales Diego
+* Espitia Jared
+* Juárez Alan
+* Juárez Fernando
+* Méndez Helem
+* Virgen Lucia
+
