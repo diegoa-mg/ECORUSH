@@ -29,7 +29,7 @@ Para añadir un desafío, el personaje tiene una barra de energía que se consum
 
 El jugador pierde si el tiempo llega a cero o si su barra de energía se agota por completo.
 
-## 📋 Objetivos generales
+## 📖 Objetivos generales
 Diseñar y aplicar un videojuego educativo enfocado en la ODS 13 (Acción por el clima), el videojuego no solo busca entretener, sino también concientizar, informar y despertar un compromiso real con la acción por el clima, contribuyendo a formar ciudadanos responsables con el planeta.
 
 ## 📋 Objetivos específicos
