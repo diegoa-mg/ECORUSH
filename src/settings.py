@@ -72,7 +72,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # IMG_DIR: carpeta donde se guardan las imagenes del proyecto
 IMG_DIR = BASE_DIR / "assets" / "img"
 # MUSIC_DIR: carpeta donde se guardan las músicas del proyecto
-MUSIC_DIR = BASE_DIR / "assets" / "musica"
+MUSIC_DIR = BASE_DIR / "assets" / "music"
 
 # === Helper para cargar imagen ===
 """
