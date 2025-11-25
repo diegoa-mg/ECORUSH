@@ -245,9 +245,9 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Mostrar visualmente los portales en rojo (debug).
     # Desactivado para ocultar los contornos rojos.
-    SHOW_PORTALS = True
-    SHOW_CUSTOM_HITBOXES = True
-    SHOW_INTERACTION_HITBOXES = True
+    SHOW_PORTALS = False
+    SHOW_CUSTOM_HITBOXES = False
+    SHOW_INTERACTION_HITBOXES = False
 
     def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
         if not portals:
