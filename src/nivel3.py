@@ -197,7 +197,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         ],
         ROOM_CUARTO2: [
 
-            {"rect": pygame.Rect(4, 868, 25, 211),     "to": ROOM_COCINA,  "spawn": (112, 956)},
+            {"rect": pygame.Rect(1890, 800, 80, 200),     "to": ROOM_COCINA,  "spawn": (112, 956)},
         ],
     }
     room_portals: dict[str, list[dict]] = {

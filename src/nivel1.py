@@ -198,7 +198,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         ],
         ROOM_SALA: [
             {"rect": pygame.Rect(760, 1075, 400, 5),  "to": ROOM_ENTRADA, "spawn": (960, 160)},  # abajo → entrada
-            {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_CUARTO1, "spawn": (1700, 800)}, # izquierda → cuarto1
+            {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_CUARTO1, "spawn": (1710, 942)}, # izquierda → cuarto1
             {"rect": pygame.Rect(1890, 800, 19, 200), "to": ROOM_CUARTO2, "spawn": (74, 954)},  # derecha → cuarto2
         ],
         ROOM_GARAJE: [
@@ -211,7 +211,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             {"rect": pygame.Rect(1890, 800, 80, 200), "to": ROOM_SALA,    "spawn": (153, 941)},  # derecha → sala
         ],
         ROOM_CUARTO2: [
-            {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_SALA,    "spawn": (1760,850)}, # izquierda → sala
+            {"rect": pygame.Rect(2, 870, 3, 200),   "to": ROOM_SALA,    "spawn": (1761,980)},
         ],
     }
 
