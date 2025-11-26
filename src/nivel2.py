@@ -182,7 +182,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         # Entrada/Recibidor → Sala (puerta superior)
         ROOM_ENTRADA: [
             {"rect": pygame.Rect(1892, 762, 25, 318),  "to": ROOM_SALA,   "spawn": (72, 873)},
-            {"rect": pygame.Rect(33, 3, 598, 16),    "to": ROOM_COCINA,  "spawn": (76, 972)},
+            {"rect": pygame.Rect(33, 3, 598, 16),    "to": ROOM_COCINA,  "spawn": (220, 972)},
         ],
         # Sala ↔ Entrada y Sala → Cuarto (arriba) y Sala ↔ Cocina (izquierda)
         ROOM_SALA: [
@@ -195,7 +195,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
         # Cocina ↔ Sala (derecha)
         ROOM_COCINA: [
             {"rect": pygame.Rect(1890, 681, 25, 230),    "to": ROOM_BANO, "spawn": (108,970)},
-             {"rect": pygame.Rect(44, 1052, 200, 20), "to": ROOM_ENTRADA, "spawn": (261, 108)},
+             {"rect": pygame.Rect(44, 1052, 400, 20), "to": ROOM_ENTRADA, "spawn": (261, 108)},
         ],
         # Baño ↔ Cuarto (derecha)
         ROOM_BANO: [
@@ -231,7 +231,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Mostrar visualmente los portales en rojo (debug).
     # Desactivado para ocultar los contornos rojos.
-    SHOW_PORTALS = False
+    SHOW_PORTALS = True
     SHOW_CUSTOM_HITBOXES = False
     SHOW_INTERACTION_HITBOXES = False
 
