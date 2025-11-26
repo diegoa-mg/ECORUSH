@@ -214,7 +214,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             {"to": ROOM_COCINA,  "pos": (1782,969),   "orient": "derecha"},
         ],
         ROOM_COMEDOR: [
-            {"to": ROOM_COCINA, "pos": (908, 84), "orient": "abajo"},
+            {"to": ROOM_COCINA, "pos": (908, 84), "orient": "arriba"},
         ],
         ROOM_CUARTO1: [
             {"to": ROOM_COCINA, "pos": (35,634),   "orient": "izquierda"},
