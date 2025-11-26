@@ -6,13 +6,11 @@ import settings
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     pj = settings.get_selected_character()
     if settings.language == "eng":
-        nombre = "video_niñaNV2_ingles.mp4" if pj == "niña" else "video_niñoNV2_ingles.mp4"
+        nombre = "NV2_ingles_niña.mp4" if pj == "niña" else "NV2_ingles_niño.mp4"
     else:
-        nombre = "video_niñaNV2.mp4" if pj == "niña" else "video_niñoNV2.mp4"
+        nombre = "NV2_español_niña.mp4" if pj == "niña" else "NV2_español_niño.mp4"
     base_dir = Path(__file__).parent.parent
     ruta = base_dir / "assets" / "video" / nombre
-    if not ruta.exists() and pj == "niña":
-        ruta = base_dir / "assets" / "video" / ("videoniñaNv2_ingles.mp4" if settings.language == "eng" else "videoniñaNv2.mp4")
     cap = cv2.VideoCapture(str(ruta))
     if not cap.isOpened():
         return "nivel2"

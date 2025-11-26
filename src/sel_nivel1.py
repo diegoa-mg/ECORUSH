@@ -1,6 +1,6 @@
 import pygame, os, math, sys
 import settings
-from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, resume_music, play_music, pause_music, set_next_music, set_selected_character
+from settings import WIDTH, HEIGHT, FPS, load_img, make_blur, make_hover_pair, blit_hoverable, resume_music, play_music, pause_music, set_next_music, set_selected_character, set_current_level
 
 def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # === Música en selector de nivel 1: reanuda o inicia si no está activa ===
@@ -141,6 +141,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
                                 set_next_music("musica_nivel_extremo.mp3")
                         # Pausar música de menú antes de entrar al nivel
                         pause_music()
+                        set_current_level("nivel1")
                         return "pantalla_carga"
                     
                     # Regresar a niveles
