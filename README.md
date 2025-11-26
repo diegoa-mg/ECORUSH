@@ -7,11 +7,11 @@
 <div align="center">
   <img src="https://img.shields.io/badge/PYTHON-3.10%2B-007396?style=flat-square&logo=python&logoColor=white" alt="Python">
   
-  <img src="https://img.shields.io/badge/HECHO%20CON-PYGAME-green?style=flat-square" alt="Pygame">
+  <img src="https://img.shields.io/badge/HECHO%20CON-PYGAME-red?style=flat-square" alt="Pygame">
   
   <img src="https://img.shields.io/badge/ESTADO-TERMINADO-brightgreen?style=flat-square" alt="Estado">
   
-  <br> <img src="https://img.shields.io/badge/ODS-13%20ACCIÓN%20POR%20EL%20CLIMA-orange?style=flat-square" alt="ODS 13">
+  <br> <img src="https://img.shields.io/badge/ODS-13%20ACCIÓN%20POR%20EL%20CLIMA-green?style=flat-square" alt="ODS 13">
 </div>
 
 <p align="center">
