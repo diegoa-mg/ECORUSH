@@ -90,7 +90,7 @@ source venv/bin/activate
 ### 4. Instalar dependencias
 
 ```bash
-pip install pygame opencv-python
+pip install -r requirements.txt
 ```
 ### 5. Ejecutar el juego
 
