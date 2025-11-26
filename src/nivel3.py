@@ -214,7 +214,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             {"to": ROOM_COCINA,  "pos": (1782,969),   "orient": "derecha"},
         ],
         ROOM_COMEDOR: [
-            {"to": ROOM_COCINA, "pos": (908, 84), "orient": "arriba"},
+            {"to": ROOM_COCINA, "pos": (926,158), "orient": "arriba"},
         ],
         ROOM_CUARTO1: [
             {"to": ROOM_COCINA, "pos": (35,634),   "orient": "izquierda"},
@@ -235,9 +235,9 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
 
     # Mostrar visualmente los portales en rojo (debug).
     # Desactivado para ocultar los contornos rojos.
-    SHOW_PORTALS = True
-    SHOW_CUSTOM_HITBOXES = True
-    SHOW_INTERACTION_HITBOXES = True
+    SHOW_PORTALS = False
+    SHOW_CUSTOM_HITBOXES = False
+    SHOW_INTERACTION_HITBOXES = False
 
     def draw_portals_overlay(screen: pygame.Surface, portals: list[dict]):
         if not portals:
