@@ -209,21 +209,23 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
     # Formato: habitacion_actual: [{"to": ROOM_*, "pos": (x, y), "orient": "arriba|abajo|izquierda|derecha"}]
     flechas_portales: dict[str, list[dict]] = {
         ROOM_ENTRADA: [
-            {"to": ROOM_SALA,   "pos": (924, 60),   "orient": "arriba"},
+            {"to": ROOM_SALA,   "pos": (1794, 928),   "orient": "derecha"},
+            {"to": ROOM_SALA,   "pos": (262,78),   "orient": "arriba"},
         ],
         ROOM_SALA: [
             {"to": ROOM_CUARTO,  "pos": (924, 60),   "orient": "arriba"},
             {"to": ROOM_COCINA,  "pos": (60, 850),   "orient": "izquierda"},
         ],
         ROOM_CUARTO: [
-            {"to": ROOM_SALA, "pos": (924, 1000), "orient": "abajo"},
-            {"to": ROOM_BANO, "pos": (60, 500),   "orient": "izquierda"},
+
+            {"to": ROOM_BANO, "pos": (74, 668),   "orient": "izquierda"},
         ],
         ROOM_COCINA: [
-            {"to": ROOM_SALA, "pos": (1820, 850), "orient": "derecha"},
+            {"to": ROOM_BANO, "pos": (1792,772), "orient": "derecha"},
         ],
         ROOM_BANO: [
-            {"to": ROOM_CUARTO, "pos": (1820, 500), "orient": "derecha"},
+            {"to": ROOM_CUARTO, "pos": (1820, 958), "orient": "derecha"},
+            {"to": ROOM_COCINA, "pos": (70, 954), "orient": "izquierda"},
         ],
     }
 
