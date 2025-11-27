@@ -751,7 +751,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             play_music("derrota.mp3", volume=settings.GLOBAL_VOLUME, loops=0)
             screen.blit(current_img["pantalla_perdedor"], (0,0))
             pygame.display.flip()
-            pygame.time.delay(8000)
+            pygame.time.delay(4000)
 
             # Solicita música de menú niveles al volver
             set_next_music("musica_menu_niveles.mp3")
@@ -762,7 +762,7 @@ def run(screen: pygame.Surface, clock: pygame.time.Clock) -> str:
             set_next_music("victoria.mp3")
             screen.blit(current_img["pantalla_ganador"], (0,0))
             pygame.display.flip()
-            pygame.time.delay(8000)
+            pygame.time.delay(4000)
 
             # Solicita música de menú niveles al volver
             set_next_music("musica_menu_niveles.mp3")
